@@ -61,12 +61,12 @@ export default async function NewInventoryItemPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="activatedAt">Date d&apos;activation</Label>
-            <Input id="activatedAt" name="activatedAt" type="date" />
+            <Label htmlFor="activatedAt">Date et heure d&apos;activation</Label>
+            <Input id="activatedAt" name="activatedAt" type="datetime-local" />
           </div>
           <div>
-            <Label htmlFor="expiresAt">Date d&apos;expiration</Label>
-            <Input id="expiresAt" name="expiresAt" type="date" />
+            <Label htmlFor="expiresAt">Date et heure d&apos;expiration</Label>
+            <Input id="expiresAt" name="expiresAt" type="datetime-local" />
           </div>
         </div>
 
