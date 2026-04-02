@@ -17,6 +17,7 @@ interface SidebarProps {
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: "⊞", resource: "dashboard" },
   { href: "/inventory", label: "Inventaire", icon: "📦", resource: "inventory" },
+  { href: "/inventory/logs", label: "Journal", icon: "📋", resource: "inventory", indent: true },
   { href: "/treasury", label: "Trésorerie", icon: "💰", resource: "treasury" },
   { href: "/members", label: "Membres", icon: "👥", resource: "members" },
   { href: "/roles", label: "Rôles", icon: "🔑", resource: "roles" },
@@ -40,13 +41,16 @@ export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
       <nav className="flex-1 overflow-y-auto py-4 px-2" aria-label="Navigation principale">
         <ul className="space-y-0.5" role="list">
           {visibleNav.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+            const isActive = item.href === "/inventory"
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(item.href + "/");
             return (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                    "flex items-center gap-3 rounded-md py-2 text-sm transition-colors",
+                    item.indent ? "px-6" : "px-3",
                     isActive
                       ? "bg-primary/10 text-primary font-medium"
                       : "text-muted hover:bg-surface-2 hover:text-text"
