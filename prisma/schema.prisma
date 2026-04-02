@@ -116,19 +116,24 @@ model InventoryItem {
 }
 
 // ─────────────────────────────────────────────
-// JOURNAL D'INVENTAIRE
+// JOURNAL D'AUDIT (toutes sections)
 // ─────────────────────────────────────────────
 
-// action: CREATE | UPDATE | DELETE | QTY_ADD | QTY_SUB
-//         CATEGORY_CREATE | CATEGORY_UPDATE | CATEGORY_DELETE
-model InventoryLog {
+// section : inventory | treasury | members | roles
+// action  : CREATE | UPDATE | DELETE | QTY_ADD | QTY_SUB
+//           CATEGORY_CREATE | CATEGORY_UPDATE | CATEGORY_DELETE
+//           ROLE_UPDATE
+model AuditLog {
   id         String   @id @default(cuid())
+  section    String
   action     String
-  itemName   String                   // dénormalisé (conservé après suppression)
+  targetName String                   // dénormalisé (conservé après suppression)
   userId     String
   userName   String?
-  details    String?                  // ex: "Quantité 10 → 15" ou "Expiré le 09/04"
+  details    String?
   createdAt  DateTime @default(now())
+
+  @@index([section, createdAt(sort: Desc)])
 }
 
 // ─────────────────────────────────────────────

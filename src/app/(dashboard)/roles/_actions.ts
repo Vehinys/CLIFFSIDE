@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canDo, RESOURCES, ACTIONS } from "@/lib/permissions";
+import { audit } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -23,7 +24,7 @@ async function requirePermission(action: "create" | "update" | "delete" | "read"
 }
 
 export async function createRole(formData: FormData) {
-  await requirePermission("create");
+  const session = await requirePermission("create");
   const data = roleSchema.parse(Object.fromEntries(formData));
 
   const permissions = RESOURCES.flatMap((resource) =>
@@ -39,17 +40,17 @@ export async function createRole(formData: FormData) {
       permissions: { create: permissions },
     },
   });
+  await audit("roles", "CREATE", data.name, session.user.id, session.user.name, `${permissions.length} permission(s)`);
   revalidatePath("/roles");
   redirect("/roles");
 }
 
 export async function updateRole(id: string, formData: FormData) {
-  await requirePermission("update");
+  const session = await requirePermission("update");
 
   const role = await prisma.role.findUnique({ where: { id } });
 
   const raw = Object.fromEntries(formData);
-  // Pour les rôles système, on garde le nom existant
   if (role?.isSystem) raw.name = role.name;
 
   const data = roleSchema.parse(raw);
@@ -71,14 +72,16 @@ export async function updateRole(id: string, formData: FormData) {
       },
     },
   });
+  await audit("roles", "UPDATE", data.name, session.user.id, session.user.name, `${permissions.length} permission(s)`);
   revalidatePath("/roles");
   redirect("/roles");
 }
 
 export async function deleteRole(id: string) {
-  await requirePermission("delete");
+  const session = await requirePermission("delete");
   const role = await prisma.role.findUnique({ where: { id } });
   if (role?.isSystem) throw new Error("Impossible de supprimer un rôle système");
   await prisma.role.delete({ where: { id } });
+  await audit("roles", "DELETE", role?.name ?? id, session.user.id, session.user.name);
   revalidatePath("/roles");
 }

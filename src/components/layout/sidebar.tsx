@@ -15,12 +15,15 @@ interface SidebarProps {
 }
 
 const NAV = [
-  { href: "/dashboard", label: "Dashboard", icon: "⊞", resource: "dashboard" },
-  { href: "/inventory", label: "Inventaire", icon: "📦", resource: "inventory" },
-  { href: "/inventory/logs", label: "Journal", icon: "📋", resource: "inventory", indent: true },
-  { href: "/treasury", label: "Trésorerie", icon: "💰", resource: "treasury" },
-  { href: "/members", label: "Membres", icon: "👥", resource: "members" },
-  { href: "/roles", label: "Rôles", icon: "🔑", resource: "roles" },
+  { href: "/dashboard",       label: "Dashboard",  icon: "⊞",  resource: "dashboard" },
+  { href: "/inventory",       label: "Inventaire", icon: "📦", resource: "inventory" },
+  { href: "/inventory/logs",  label: "Journal",    icon: "📋", resource: "inventory", indent: true },
+  { href: "/treasury",        label: "Trésorerie", icon: "💰", resource: "treasury" },
+  { href: "/treasury/logs",   label: "Journal",    icon: "📋", resource: "treasury",  indent: true },
+  { href: "/members",         label: "Membres",    icon: "👥", resource: "members" },
+  { href: "/members/logs",    label: "Journal",    icon: "📋", resource: "members",   indent: true },
+  { href: "/roles",           label: "Rôles",      icon: "🔑", resource: "roles" },
+  { href: "/roles/logs",      label: "Journal",    icon: "📋", resource: "roles",     indent: true },
 ];
 
 export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
@@ -41,9 +44,9 @@ export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
       <nav className="flex-1 overflow-y-auto py-4 px-2" aria-label="Navigation principale">
         <ul className="space-y-0.5" role="list">
           {visibleNav.map((item) => {
-            const isActive = item.href === "/inventory"
+            const isActive = item.indent
               ? pathname === item.href
-              : pathname === item.href || pathname.startsWith(item.href + "/");
+              : pathname === item.href || (pathname.startsWith(item.href + "/") && !pathname.startsWith(item.href + "/logs"));
             return (
               <li key={item.href}>
                 <Link

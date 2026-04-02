@@ -7,23 +7,17 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const ACTION_META: Record<string, { label: string; variant: "default" | "success" | "warning" | "danger" }> = {
-  CREATE:          { label: "Création",        variant: "success" },
-  UPDATE:          { label: "Modification",    variant: "default" },
-  DELETE:          { label: "Suppression",     variant: "danger" },
-  QTY_ADD:         { label: "+ Quantité",      variant: "success" },
-  QTY_SUB:         { label: "− Quantité",      variant: "warning" },
-  CATEGORY_CREATE: { label: "Catégorie créée", variant: "success" },
-  CATEGORY_UPDATE: { label: "Catégorie modif", variant: "default" },
-  CATEGORY_DELETE: { label: "Catégorie supp.", variant: "danger" },
+  DELETE:      { label: "Compte supprimé", variant: "danger" },
+  ROLE_UPDATE: { label: "Rôle modifié",    variant: "warning" },
 };
 
-export default async function InventoryLogsPage() {
+export default async function MembersLogsPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
-  if (!canDo(session.user.permissions, "inventory", "read")) redirect("/dashboard");
+  if (!canDo(session.user.permissions, "members", "read")) redirect("/dashboard");
 
   const logs = await prisma.auditLog.findMany({
-    where: { section: "inventory" },
+    where: { section: "members" },
     orderBy: { createdAt: "desc" },
     take: 200,
   });
@@ -31,7 +25,7 @@ export default async function InventoryLogsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/inventory" className="text-muted hover:text-text text-sm">← Inventaire</Link>
+        <Link href="/members" className="text-muted hover:text-text text-sm">← Membres</Link>
         <span className="text-border">/</span>
         <h1 className="text-xl font-bold text-text">Journal des modifications</h1>
         <span className="ml-auto text-xs text-muted">{logs.length} entrée{logs.length !== 1 ? "s" : ""}</span>
@@ -47,7 +41,7 @@ export default async function InventoryLogsPage() {
                 <tr className="border-b border-border text-left">
                   <th className="pb-2 font-medium text-muted">Date</th>
                   <th className="pb-2 font-medium text-muted">Action</th>
-                  <th className="pb-2 font-medium text-muted">Article</th>
+                  <th className="pb-2 font-medium text-muted">Membre</th>
                   <th className="pb-2 font-medium text-muted">Détails</th>
                   <th className="pb-2 font-medium text-muted">Par</th>
                 </tr>

@@ -7,23 +7,18 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const ACTION_META: Record<string, { label: string; variant: "default" | "success" | "warning" | "danger" }> = {
-  CREATE:          { label: "Création",        variant: "success" },
-  UPDATE:          { label: "Modification",    variant: "default" },
-  DELETE:          { label: "Suppression",     variant: "danger" },
-  QTY_ADD:         { label: "+ Quantité",      variant: "success" },
-  QTY_SUB:         { label: "− Quantité",      variant: "warning" },
-  CATEGORY_CREATE: { label: "Catégorie créée", variant: "success" },
-  CATEGORY_UPDATE: { label: "Catégorie modif", variant: "default" },
-  CATEGORY_DELETE: { label: "Catégorie supp.", variant: "danger" },
+  CREATE: { label: "Rôle créé",     variant: "success" },
+  UPDATE: { label: "Modification",  variant: "default" },
+  DELETE: { label: "Rôle supprimé", variant: "danger" },
 };
 
-export default async function InventoryLogsPage() {
+export default async function RolesLogsPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
-  if (!canDo(session.user.permissions, "inventory", "read")) redirect("/dashboard");
+  if (!canDo(session.user.permissions, "roles", "read")) redirect("/dashboard");
 
   const logs = await prisma.auditLog.findMany({
-    where: { section: "inventory" },
+    where: { section: "roles" },
     orderBy: { createdAt: "desc" },
     take: 200,
   });
@@ -31,7 +26,7 @@ export default async function InventoryLogsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/inventory" className="text-muted hover:text-text text-sm">← Inventaire</Link>
+        <Link href="/roles" className="text-muted hover:text-text text-sm">← Rôles</Link>
         <span className="text-border">/</span>
         <h1 className="text-xl font-bold text-text">Journal des modifications</h1>
         <span className="ml-auto text-xs text-muted">{logs.length} entrée{logs.length !== 1 ? "s" : ""}</span>
@@ -47,7 +42,7 @@ export default async function InventoryLogsPage() {
                 <tr className="border-b border-border text-left">
                   <th className="pb-2 font-medium text-muted">Date</th>
                   <th className="pb-2 font-medium text-muted">Action</th>
-                  <th className="pb-2 font-medium text-muted">Article</th>
+                  <th className="pb-2 font-medium text-muted">Rôle</th>
                   <th className="pb-2 font-medium text-muted">Détails</th>
                   <th className="pb-2 font-medium text-muted">Par</th>
                 </tr>
