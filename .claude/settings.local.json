@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx skills:*)",
+      "Bash([ -e \"$BASE/$item\" ])",
+      "Bash(npx create-next-app@latest _scaffold --typescript --tailwind --app --src-dir --import-alias \"@/*\" --eslint --yes)",
+      "Bash(npx create-next-app@latest scaffold --typescript --tailwind --app --src-dir --import-alias \"@/*\" --eslint --yes)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); p.name='cliffside'; require\\('fs'\\).writeFileSync\\('./package.json', JSON.stringify\\(p, null, 2\\)+'\\\\n'\\); console.log\\('name:', p.name\\)\")",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm ls:*)",
+      "Bash(grep \"^F:\\\\\\\\PROJET\")",
+      "Bash(grep \"^F:\\\\\\\\PROJET PERSONNEL\\\\\\\\CLIFFSIDE\\\\\\\\src\")",
+      "Bash(npx eslint:*)",
+      "Bash(npm test:*)",
+      "Bash(NEXT_PRIVATE_DISABLE_TURBOPACK=1 npx next build)",
+      "WebSearch"
+    ]
+  }
+}

@@ -1,0 +1,84 @@
+import { auth } from "@/lib/auth";
+import { canDo, RESOURCES, ACTIONS, RESOURCE_LABELS, ACTION_LABELS } from "@/lib/permissions";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { createRole } from "../_actions";
+
+export default async function NewRolePage() {
+  const session = await auth();
+  if (!session?.user) redirect("/login");
+  if (!canDo(session.user.permissions, "roles", "create")) redirect("/roles");
+
+  return (
+    <div className="max-w-2xl space-y-6">
+      <div className="flex items-center gap-3">
+        <Link href="/roles" className="text-muted hover:text-text text-sm">← Rôles</Link>
+        <span className="text-border">/</span>
+        <h1 className="text-xl font-bold text-text">Nouveau rôle</h1>
+      </div>
+
+      <form action={createRole} className="rounded-lg border border-border bg-surface p-5 space-y-5">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="name" required>Nom du rôle</Label>
+            <Input id="name" name="name" placeholder="Ex: Sous-boss, Recrue…" required />
+          </div>
+          <div>
+            <Label htmlFor="color" required>Couleur</Label>
+            <div className="flex gap-2">
+              <Input id="color" name="color" type="color" defaultValue="#6b7280" className="w-12 h-10 p-1 cursor-pointer" required />
+              <Input name="color_text" placeholder="#6b7280" className="flex-1" aria-hidden="true" tabIndex={-1} />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="description">Description</Label>
+          <Input id="description" name="description" placeholder="Rôle pour…" />
+        </div>
+
+        {/* Matrice de permissions */}
+        <div>
+          <p className="text-sm font-semibold text-text mb-3">Permissions</p>
+          <div className="overflow-x-auto rounded-md border border-border">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-surface-2">
+                  <th className="px-3 py-2 text-left font-medium text-muted">Ressource</th>
+                  {ACTIONS.map((a) => (
+                    <th key={a} className="px-3 py-2 text-center font-medium text-muted">{ACTION_LABELS[a]}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {RESOURCES.map((resource) => (
+                  <tr key={resource} className="border-b border-border/50 last:border-0">
+                    <td className="px-3 py-2.5 font-medium text-text">{RESOURCE_LABELS[resource]}</td>
+                    {ACTIONS.map((action) => (
+                      <td key={action} className="px-3 py-2.5 text-center">
+                        <input
+                          type="checkbox"
+                          name={`perm_${resource}_${action}`}
+                          className="h-4 w-4 rounded border-border accent-primary cursor-pointer"
+                          aria-label={`${RESOURCE_LABELS[resource]} — ${ACTION_LABELS[action]}`}
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="flex gap-3 pt-2">
+          <Button type="submit">Créer le rôle</Button>
+          <Link href="/roles"><Button type="button" variant="secondary">Annuler</Button></Link>
+        </div>
+      </form>
+    </div>
+  );
+}
