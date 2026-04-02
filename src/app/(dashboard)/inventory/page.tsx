@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { deleteItem, deleteCategory } from "./_actions";
+import { deleteItem, deleteCategory, adjustQuantity } from "./_actions";
 
 export default async function InventoryPage() {
   const session = await auth();
@@ -37,16 +37,21 @@ export default async function InventoryPage() {
           <h1 className="text-2xl font-bold text-text">Inventaire</h1>
           <p className="text-sm text-muted mt-1">{items.length} article{items.length !== 1 ? "s" : ""}</p>
         </div>
-        {canWrite && (
-          <div className="flex gap-2">
-            <Link href="/inventory/category/new">
-              <Button variant="secondary">+ Nouvelle catégorie</Button>
-            </Link>
-            <Link href="/inventory/new">
-              <Button>+ Nouvel article</Button>
-            </Link>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <Link href="/inventory/logs">
+            <Button variant="secondary">Journal</Button>
+          </Link>
+          {canWrite && (
+            <>
+              <Link href="/inventory/category/new">
+                <Button variant="secondary">+ Nouvelle catégorie</Button>
+              </Link>
+              <Link href="/inventory/new">
+                <Button>+ Nouvel article</Button>
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
       {categories.length === 0 && items.length === 0 ? (
@@ -132,8 +137,20 @@ export default async function InventoryPage() {
                         return (
                           <tr key={item.id} className="border-b border-border/50 last:border-0 hover:bg-surface/50 transition-colors">
                             <td className="py-2.5 font-medium text-text">{item.name}</td>
-                            <td className="py-2.5 font-mono text-text">
-                              {item.quantity}
+                            <td className="py-2.5">
+                              {canEdit ? (
+                                <div className="flex items-center gap-1">
+                                  <form action={adjustQuantity.bind(null, item.id, -1)}>
+                                    <button type="submit" className="w-6 h-6 rounded text-xs text-muted hover:text-text hover:bg-surface border border-border/50 leading-none" aria-label="Retirer 1">−</button>
+                                  </form>
+                                  <span className="font-mono text-text w-8 text-center tabular-nums">{item.quantity}</span>
+                                  <form action={adjustQuantity.bind(null, item.id, 1)}>
+                                    <button type="submit" className="w-6 h-6 rounded text-xs text-muted hover:text-text hover:bg-surface border border-border/50 leading-none" aria-label="Ajouter 1">+</button>
+                                  </form>
+                                </div>
+                              ) : (
+                                <span className="font-mono text-text">{item.quantity}</span>
+                              )}
                             </td>
                             <td className="py-2.5 text-muted">{item.unit ?? "—"}</td>
                             <td className="py-2.5 text-muted text-xs">
@@ -226,8 +243,20 @@ export default async function InventoryPage() {
                         return (
                           <tr key={item.id} className="border-b border-border/50 last:border-0 hover:bg-surface/50 transition-colors">
                             <td className="py-2.5 font-medium text-text">{item.name}</td>
-                            <td className="py-2.5 font-mono text-text">
-                              {item.quantity}
+                            <td className="py-2.5">
+                              {canEdit ? (
+                                <div className="flex items-center gap-1">
+                                  <form action={adjustQuantity.bind(null, item.id, -1)}>
+                                    <button type="submit" className="w-6 h-6 rounded text-xs text-muted hover:text-text hover:bg-surface border border-border/50 leading-none" aria-label="Retirer 1">−</button>
+                                  </form>
+                                  <span className="font-mono text-text w-8 text-center tabular-nums">{item.quantity}</span>
+                                  <form action={adjustQuantity.bind(null, item.id, 1)}>
+                                    <button type="submit" className="w-6 h-6 rounded text-xs text-muted hover:text-text hover:bg-surface border border-border/50 leading-none" aria-label="Ajouter 1">+</button>
+                                  </form>
+                                </div>
+                              ) : (
+                                <span className="font-mono text-text">{item.quantity}</span>
+                              )}
                             </td>
                             <td className="py-2.5 text-muted">{item.unit ?? "—"}</td>
                             <td className="py-2.5 text-muted text-xs">

@@ -116,6 +116,22 @@ model InventoryItem {
 }
 
 // ─────────────────────────────────────────────
+// JOURNAL D'INVENTAIRE
+// ─────────────────────────────────────────────
+
+// action: CREATE | UPDATE | DELETE | QTY_ADD | QTY_SUB
+//         CATEGORY_CREATE | CATEGORY_UPDATE | CATEGORY_DELETE
+model InventoryLog {
+  id         String   @id @default(cuid())
+  action     String
+  itemName   String                   // dénormalisé (conservé après suppression)
+  userId     String
+  userName   String?
+  details    String?                  // ex: "Quantité 10 → 15" ou "Expiré le 09/04"
+  createdAt  DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────
 // TRÉSORERIE
 // ─────────────────────────────────────────────
 
