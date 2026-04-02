@@ -16,7 +16,9 @@
       "Bash(npx eslint:*)",
       "Bash(npm test:*)",
       "Bash(NEXT_PRIVATE_DISABLE_TURBOPACK=1 npx next build)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(psql -h pg.neon.tech)",
+      "Bash(openssl rand:*)"
     ]
   }
 }
