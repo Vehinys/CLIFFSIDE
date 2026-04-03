@@ -21,7 +21,8 @@
       "Bash(openssl rand:*)",
       "Bash(taskkill /F /IM node.exe)",
       "Bash(cmd //c \"taskkill /F /IM node.exe\")",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(winget upgrade:*)"
     ]
   }
 }
