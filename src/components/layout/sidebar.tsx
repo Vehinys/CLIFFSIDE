@@ -15,15 +15,16 @@ interface SidebarProps {
 }
 
 const NAV = [
-  { href: "/dashboard",       label: "Dashboard",  icon: "⊞",  resource: "dashboard" },
-  { href: "/inventory",       label: "Inventaire", icon: "📦", resource: "inventory" },
-  { href: "/inventory/logs",  label: "Journal",    icon: "📋", resource: "inventory", indent: true },
-  { href: "/treasury",        label: "Trésorerie", icon: "💰", resource: "treasury" },
-  { href: "/treasury/logs",   label: "Journal",    icon: "📋", resource: "treasury",  indent: true },
-  { href: "/members",         label: "Membres",    icon: "👥", resource: "members" },
-  { href: "/members/logs",    label: "Journal",    icon: "📋", resource: "members",   indent: true },
-  { href: "/roles",           label: "Rôles",      icon: "🔑", resource: "roles" },
-  { href: "/roles/logs",      label: "Journal",    icon: "📋", resource: "roles",     indent: true },
+  { href: "/dashboard",                          label: "Dashboard",      icon: "⊞",  resource: "dashboard" },
+  { href: "/secretariat",                        label: "Secrétariat",    icon: "🗂️", resource: "secretariat" },
+  { href: "/secretariat/announcements",          label: "Annonces",       icon: "📢", resource: "secretariat", indent: true },
+  { href: "/secretariat/reports",                label: "Comptes-rendus", icon: "📄", resource: "secretariat", indent: true },
+  { href: "/secretariat/notes",                  label: "Notes",          icon: "📝", resource: "secretariat", indent: true },
+  { href: "/secretariat/tasks",                  label: "Tâches",         icon: "✅", resource: "secretariat", indent: true },
+  { href: "/inventory",                          label: "Inventaire",     icon: "📦", resource: "inventory" },
+  { href: "/treasury",                           label: "Trésorerie",     icon: "💰", resource: "treasury" },
+  { href: "/members",                            label: "Membres",        icon: "👥", resource: "members" },
+  { href: "/roles",                              label: "Rôles",          icon: "🔑", resource: "roles" },
 ];
 
 export function Sidebar({ userName, roleName, permissions }: SidebarProps) {

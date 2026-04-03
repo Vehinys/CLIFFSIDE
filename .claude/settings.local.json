@@ -18,7 +18,10 @@
       "Bash(NEXT_PRIVATE_DISABLE_TURBOPACK=1 npx next build)",
       "WebSearch",
       "Bash(psql -h pg.neon.tech)",
-      "Bash(openssl rand:*)"
+      "Bash(openssl rand:*)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(cmd //c \"taskkill /F /IM node.exe\")",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }

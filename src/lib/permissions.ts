@@ -20,6 +20,8 @@ export function canDo(
  */
 export const RESOURCES = [
   "dashboard",
+  "objectives",
+  "secretariat",
   "members",
   "inventory",
   "treasury",
@@ -32,11 +34,13 @@ export type Resource = (typeof RESOURCES)[number];
 export type Action = (typeof ACTIONS)[number];
 
 export const RESOURCE_LABELS: Record<Resource, string> = {
-  dashboard: "Dashboard",
-  members: "Membres",
-  inventory: "Inventaire",
-  treasury: "Trésorerie",
-  roles: "Rôles & Permissions",
+  dashboard:   "Dashboard",
+  objectives:  "Objectifs du jour",
+  secretariat: "Secrétariat",
+  members:     "Membres",
+  inventory:   "Inventaire",
+  treasury:    "Trésorerie",
+  roles:       "Rôles & Permissions",
 };
 
 export const ACTION_LABELS: Record<Action, string> = {

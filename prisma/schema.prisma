@@ -77,6 +77,7 @@ model Role {
 }
 
 // resource: "members" | "inventory" | "treasury" | "roles" | "dashboard"
+//           "objectives" | "secretariat"
 // action:   "read"   | "create"    | "update"   | "delete"
 model Permission {
   id       String @id @default(cuid())
@@ -144,6 +145,108 @@ enum TransactionType {
   INCOME
   EXPENSE
 }
+
+// ─────────────────────────────────────────────
+// PRÉSENCE QUOTIDIENNE & OBJECTIFS
+// ─────────────────────────────────────────────
+
+model DailySession {
+  id          String            @id @default(cuid())
+  date        DateTime          @unique // minuit heure serveur
+  attendances DailyAttendance[]
+  objectives  DailyObjective[]
+  createdAt   DateTime          @default(now())
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+}
+
+model DailyAttendance {
+  id        String           @id @default(cuid())
+  sessionId String
+  session   DailySession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId    String
+  userName  String?
+  status    AttendanceStatus
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@unique([sessionId, userId])
+  @@index([sessionId])
+}
+
+model DailyObjective {
+  id            String       @id @default(cuid())
+  sessionId     String
+  session       DailySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  content       String
+  done          Boolean      @default(false)
+  createdById   String
+  createdByName String?
+  createdAt     DateTime     @default(now())
+
+  @@index([sessionId])
+}
+
+// ─────────────────────────────────────────────
+// SECRÉTARIAT
+// ─────────────────────────────────────────────
+
+model Announcement {
+  id            String   @id @default(cuid())
+  title         String
+  content       String
+  createdById   String
+  createdByName String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model MeetingReport {
+  id            String   @id @default(cuid())
+  title         String
+  content       String
+  meetingDate   DateTime
+  createdById   String
+  createdByName String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model SharedNote {
+  id            String   @id @default(cuid())
+  title         String
+  content       String
+  createdById   String
+  createdByName String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+model SecretariatTask {
+  id             String     @id @default(cuid())
+  title          String
+  description    String?
+  assignedToId   String?
+  assignedToName String?
+  status         TaskStatus @default(TODO)
+  createdById    String
+  createdByName  String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// TRÉSORERIE
+// ─────────────────────────────────────────────
 
 model TreasuryTransaction {
   id          String          @id @default(cuid())

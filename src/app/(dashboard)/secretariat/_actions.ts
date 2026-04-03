@@ -1,0 +1,158 @@
+"use server";
+
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { canDo } from "@/lib/permissions";
+import { audit } from "@/lib/audit";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+
+async function requirePermission(action: "create" | "update" | "delete" | "read") {
+  const session = await auth();
+  if (!session?.user) redirect("/login");
+  if (!canDo(session.user.permissions, "secretariat", action)) throw new Error("Permission refusée");
+  return session;
+}
+
+// ─── Annonces ────────────────────────────────────────────────────────────────
+
+const announcementSchema = z.object({
+  title: z.string().min(1, "Titre requis"),
+  content: z.string().min(1, "Contenu requis"),
+});
+
+export async function createAnnouncement(formData: FormData) {
+  const session = await requirePermission("create");
+  const data = announcementSchema.parse(Object.fromEntries(formData));
+  await prisma.announcement.create({
+    data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
+  });
+  await audit("secretariat", "ANNOUNCE_CREATE", data.title, session.user.id, session.user.name);
+  revalidatePath("/secretariat/announcements");
+  redirect("/secretariat/announcements");
+}
+
+export async function deleteAnnouncement(id: string) {
+  const session = await requirePermission("delete");
+  const item = await prisma.announcement.findUnique({ where: { id }, select: { title: true } });
+  await prisma.announcement.delete({ where: { id } });
+  await audit("secretariat", "ANNOUNCE_DELETE", item?.title ?? id, session.user.id, session.user.name);
+  revalidatePath("/secretariat/announcements");
+}
+
+// ─── Comptes-rendus ───────────────────────────────────────────────────────────
+
+const reportSchema = z.object({
+  title: z.string().min(1, "Titre requis"),
+  content: z.string().min(1, "Contenu requis"),
+  meetingDate: z.string().min(1, "Date requise").transform((v) => new Date(v)),
+});
+
+export async function createReport(formData: FormData) {
+  const session = await requirePermission("create");
+  const data = reportSchema.parse(Object.fromEntries(formData));
+  await prisma.meetingReport.create({
+    data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
+  });
+  await audit("secretariat", "REPORT_CREATE", data.title, session.user.id, session.user.name);
+  revalidatePath("/secretariat/reports");
+  redirect("/secretariat/reports");
+}
+
+export async function deleteReport(id: string) {
+  const session = await requirePermission("delete");
+  const item = await prisma.meetingReport.findUnique({ where: { id }, select: { title: true } });
+  await prisma.meetingReport.delete({ where: { id } });
+  await audit("secretariat", "REPORT_DELETE", item?.title ?? id, session.user.id, session.user.name);
+  revalidatePath("/secretariat/reports");
+}
+
+// ─── Notes partagées ──────────────────────────────────────────────────────────
+
+const noteSchema = z.object({
+  title: z.string().min(1, "Titre requis"),
+  content: z.string().min(1, "Contenu requis"),
+});
+
+export async function createNote(formData: FormData) {
+  const session = await requirePermission("create");
+  const data = noteSchema.parse(Object.fromEntries(formData));
+  await prisma.sharedNote.create({
+    data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
+  });
+  await audit("secretariat", "NOTE_CREATE", data.title, session.user.id, session.user.name);
+  revalidatePath("/secretariat/notes");
+  redirect("/secretariat/notes");
+}
+
+export async function updateNote(id: string, formData: FormData) {
+  const session = await requirePermission("update");
+  const data = noteSchema.parse(Object.fromEntries(formData));
+  await prisma.sharedNote.update({ where: { id }, data });
+  await audit("secretariat", "NOTE_UPDATE", data.title, session.user.id, session.user.name);
+  revalidatePath("/secretariat/notes");
+  redirect("/secretariat/notes");
+}
+
+export async function deleteNote(id: string) {
+  const session = await requirePermission("delete");
+  const item = await prisma.sharedNote.findUnique({ where: { id }, select: { title: true } });
+  await prisma.sharedNote.delete({ where: { id } });
+  await audit("secretariat", "NOTE_DELETE", item?.title ?? id, session.user.id, session.user.name);
+  revalidatePath("/secretariat/notes");
+}
+
+// ─── Tâches ───────────────────────────────────────────────────────────────────
+
+const taskSchema = z.object({
+  title: z.string().min(1, "Titre requis"),
+  description: z.string().optional().transform((v) => v || null),
+  assignedToId: z.string().optional().transform((v) => v || null),
+  status: z.enum(["TODO", "IN_PROGRESS", "DONE"]).default("TODO"),
+});
+
+export async function createTask(formData: FormData) {
+  const session = await requirePermission("create");
+  const data = taskSchema.parse(Object.fromEntries(formData));
+  const assignedUser = data.assignedToId
+    ? await prisma.user.findUnique({ where: { id: data.assignedToId }, select: { name: true, email: true } })
+    : null;
+  const assignedToName = assignedUser ? (assignedUser.name ?? assignedUser.email) : null;
+  await prisma.secretariatTask.create({
+    data: { ...data, assignedToName, createdById: session.user.id, createdByName: session.user.name ?? null },
+  });
+  await audit("secretariat", "TASK_CREATE", data.title, session.user.id, session.user.name,
+    assignedToName ? `Assigné à ${assignedToName}` : undefined);
+  revalidatePath("/secretariat/tasks");
+  redirect("/secretariat/tasks");
+}
+
+export async function updateTask(id: string, formData: FormData) {
+  const session = await requirePermission("update");
+  const data = taskSchema.parse(Object.fromEntries(formData));
+  const assignedUser = data.assignedToId
+    ? await prisma.user.findUnique({ where: { id: data.assignedToId }, select: { name: true, email: true } })
+    : null;
+  const assignedToName = assignedUser ? (assignedUser.name ?? assignedUser.email) : null;
+  await prisma.secretariatTask.update({ where: { id }, data: { ...data, assignedToName } });
+  await audit("secretariat", "TASK_UPDATE", data.title, session.user.id, session.user.name, `Statut: ${data.status}`);
+  revalidatePath("/secretariat/tasks");
+  redirect("/secretariat/tasks");
+}
+
+export async function updateTaskStatus(id: string, status: "TODO" | "IN_PROGRESS" | "DONE") {
+  const session = await requirePermission("update");
+  const task = await prisma.secretariatTask.findUnique({ where: { id }, select: { title: true } });
+  await prisma.secretariatTask.update({ where: { id }, data: { status } });
+  await audit("secretariat", "TASK_UPDATE", task?.title ?? id, session.user.id, session.user.name, `Statut → ${status}`);
+  revalidatePath("/secretariat/tasks");
+}
+
+export async function deleteTask(id: string) {
+  const session = await requirePermission("delete");
+  const item = await prisma.secretariatTask.findUnique({ where: { id }, select: { title: true } });
+  await prisma.secretariatTask.delete({ where: { id } });
+  await audit("secretariat", "TASK_DELETE", item?.title ?? id, session.user.id, session.user.name);
+  revalidatePath("/secretariat/tasks");
+}

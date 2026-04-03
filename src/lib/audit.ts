@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 
 export async function audit(
-  section: "inventory" | "treasury" | "members" | "roles",
+  section: "inventory" | "treasury" | "members" | "roles" | "objectives" | "secretariat",
   action: string,
   targetName: string,
   userId: string,

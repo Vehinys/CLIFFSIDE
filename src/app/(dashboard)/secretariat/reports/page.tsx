@@ -1,0 +1,66 @@
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { canDo } from "@/lib/permissions";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { deleteReport } from "../_actions";
+
+export default async function ReportsPage() {
+  const session = await auth();
+  if (!session?.user) redirect("/login");
+  if (!canDo(session.user.permissions, "secretariat", "read")) redirect("/dashboard");
+
+  const canWrite = canDo(session.user.permissions, "secretariat", "create");
+  const canDelete = canDo(session.user.permissions, "secretariat", "delete");
+
+  const reports = await prisma.meetingReport.findMany({ orderBy: { meetingDate: "desc" } });
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Link href="/secretariat" className="text-muted hover:text-text text-sm">← Secrétariat</Link>
+          <span className="text-border">/</span>
+          <h1 className="text-xl font-bold text-text">Comptes-rendus</h1>
+        </div>
+        {canWrite && (
+          <Link href="/secretariat/reports/new">
+            <Button>+ Nouveau compte-rendu</Button>
+          </Link>
+        )}
+      </div>
+
+      {reports.length === 0 ? (
+        <Card className="py-12 text-center">
+          <p className="text-muted">Aucun compte-rendu pour le moment.</p>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {reports.map((r) => (
+            <Card key={r.id}>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3">
+                    <h2 className="font-semibold text-text">{r.title}</h2>
+                    <span className="text-xs text-muted border border-border rounded px-2 py-0.5">
+                      {new Date(r.meetingDate).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted mt-0.5">Rédigé par {r.createdByName ?? "—"}</p>
+                  <p className="text-sm text-text/80 mt-3 whitespace-pre-wrap">{r.content}</p>
+                </div>
+                {canDelete && (
+                  <form action={deleteReport.bind(null, r.id)} className="flex-shrink-0">
+                    <button type="submit" className="text-xs text-muted hover:text-danger transition-colors">Supprimer</button>
+                  </form>
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
