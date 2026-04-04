@@ -120,10 +120,14 @@ model InventoryItem {
 // JOURNAL D'AUDIT (toutes sections)
 // ─────────────────────────────────────────────
 
-// section : inventory | treasury | members | roles
+// section : inventory | treasury | members | roles | secretariat
 // action  : CREATE | UPDATE | DELETE | QTY_ADD | QTY_SUB
 //           CATEGORY_CREATE | CATEGORY_UPDATE | CATEGORY_DELETE
 //           ROLE_UPDATE
+//           ANNOUNCE_CREATE | ANNOUNCE_DELETE
+//           REPORT_CREATE | REPORT_DELETE
+//           NOTE_CREATE | NOTE_UPDATE | NOTE_DELETE
+//           TASK_CREATE | TASK_UPDATE | TASK_DELETE
 model AuditLog {
   id         String   @id @default(cuid())
   section    String

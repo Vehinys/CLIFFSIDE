@@ -5,12 +5,11 @@ import { prisma } from "@/lib/prisma";
 import { canDo } from "@/lib/permissions";
 import { audit } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 async function requirePermission(action: "create" | "update" | "delete" | "read") {
   const session = await auth();
-  if (!session?.user) {
-    throw new Error("Non authentifié");
-  }
+  if (!session?.user) redirect("/login");
   if (!canDo(session.user.permissions, "members", action)) {
     throw new Error("Permission refusée");
   }
@@ -19,9 +18,27 @@ async function requirePermission(action: "create" | "update" | "delete" | "read"
 
 export async function deleteUserAccount(userId: string) {
   const session = await requirePermission("delete");
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });
+
+  if (userId === session.user.id) {
+    throw new Error("Impossible de supprimer son propre compte");
+  }
+
+  const userToDelete = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { name: true, email: true, role: { select: { isSystem: true } } },
+  });
+
+  if (userToDelete?.role?.isSystem) {
+    const systemAdminCount = await prisma.user.count({
+      where: { role: { isSystem: true } },
+    });
+    if (systemAdminCount <= 1) {
+      throw new Error("Impossible de supprimer le dernier administrateur système");
+    }
+  }
+
   await prisma.user.delete({ where: { id: userId } });
-  await audit("members", "DELETE", user?.name ?? user?.email ?? userId, session.user.id, session.user.name);
+  await audit("members", "DELETE", userToDelete?.name ?? userToDelete?.email ?? userId, session.user.id, session.user.name);
   revalidatePath("/members");
 }
 

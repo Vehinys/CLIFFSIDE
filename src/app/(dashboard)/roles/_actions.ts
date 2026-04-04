@@ -36,7 +36,7 @@ export async function createRole(formData: FormData) {
   await prisma.role.create({
     data: {
       ...data,
-      description: data.description || null,
+      description: data.description ?? null,
       permissions: { create: permissions },
     },
   });
@@ -65,7 +65,7 @@ export async function updateRole(id: string, formData: FormData) {
     where: { id },
     data: {
       ...data,
-      description: data.description || null,
+      description: data.description ?? null,
       permissions: {
         deleteMany: {},
         create: permissions,

@@ -104,7 +104,13 @@ export async function updateCategory(id: string, formData: FormData) {
 
 export async function deleteCategory(id: string) {
   const session = await requirePermission("delete");
-  const cat = await prisma.inventoryCategory.findUnique({ where: { id }, select: { name: true } });
+  const cat = await prisma.inventoryCategory.findUnique({
+    where: { id },
+    select: { name: true, _count: { select: { items: true } } },
+  });
+  if (cat?._count.items && cat._count.items > 0) {
+    throw new Error(`Impossible de supprimer une catégorie contenant des articles (${cat._count.items} article(s)). Supprimez d'abord les articles.`);
+  }
   await prisma.inventoryCategory.delete({ where: { id } });
   await audit("inventory", "CATEGORY_DELETE", `[Catégorie] ${cat?.name ?? id}`, session.user.id, session.user.name);
   revalidatePath("/inventory");

@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 const registerSchema = z.object({
   email: z.string().email("Email invalide"),
   name: z.string().min(1, "Pseudo/Nom requis"),
-  password: z.string().min(6, "Le mot de passe doit faire au moins 6 caractères"),
+  password: z.string().min(8, "Le mot de passe doit faire au moins 8 caractères"),
 });
 
 export async function registerAction(_prevState: { error: string } | undefined, formData: FormData) {

@@ -22,7 +22,14 @@
       "Bash(taskkill /F /IM node.exe)",
       "Bash(cmd //c \"taskkill /F /IM node.exe\")",
       "Bash(echo \"exit: $?\")",
-      "Bash(winget upgrade:*)"
+      "Bash(winget upgrade:*)",
+      "Bash(npm outdated:*)",
+      "Bash(cp:*)",
+      "Bash(rm:*)",
+      "Bash(npx vitest:*)",
+      "Bash(node -e \"const r = require; console.log\\(process.version\\)\")",
+      "Bash(node -e ':*)",
+      "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\('next:',p.dependencies.next\\);console.log\\('prisma:',p.devDependencies?.prisma||p.dependencies?.prisma\\)\")"
     ]
   }
 }

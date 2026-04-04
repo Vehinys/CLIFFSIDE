@@ -1,5 +1,13 @@
-import { auth } from "@/lib/auth";
+/**
+ * Edge-compatible proxy (Next.js 16 convention, anciennement "middleware").
+ * N'importe PAS depuis src/lib/auth.ts (qui charge Prisma / Node.js built-ins).
+ * Utilise auth.config.ts — safe pour l'Edge Runtime.
+ */
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 import { NextResponse } from "next/server";
+
+const { auth } = NextAuth(authConfig);
 
 const PUBLIC_PATHS = ["/login", "/register"];
 
