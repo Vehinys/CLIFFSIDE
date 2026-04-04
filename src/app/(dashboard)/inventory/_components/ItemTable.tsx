@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
-import { adjustQuantity, deleteItem } from "../_actions";
+import { deleteItem } from "../_actions";
+import { QuantityControl } from "./QuantityControl";
 import type { InventoryItem } from "@/generated/prisma/client";
 
 interface Props {
@@ -62,27 +63,7 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
                 <td className="py-2.5 font-medium text-text">{item.name}</td>
                 <td className="py-2.5">
                   {canEdit ? (
-                    <div className="flex items-center gap-1">
-                      <form action={adjustQuantity.bind(null, item.id, -1)}>
-                        <button
-                          type="submit"
-                          className="w-6 h-6 rounded text-xs text-muted hover:text-text hover:bg-surface border border-border/50 leading-none"
-                          aria-label="Retirer 1"
-                        >
-                          −
-                        </button>
-                      </form>
-                      <span className="font-mono text-text w-8 text-center tabular-nums">{item.quantity}</span>
-                      <form action={adjustQuantity.bind(null, item.id, 1)}>
-                        <button
-                          type="submit"
-                          className="w-6 h-6 rounded text-xs text-muted hover:text-text hover:bg-surface border border-border/50 leading-none"
-                          aria-label="Ajouter 1"
-                        >
-                          +
-                        </button>
-                      </form>
-                    </div>
+                    <QuantityControl itemId={item.id} quantity={item.quantity} />
                   ) : (
                     <span className="font-mono text-text">{item.quantity}</span>
                   )}

@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { adjustQuantity } from "../_actions";
 
 interface Props {
@@ -19,6 +20,23 @@ export function QuantityControl({ itemId, quantity }: Props) {
   );
 
   const error = stateSub?.error ?? stateAdd?.error;
+
+  const wasPendingSub = useRef(false);
+  const wasPendingAdd = useRef(false);
+
+  useEffect(() => {
+    if (wasPendingSub.current && !pendingSub && stateSub === null) {
+      toast.success("Quantité mise à jour");
+    }
+    wasPendingSub.current = pendingSub;
+  }, [pendingSub, stateSub]);
+
+  useEffect(() => {
+    if (wasPendingAdd.current && !pendingAdd && stateAdd === null) {
+      toast.success("Quantité mise à jour");
+    }
+    wasPendingAdd.current = pendingAdd;
+  }, [pendingAdd, stateAdd]);
 
   return (
     <div className="flex items-center gap-1">
