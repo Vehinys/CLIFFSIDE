@@ -77,11 +77,21 @@ export async function updateRole(id: string, formData: FormData) {
   redirect("/roles");
 }
 
-export async function deleteRole(id: string) {
-  const session = await requirePermission("delete");
-  const role = await prisma.role.findUnique({ where: { id } });
-  if (role?.isSystem) throw new Error("Impossible de supprimer un rôle système");
-  await prisma.role.delete({ where: { id } });
-  await audit("roles", "DELETE", role?.name ?? id, session.user.id, session.user.name);
-  revalidatePath("/roles");
+export async function deleteRole(
+  id: string,
+  _prevState: { error: string } | null,
+  _formData: FormData
+): Promise<{ error: string } | null> {
+  try {
+    const session = await requirePermission("delete");
+    const role = await prisma.role.findUnique({ where: { id } });
+    if (role?.isSystem) return { error: "Impossible de supprimer un rôle système" };
+    await prisma.role.delete({ where: { id } });
+    await audit("roles", "DELETE", role?.name ?? id, session.user.id, session.user.name);
+    revalidatePath("/roles");
+    return null;
+  } catch (e: unknown) {
+    if (e && typeof e === "object" && "digest" in e) throw e;
+    return { error: e instanceof Error ? e.message : "Erreur lors de la suppression" };
+  }
 }

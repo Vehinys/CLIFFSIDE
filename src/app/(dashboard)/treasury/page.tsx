@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatMoney, formatDate } from "@/lib/utils";
 import { deleteTransaction } from "./_actions";
+import { ConfirmDelete } from "@/components/ui/confirm-delete";
 
 export default async function TreasuryPage() {
   const session = await auth();
@@ -97,9 +98,10 @@ export default async function TreasuryPage() {
                             <Link href={`/treasury/${t.id}/edit`} className="text-xs text-muted hover:text-text">Modifier</Link>
                           )}
                           {canDelete && (
-                            <form action={deleteTransaction.bind(null, t.id)}>
-                              <button type="submit" className="text-xs text-danger hover:text-red-400">Supprimer</button>
-                            </form>
+                            <ConfirmDelete
+                              action={deleteTransaction.bind(null, t.id)}
+                              confirmMessage={`Supprimer "${t.description}" ?`}
+                            />
                           )}
                         </div>
                       </td>

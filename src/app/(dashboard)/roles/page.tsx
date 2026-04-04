@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { deleteRole } from "./_actions";
+import { ConfirmDelete } from "@/components/ui/confirm-delete";
 
 export default async function RolesPage() {
   const session = await auth();
@@ -60,9 +61,10 @@ export default async function RolesPage() {
                     <div className="flex items-center justify-end gap-3">
                       {canEdit && <Link href={`/roles/${r.id}`} className="text-xs text-muted hover:text-text">Modifier</Link>}
                       {canDelete && !r.isSystem && (
-                        <form action={deleteRole.bind(null, r.id)}>
-                          <button type="submit" className="text-xs text-danger hover:text-red-400">Supprimer</button>
-                        </form>
+                        <ConfirmDelete
+                          action={deleteRole.bind(null, r.id)}
+                          confirmMessage={`Supprimer le rôle "${r.name}" ?`}
+                        />
                       )}
                     </div>
                   </td>

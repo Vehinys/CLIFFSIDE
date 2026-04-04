@@ -74,12 +74,22 @@ export async function adjustQuantity(id: string, delta: number) {
   revalidatePath("/inventory");
 }
 
-export async function deleteItem(id: string) {
-  const session = await requirePermission("delete");
-  const item = await prisma.inventoryItem.findUnique({ where: { id }, select: { name: true } });
-  await prisma.inventoryItem.delete({ where: { id } });
-  await audit("inventory", "DELETE", item?.name ?? id, session.user.id, session.user.name);
-  revalidatePath("/inventory");
+export async function deleteItem(
+  id: string,
+  _prevState: { error: string } | null,
+  _formData: FormData
+): Promise<{ error: string } | null> {
+  try {
+    const session = await requirePermission("delete");
+    const item = await prisma.inventoryItem.findUnique({ where: { id }, select: { name: true } });
+    await prisma.inventoryItem.delete({ where: { id } });
+    await audit("inventory", "DELETE", item?.name ?? id, session.user.id, session.user.name);
+    revalidatePath("/inventory");
+    return null;
+  } catch (e: unknown) {
+    if (e && typeof e === "object" && "digest" in e) throw e;
+    return { error: e instanceof Error ? e.message : "Erreur lors de la suppression" };
+  }
 }
 
 // ─── Catégories ──────────────────────────────────────────────────────────────
@@ -102,16 +112,26 @@ export async function updateCategory(id: string, formData: FormData) {
   redirect("/inventory");
 }
 
-export async function deleteCategory(id: string) {
-  const session = await requirePermission("delete");
-  const cat = await prisma.inventoryCategory.findUnique({
-    where: { id },
-    select: { name: true, _count: { select: { items: true } } },
-  });
-  if (cat?._count.items && cat._count.items > 0) {
-    throw new Error(`Impossible de supprimer une catégorie contenant des articles (${cat._count.items} article(s)). Supprimez d'abord les articles.`);
+export async function deleteCategory(
+  id: string,
+  _prevState: { error: string } | null,
+  _formData: FormData
+): Promise<{ error: string } | null> {
+  try {
+    const session = await requirePermission("delete");
+    const cat = await prisma.inventoryCategory.findUnique({
+      where: { id },
+      select: { name: true, _count: { select: { items: true } } },
+    });
+    if (cat?._count.items && cat._count.items > 0) {
+      return { error: `Catégorie non vide (${cat._count.items} article(s)). Supprimez d'abord les articles.` };
+    }
+    await prisma.inventoryCategory.delete({ where: { id } });
+    await audit("inventory", "CATEGORY_DELETE", `[Catégorie] ${cat?.name ?? id}`, session.user.id, session.user.name);
+    revalidatePath("/inventory");
+    return null;
+  } catch (e: unknown) {
+    if (e && typeof e === "object" && "digest" in e) throw e;
+    return { error: e instanceof Error ? e.message : "Erreur lors de la suppression" };
   }
-  await prisma.inventoryCategory.delete({ where: { id } });
-  await audit("inventory", "CATEGORY_DELETE", `[Catégorie] ${cat?.name ?? id}`, session.user.id, session.user.name);
-  revalidatePath("/inventory");
 }

@@ -16,30 +16,40 @@ async function requirePermission(action: "create" | "update" | "delete" | "read"
   return session;
 }
 
-export async function deleteUserAccount(userId: string) {
-  const session = await requirePermission("delete");
+export async function deleteUserAccount(
+  userId: string,
+  _prevState: { error: string } | null,
+  _formData: FormData
+): Promise<{ error: string } | null> {
+  try {
+    const session = await requirePermission("delete");
 
-  if (userId === session.user.id) {
-    throw new Error("Impossible de supprimer son propre compte");
-  }
-
-  const userToDelete = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { name: true, email: true, role: { select: { isSystem: true } } },
-  });
-
-  if (userToDelete?.role?.isSystem) {
-    const systemAdminCount = await prisma.user.count({
-      where: { role: { isSystem: true } },
-    });
-    if (systemAdminCount <= 1) {
-      throw new Error("Impossible de supprimer le dernier administrateur système");
+    if (userId === session.user.id) {
+      return { error: "Impossible de supprimer son propre compte" };
     }
-  }
 
-  await prisma.user.delete({ where: { id: userId } });
-  await audit("members", "DELETE", userToDelete?.name ?? userToDelete?.email ?? userId, session.user.id, session.user.name);
-  revalidatePath("/members");
+    const userToDelete = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, email: true, role: { select: { isSystem: true } } },
+    });
+
+    if (userToDelete?.role?.isSystem) {
+      const systemAdminCount = await prisma.user.count({
+        where: { role: { isSystem: true } },
+      });
+      if (systemAdminCount <= 1) {
+        return { error: "Impossible de supprimer le dernier administrateur système" };
+      }
+    }
+
+    await prisma.user.delete({ where: { id: userId } });
+    await audit("members", "DELETE", userToDelete?.name ?? userToDelete?.email ?? userId, session.user.id, session.user.name);
+    revalidatePath("/members");
+    return null;
+  } catch (e: unknown) {
+    if (e && typeof e === "object" && "digest" in e) throw e;
+    return { error: e instanceof Error ? e.message : "Erreur lors de la suppression" };
+  }
 }
 
 export async function updateUserRole(userId: string, formData: FormData) {

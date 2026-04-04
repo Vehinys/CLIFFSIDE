@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/select";
 import { formatDate } from "@/lib/utils";
 import { deleteUserAccount, updateUserRole } from "./_actions";
+import { ConfirmDelete } from "@/components/ui/confirm-delete";
 
 export default async function MembersPage() {
   const session = await auth();
@@ -78,9 +79,11 @@ export default async function MembersPage() {
                         <td className="py-3 text-right">
                           <div className="flex items-center justify-end gap-3">
                             {canDelete && (
-                              <form action={deleteUserAccount.bind(null, u.id)}>
-                                <button type="submit" className="text-xs text-danger hover:text-red-400">Retirer ce compte</button>
-                              </form>
+                              <ConfirmDelete
+                                action={deleteUserAccount.bind(null, u.id)}
+                                label="Retirer ce compte"
+                                confirmMessage={`Retirer le compte de "${u.name ?? u.email}" ? Cette action est irréversible.`}
+                              />
                             )}
                           </div>
                         </td>

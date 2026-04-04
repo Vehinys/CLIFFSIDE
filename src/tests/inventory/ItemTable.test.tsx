@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { ItemTable } from "@/app/(dashboard)/inventory/_components/ItemTable";
-import type { InventoryItem } from "@/generated/prisma";
+import type { InventoryItem } from "@/generated/prisma/client";
 
 vi.mock("next/link", () => ({
   default: ({

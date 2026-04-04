@@ -55,17 +55,27 @@ export async function updateTransaction(id: string, formData: FormData) {
   redirect("/treasury");
 }
 
-export async function deleteTransaction(id: string) {
-  const session = await requirePermission("delete");
-  const tx = await prisma.treasuryTransaction.findUnique({ where: { id }, select: { description: true, amount: true, type: true } });
-  await prisma.treasuryTransaction.delete({ where: { id } });
-  await audit(
-    "treasury",
-    "DELETE",
-    tx?.description ?? id,
-    session.user.id,
-    session.user.name,
-    tx ? `${tx.type === "INCOME" ? "+" : "-"}${tx.amount}$` : undefined
-  );
-  revalidatePath("/treasury");
+export async function deleteTransaction(
+  id: string,
+  _prevState: { error: string } | null,
+  _formData: FormData
+): Promise<{ error: string } | null> {
+  try {
+    const session = await requirePermission("delete");
+    const tx = await prisma.treasuryTransaction.findUnique({ where: { id }, select: { description: true, amount: true, type: true } });
+    await prisma.treasuryTransaction.delete({ where: { id } });
+    await audit(
+      "treasury",
+      "DELETE",
+      tx?.description ?? id,
+      session.user.id,
+      session.user.name,
+      tx ? `${tx.type === "INCOME" ? "+" : "-"}${tx.amount}$` : undefined
+    );
+    revalidatePath("/treasury");
+    return null;
+  } catch (e: unknown) {
+    if (e && typeof e === "object" && "digest" in e) throw e;
+    return { error: e instanceof Error ? e.message : "Erreur lors de la suppression" };
+  }
 }

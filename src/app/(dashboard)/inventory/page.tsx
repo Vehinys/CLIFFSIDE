@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { deleteCategory } from "./_actions";
 import { ItemTable } from "./_components/ItemTable";
+import { ConfirmDelete } from "@/components/ui/confirm-delete";
 
 export default async function InventoryPage() {
   const session = await auth();
@@ -80,11 +81,10 @@ export default async function InventoryPage() {
                       </Link>
                     )}
                     {canDelete && (
-                      <form action={deleteCategory.bind(null, group.id)}>
-                        <button type="submit" className="text-xs text-danger hover:text-red-400" title="Attention: supprime la catégorie si vide">
-                          Supprimer
-                        </button>
-                      </form>
+                      <ConfirmDelete
+                        action={deleteCategory.bind(null, group.id)}
+                        confirmMessage={`Supprimer la catégorie "${group.name}" ?`}
+                      />
                     )}
                   </div>
                 )}

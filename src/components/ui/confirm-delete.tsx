@@ -1,0 +1,47 @@
+"use client";
+
+import { useActionState } from "react";
+
+type DeleteAction = (
+  prevState: { error: string } | null,
+  formData: FormData
+) => Promise<{ error: string } | null>;
+
+interface Props {
+  action: DeleteAction;
+  label?: string;
+  confirmMessage?: string;
+  className?: string;
+}
+
+export function ConfirmDelete({
+  action,
+  label = "Supprimer",
+  confirmMessage = "Confirmer la suppression ?",
+  className,
+}: Props) {
+  const [state, formAction, isPending] = useActionState(action, null);
+
+  return (
+    <form action={formAction} className="inline">
+      <button
+        type="submit"
+        disabled={isPending}
+        onClick={(e) => {
+          if (!window.confirm(confirmMessage)) e.preventDefault();
+        }}
+        className={
+          className ??
+          "text-xs text-danger hover:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed"
+        }
+      >
+        {isPending ? "…" : label}
+      </button>
+      {state?.error && (
+        <p role="alert" className="text-xs text-danger mt-1 max-w-xs">
+          {state.error}
+        </p>
+      )}
+    </form>
+  );
+}

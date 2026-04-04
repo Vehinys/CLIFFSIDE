@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { adjustQuantity, deleteItem } from "../_actions";
-import type { InventoryItem } from "@/generated/prisma";
+import type { InventoryItem } from "@/generated/prisma/client";
 
 interface Props {
   items: InventoryItem[];
@@ -108,11 +109,10 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
                         </Link>
                       )}
                       {canDelete && (
-                        <form action={deleteItem.bind(null, item.id)}>
-                          <button type="submit" className="text-xs text-danger hover:text-red-400">
-                            Supprimer
-                          </button>
-                        </form>
+                        <ConfirmDelete
+                          action={deleteItem.bind(null, item.id)}
+                          confirmMessage={`Supprimer "${item.name}" ?`}
+                        />
                       )}
                     </div>
                   </td>
