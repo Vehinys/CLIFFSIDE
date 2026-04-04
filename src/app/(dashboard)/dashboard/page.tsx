@@ -70,7 +70,7 @@ export default async function DashboardPage() {
         ? prisma.treasuryTransaction.findMany({ orderBy: { createdAt: "desc" }, take: 5 }) as Promise<Transaction[]>
         : Promise.resolve([] as Transaction[]),
       canReadTreasury
-        ? prisma.treasuryTransaction.groupBy({ by: ["type"], _sum: { amount: true } }) as Promise<BalanceSummary>
+        ? prisma.treasuryTransaction.groupBy({ by: ["type"], _sum: { amount: true } }).then((r) => r as BalanceSummary)
         : Promise.resolve([] as BalanceSummary),
     ]);
 
