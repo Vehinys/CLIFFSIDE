@@ -31,7 +31,9 @@ export default async function DashboardPage() {
   const perms = session.user.permissions ?? [];
 
   const now = new Date();
-  const showAttendance = now.getHours() >= 6;
+  // Vercel tourne en UTC. On convertit en heure Europe/Paris pour la comparaison.
+  const hourParis = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Paris" })).getHours();
+  const showAttendance = hourParis >= 6;
   const today = todayMidnight();
   const tomorrow = tomorrowMidnight();
 

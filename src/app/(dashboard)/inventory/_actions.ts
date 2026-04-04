@@ -57,21 +57,32 @@ export async function updateItem(id: string, formData: FormData) {
   redirect("/inventory");
 }
 
-export async function adjustQuantity(id: string, delta: number) {
-  const session = await requirePermission("update");
-  const item = await prisma.inventoryItem.findUnique({ where: { id } });
-  if (!item) throw new Error("Article introuvable");
-  const newQty = Math.max(0, item.quantity + delta);
-  await prisma.inventoryItem.update({ where: { id }, data: { quantity: newQty } });
-  await audit(
-    "inventory",
-    delta > 0 ? "QTY_ADD" : "QTY_SUB",
-    item.name,
-    session.user.id,
-    session.user.name,
-    `Qté: ${item.quantity} → ${newQty} (${delta > 0 ? "+" : ""}${delta})`
-  );
-  revalidatePath("/inventory");
+export async function adjustQuantity(
+  id: string,
+  delta: number,
+  _prevState: { error: string } | null,
+  _formData: FormData
+): Promise<{ error: string } | null> {
+  try {
+    const session = await requirePermission("update");
+    const item = await prisma.inventoryItem.findUnique({ where: { id } });
+    if (!item) return { error: "Article introuvable" };
+    const newQty = Math.max(0, item.quantity + delta);
+    await prisma.inventoryItem.update({ where: { id }, data: { quantity: newQty } });
+    await audit(
+      "inventory",
+      delta > 0 ? "QTY_ADD" : "QTY_SUB",
+      item.name,
+      session.user.id,
+      session.user.name,
+      `Qté: ${item.quantity} → ${newQty} (${delta > 0 ? "+" : ""}${delta})`
+    );
+    revalidatePath("/inventory");
+    return null;
+  } catch (e: unknown) {
+    if (e && typeof e === "object" && "digest" in e) throw e;
+    return { error: e instanceof Error ? e.message : "Erreur lors de l'ajustement" };
+  }
 }
 
 export async function deleteItem(
