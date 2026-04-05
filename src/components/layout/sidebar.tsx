@@ -109,6 +109,15 @@ function IconInventory() {
   );
 }
 
+function IconPerishable() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <path d="M8 2a4 4 0 014 4c0 3-4 8-4 8S4 9 4 6a4 4 0 014-4z" />
+      <circle cx="8" cy="6" r="1.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 function IconTreasury() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
