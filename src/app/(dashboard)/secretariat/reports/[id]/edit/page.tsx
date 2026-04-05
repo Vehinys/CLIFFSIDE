@@ -47,6 +47,10 @@ export default async function EditReportPage({ params }: PageProps) {
           <Label htmlFor="content" required>Contenu</Label>
           <Textarea id="content" name="content" defaultValue={report.content} rows={8} required />
         </div>
+        <div>
+          <Label htmlFor="imageUrl">Image (URL)</Label>
+          <Input id="imageUrl" name="imageUrl" type="url" defaultValue={report.imageUrl ?? ""} placeholder="https://…" />
+        </div>
         <div className="flex gap-3 pt-2">
           <Button type="submit">Enregistrer</Button>
           <Link href="/secretariat/reports"><Button type="button" variant="secondary">Annuler</Button></Link>

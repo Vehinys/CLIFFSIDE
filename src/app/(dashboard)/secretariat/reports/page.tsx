@@ -6,17 +6,32 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { deleteReport } from "../_actions";
+import { SearchInput } from "@/components/ui/search-input";
 
-export default async function ReportsPage() {
+interface PageProps {
+  searchParams: Promise<{ search?: string }>;
+}
+
+export default async function ReportsPage({ searchParams }: PageProps) {
   const session = await auth();
   if (!session?.user) redirect("/login");
   if (!canDo(session.user.permissions, "secretariat", "read")) redirect("/dashboard");
+
+  const { search } = await searchParams;
 
   const canWrite = canDo(session.user.permissions, "secretariat", "create");
   const canEdit = canDo(session.user.permissions, "secretariat", "update");
   const canDelete = canDo(session.user.permissions, "secretariat", "delete");
 
-  const reports = await prisma.meetingReport.findMany({ orderBy: { meetingDate: "desc" } });
+  const reports = await prisma.meetingReport.findMany({
+    where: search ? {
+      OR: [
+        { title: { contains: search, mode: "insensitive" } },
+        { content: { contains: search, mode: "insensitive" } },
+      ],
+    } : undefined,
+    orderBy: { meetingDate: "desc" },
+  });
 
   return (
     <div className="space-y-6">
@@ -33,9 +48,11 @@ export default async function ReportsPage() {
         )}
       </div>
 
+      <SearchInput placeholder="Rechercher un compte-rendu…" />
+
       {reports.length === 0 ? (
         <Card className="py-12 text-center">
-          <p className="text-muted">Aucun compte-rendu pour le moment.</p>
+          <p className="text-muted">{search ? "Aucun résultat." : "Aucun compte-rendu pour le moment."}</p>
         </Card>
       ) : (
         <div className="space-y-4">
@@ -50,7 +67,16 @@ export default async function ReportsPage() {
                     </span>
                   </div>
                   <p className="text-xs text-muted mt-0.5">Rédigé par {r.createdByName ?? "—"}</p>
-                  <p className="text-sm text-text/80 mt-3 whitespace-pre-wrap">{r.content}</p>
+                  <div className="text-sm text-text/80 mt-3 max-h-48 overflow-y-auto whitespace-pre-wrap pr-1">
+                    {r.content}
+                  </div>
+                  {r.imageUrl && (
+                    <img
+                      src={r.imageUrl}
+                      alt=""
+                      className="mt-3 rounded-md max-h-64 object-contain border border-border"
+                    />
+                  )}
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0">
                   {canEdit && (

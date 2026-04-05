@@ -38,6 +38,10 @@ export default async function NewReportPage() {
           <Label htmlFor="content" required>Contenu</Label>
           <Textarea id="content" name="content" placeholder="Résumé des décisions, présents, points abordés…" rows={8} required />
         </div>
+        <div>
+          <Label htmlFor="imageUrl">Image (URL)</Label>
+          <Input id="imageUrl" name="imageUrl" type="url" placeholder="https://…" />
+        </div>
         <div className="flex gap-3 pt-2">
           <Button type="submit">Enregistrer</Button>
           <Link href="/secretariat/reports"><Button type="button" variant="secondary">Annuler</Button></Link>

@@ -39,6 +39,10 @@ export default async function EditNotePage({ params }: PageProps) {
           <Label htmlFor="content" required>Contenu</Label>
           <Textarea id="content" name="content" defaultValue={note.content} rows={8} required />
         </div>
+        <div>
+          <Label htmlFor="imageUrl">Image (URL)</Label>
+          <Input id="imageUrl" name="imageUrl" type="url" defaultValue={note.imageUrl ?? ""} placeholder="https://…" />
+        </div>
         <div className="flex gap-3 pt-2">
           <Button type="submit">Enregistrer</Button>
           <Link href="/secretariat/notes"><Button type="button" variant="secondary">Annuler</Button></Link>
