@@ -30,8 +30,12 @@ export async function deleteUserAccount(
 
     const userToDelete = await prisma.user.findUnique({
       where: { id: userId },
-      select: { name: true, email: true, role: { select: { isSystem: true } } },
+      select: { name: true, email: true, isSuperAdmin: true, role: { select: { isSystem: true } } },
     });
+
+    if (userToDelete?.isSuperAdmin) {
+      return { error: "Impossible de supprimer ce compte" };
+    }
 
     if (userToDelete?.role?.isSystem) {
       const systemAdminCount = await prisma.user.count({

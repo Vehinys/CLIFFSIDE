@@ -10,6 +10,8 @@
     "test:watch": "vitest",
     "lint": "eslint",
     "postinstall": "prisma generate",
+    "db:truncate": "tsx --env-file=.env.local prisma/truncate.ts",
+    "db:setup-superadmin": "tsx --env-file=.env.local prisma/setup-superadmin.ts",
     "db:seed": "tsx --env-file=.env.local prisma/seed.ts",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio"

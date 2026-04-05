@@ -6,6 +6,7 @@ declare module "next-auth" {
       id: string;
       roleId: string | null;
       roleName: string | null;
+      isSuperAdmin: boolean;
       permissions: Array<{ resource: string; action: string }>;
     } & DefaultSession["user"];
   }
@@ -16,6 +17,7 @@ declare module "next-auth" {
   interface User {
     roleId?: string | null;
     roleName?: string | null;
+    isSuperAdmin?: boolean;
     permissions?: Array<{ resource: string; action: string }>;
   }
 }

@@ -5,6 +5,11 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import type { Permission } from "@/generated/prisma/client";
 import { authConfig } from "./auth.config";
+import { RESOURCES, ACTIONS } from "./permissions";
+
+const ALL_PERMISSIONS = RESOURCES.flatMap((resource) =>
+  ACTIONS.map((action) => ({ resource, action }))
+);
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -44,10 +49,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           name: user.name,
           roleId: user.roleId,
           roleName: user.role?.name ?? null,
-          permissions: (user.role?.permissions ?? []).map((p: Permission) => ({
-            resource: p.resource,
-            action: p.action,
-          })),
+          isSuperAdmin: user.isSuperAdmin,
+          permissions: user.isSuperAdmin
+            ? ALL_PERMISSIONS
+            : (user.role?.permissions ?? []).map((p: Permission) => ({
+                resource: p.resource,
+                action: p.action,
+              })),
         };
       },
     }),
@@ -55,20 +63,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // Chargement initial à la connexion uniquement — données fournies par authorize().
-        // next-auth v5 beta ne type pas les champs custom dans JWT → cast explicite.
-        //
-        // COMPORTEMENT INTENTIONNEL — Permissions "stale" en session active :
-        // Les permissions sont encodées dans le JWT à la connexion et ne sont PAS
-        // rechargées depuis la DB à chaque requête (stratégie "jwt" sans DB lookup).
-        // Si un admin modifie le rôle d'un utilisateur connecté, les nouvelles
-        // permissions ne prendront effet qu'au prochain login de cet utilisateur.
-        // Décision d'architecture : acceptée pour simplifier et éviter une requête DB
-        // à chaque appel de `auth()`. Pour forcer le rechargement, l'utilisateur doit
-        // se déconnecter/reconnecter, ou un admin peut invalider la session manuellement.
         token.id = user.id;
         (token as Record<string, unknown>).roleId = user.roleId ?? null;
         (token as Record<string, unknown>).roleName = user.roleName ?? null;
+        (token as Record<string, unknown>).isSuperAdmin = user.isSuperAdmin ?? false;
         (token as Record<string, unknown>).permissions = user.permissions ?? [];
       }
       return token;
@@ -78,6 +76,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id as string;
         session.user.roleId = (token.roleId as string | null) ?? null;
         session.user.roleName = (token.roleName as string | null) ?? null;
+        session.user.isSuperAdmin = (token.isSuperAdmin as boolean) ?? false;
         session.user.permissions = (token.permissions as Array<{ resource: string; action: string }>) ?? [];
       }
       return session;
