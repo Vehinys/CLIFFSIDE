@@ -39,23 +39,23 @@ export function QuantityControl({ itemId, quantity }: Props) {
   }, [pendingAdd, stateAdd]);
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2">
       <form action={subAction}>
         <button
           type="submit"
           disabled={pendingSub || pendingAdd}
-          className="w-6 h-6 rounded text-xs text-muted hover:text-text hover:bg-surface border border-border/50 leading-none disabled:opacity-40"
+          className="w-8 h-8 rounded text-sm font-bold text-white bg-red-600 hover:bg-red-700 leading-none disabled:opacity-40 transition-colors"
           aria-label="Retirer 1"
         >
           {pendingSub ? "…" : "−"}
         </button>
       </form>
-      <span className="font-mono text-text w-8 text-center tabular-nums">{quantity}</span>
+      <span className="font-mono text-text w-12 text-center tabular-nums text-base font-semibold">{quantity}</span>
       <form action={addAction}>
         <button
           type="submit"
           disabled={pendingSub || pendingAdd}
-          className="w-6 h-6 rounded text-xs text-muted hover:text-text hover:bg-surface border border-border/50 leading-none disabled:opacity-40"
+          className="w-8 h-8 rounded text-sm font-bold text-white bg-red-600 hover:bg-red-700 leading-none disabled:opacity-40 transition-colors"
           aria-label="Ajouter 1"
         >
           {pendingAdd ? "…" : "+"}

@@ -37,9 +37,12 @@ export default async function TreasuryPage() {
           <h1 className="text-2xl font-bold text-text">Trésorerie</h1>
           <p className="text-sm text-muted mt-1">{transactions.length} transaction{transactions.length !== 1 ? "s" : ""}</p>
         </div>
-        {canWrite && (
-          <Link href="/treasury/new"><Button>+ Nouvelle transaction</Button></Link>
-        )}
+        <div className="flex items-center gap-2">
+          <Link href="/treasury/logs"><Button variant="secondary">Journal</Button></Link>
+          {canWrite && (
+            <Link href="/treasury/new"><Button>+ Nouvelle transaction</Button></Link>
+          )}
+        </div>
       </div>
 
       {/* Solde */}
