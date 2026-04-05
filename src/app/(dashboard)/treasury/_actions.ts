@@ -28,7 +28,7 @@ export async function createTransaction(formData: FormData) {
   const session = await requirePermission("create");
   const data = transactionSchema.parse(Object.fromEntries(formData));
   await prisma.treasuryTransaction.create({
-    data: { ...data, createdById: session.user.id },
+    data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
   });
   await audit(
     "treasury",

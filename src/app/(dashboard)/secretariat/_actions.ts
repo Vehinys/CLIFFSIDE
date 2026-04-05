@@ -20,6 +20,7 @@ async function requirePermission(action: "create" | "update" | "delete" | "read"
 const announcementSchema = z.object({
   title: z.string().min(1, "Titre requis"),
   content: z.string().min(1, "Contenu requis"),
+  imageUrl: z.string().url("URL invalide").optional().or(z.literal("")).transform((v) => v || null),
 });
 
 export async function createAnnouncement(formData: FormData) {
@@ -56,6 +57,7 @@ const reportSchema = z.object({
   title: z.string().min(1, "Titre requis"),
   content: z.string().min(1, "Contenu requis"),
   meetingDate: z.string().min(1, "Date requise").transform((v) => new Date(v)),
+  imageUrl: z.string().url("URL invalide").optional().or(z.literal("")).transform((v) => v || null),
 });
 
 export async function createReport(formData: FormData) {
@@ -91,6 +93,7 @@ export async function deleteReport(id: string) {
 const noteSchema = z.object({
   title: z.string().min(1, "Titre requis"),
   content: z.string().min(1, "Contenu requis"),
+  imageUrl: z.string().url("URL invalide").optional().or(z.literal("")).transform((v) => v || null),
 });
 
 export async function createNote(formData: FormData) {

@@ -30,6 +30,10 @@ export default async function NewAnnouncementPage() {
           <Label htmlFor="content" required>Contenu</Label>
           <Textarea id="content" name="content" placeholder="Rédigez votre annonce…" rows={6} required />
         </div>
+        <div>
+          <Label htmlFor="imageUrl">Image (URL)</Label>
+          <Input id="imageUrl" name="imageUrl" type="url" placeholder="https://…" />
+        </div>
         <div className="flex gap-3 pt-2">
           <Button type="submit">Publier</Button>
           <Link href="/secretariat/announcements"><Button type="button" variant="secondary">Annuler</Button></Link>
