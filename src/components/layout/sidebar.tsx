@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { canDo } from "@/lib/permissions";
 import { signOutAction } from "@/app/actions/auth";
@@ -29,18 +30,14 @@ const NAV = [
 
 export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const visibleNav = NAV.filter((item) =>
     canDo(permissions, item.resource, "read")
   );
 
-  return (
-    <aside className="flex h-full w-56 flex-col border-r border-border bg-surface">
-      {/* Logo */}
-      <div className="flex h-14 items-center border-b border-border px-4">
-        <span className="text-lg font-bold tracking-widest text-primary">CLIFFSIDE</span>
-      </div>
-
+  const navContent = (
+    <>
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-4 px-2" aria-label="Navigation principale">
         <ul className="space-y-0.5" role="list">
@@ -52,6 +49,7 @@ export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  onClick={() => setMobileOpen(false)}
                   className={cn(
                     "flex items-center gap-3 rounded-md py-2 text-sm transition-colors",
                     item.indent ? "px-6" : "px-3",
@@ -87,6 +85,61 @@ export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
           </button>
         </form>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile top bar */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-30 h-14 flex items-center gap-3 border-b border-border bg-surface px-4">
+        <button
+          onClick={() => setMobileOpen(true)}
+          aria-label="Ouvrir le menu"
+          aria-expanded={mobileOpen}
+          className="text-muted hover:text-text p-1 -ml-1 text-xl leading-none"
+        >
+          ☰
+        </button>
+        <span className="text-lg font-bold tracking-widest text-primary">CLIFFSIDE</span>
+      </div>
+
+      {/* Backdrop mobile */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 md:hidden"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar desktop (statique) */}
+      <aside className="hidden md:flex h-full w-56 flex-col border-r border-border bg-surface">
+        <div className="flex h-14 items-center border-b border-border px-4">
+          <span className="text-lg font-bold tracking-widest text-primary">CLIFFSIDE</span>
+        </div>
+        {navContent}
+      </aside>
+
+      {/* Sidebar mobile (drawer fixe) */}
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-border bg-surface transition-transform duration-200 md:hidden",
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+        aria-label="Menu mobile"
+      >
+        <div className="flex h-14 items-center border-b border-border px-4">
+          <span className="text-lg font-bold tracking-widest text-primary flex-1">CLIFFSIDE</span>
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="text-muted hover:text-text p-1 text-xl leading-none"
+            aria-label="Fermer le menu"
+          >
+            ✕
+          </button>
+        </div>
+        {navContent}
+      </aside>
+    </>
   );
 }
