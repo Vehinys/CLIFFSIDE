@@ -76,6 +76,7 @@ export default async function TreasuryPage() {
                   <th className="pb-3 font-medium text-muted">Description</th>
                   <th className="pb-3 font-medium text-muted">Catégorie</th>
                   <th className="pb-3 font-medium text-muted">Montant</th>
+                  <th className="pb-3 font-medium text-muted">Par</th>
                   <th className="pb-3 font-medium text-muted">Date</th>
                   {(canEdit || canDelete) && <th className="pb-3" />}
                 </tr>
@@ -93,6 +94,7 @@ export default async function TreasuryPage() {
                     <td className={`py-3 font-mono font-semibold ${t.type === "INCOME" ? "text-success" : "text-danger"}`}>
                       {t.type === "INCOME" ? "+" : "-"}{formatMoney(t.amount)}
                     </td>
+                    <td className="py-3 text-muted text-xs">{t.createdByName ?? "—"}</td>
                     <td className="py-3 text-muted text-xs">{formatDate(t.createdAt)}</td>
                     {(canEdit || canDelete) && (
                       <td className="py-3 text-right">
