@@ -160,9 +160,7 @@ export default async function MembersPage({
                         <td className="py-3 font-semibold text-text">{u.email}</td>
                         <td className="py-3 text-muted">{u.name ?? "—"}</td>
                         <td className="py-3">
-                          {u.isSuperAdmin ? (
-                            <Badge variant="warning">Super Admin</Badge>
-                          ) : canEditMembers ? (
+                          {canEditMembers ? (
                             <form action={updateRoleWithId} className="flex items-center gap-2">
                               <Select
                                 name="roleId"
