@@ -60,7 +60,9 @@ export default async function MembersPage() {
                       <td className="py-3 font-semibold text-text">{u.email}</td>
                       <td className="py-3 text-muted">{u.name ?? "—"}</td>
                       <td className="py-3">
-                        {canEdit ? (
+                        {u.isSuperAdmin ? (
+                          <span className="text-muted text-xs">—</span>
+                        ) : canEdit ? (
                           <form action={updateRoleWithId} className="flex items-center gap-2">
                             <Select name="roleId" defaultValue={u.roleId ?? ""} className="w-48 bg-transparent h-8 text-xs">
                               <option value="" className="text-muted">En attente (Bloqué)</option>
@@ -78,7 +80,7 @@ export default async function MembersPage() {
                       {(canEdit || canDelete) && (
                         <td className="py-3 text-right">
                           <div className="flex items-center justify-end gap-3">
-                            {canDelete && (
+                            {canDelete && !u.isSuperAdmin && (
                               <ConfirmDelete
                                 action={deleteUserAccount.bind(null, u.id)}
                                 label="Retirer ce compte"
