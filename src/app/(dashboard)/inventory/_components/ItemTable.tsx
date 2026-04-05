@@ -11,6 +11,27 @@ interface Props {
   canDelete: boolean;
 }
 
+function StockBar({ quantity, minStock }: { quantity: number; minStock: number }) {
+  const ratio = Math.min(quantity / minStock, 1);
+  const pct = Math.round(ratio * 100);
+  const color = pct <= 30 ? "bg-danger" : pct <= 60 ? "bg-warning" : "bg-success";
+  return (
+    <div className="mt-1 flex items-center gap-1.5">
+      <div
+        className="w-14 h-1 rounded-full bg-surface-2 overflow-hidden"
+        role="progressbar"
+        aria-valuenow={quantity}
+        aria-valuemin={0}
+        aria-valuemax={minStock}
+        aria-label={`${quantity} sur ${minStock} minimum`}
+      >
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
+      </div>
+      <span className={`text-xs ${pct <= 30 ? "text-danger" : "text-muted"}`}>min {minStock}</span>
+    </div>
+  );
+}
+
 export function ItemTable({ items, canEdit, canDelete }: Props) {
   return (
     <div className="overflow-x-auto">
@@ -18,7 +39,7 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
         <thead>
           <tr className="border-b border-border text-left">
             <th className="pb-2 font-medium text-muted">Nom</th>
-            <th className="pb-2 font-medium text-muted">Qté</th>
+            <th className="pb-2 font-medium text-muted">Quantité</th>
             <th className="pb-2 font-medium text-muted">Unité</th>
             <th className="pb-2 font-medium text-muted">Activation</th>
             <th className="pb-2 font-medium text-muted">Expiration</th>
@@ -38,12 +59,14 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
               variant: "default",
             };
             let timeLeft = "—";
+            let timeUrgent = false;
 
             if (expiresAt) {
               const diff = expiresAt.getTime() - now.getTime();
               if (diff <= 0) {
                 status = { label: "Expiré", variant: "danger" };
                 timeLeft = "Terminé";
+                timeUrgent = true;
               } else {
                 status =
                   activatedAt && now < activatedAt
@@ -52,20 +75,29 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 timeLeft = days > 0 ? `${days}j ${hours}h` : `${hours}h`;
+                timeUrgent = days === 0 && hours < 6;
               }
             }
 
             return (
               <tr
                 key={item.id}
-                className="border-b border-border/50 last:border-0 hover:bg-surface/50 transition-colors"
+                className="border-b border-border/50 last:border-0 hover:bg-surface-2/50 transition-colors duration-150"
               >
                 <td className="py-2.5 font-medium text-text">{item.name}</td>
                 <td className="py-2.5">
                   {canEdit ? (
                     <QuantityControl itemId={item.id} quantity={item.quantity} />
                   ) : (
-                    <span className="font-mono text-text">{item.quantity}</span>
+                    <div>
+                      <span className="font-mono text-text">{item.quantity}</span>
+                      {item.minStock !== null && (
+                        <StockBar quantity={item.quantity} minStock={item.minStock} />
+                      )}
+                    </div>
+                  )}
+                  {canEdit && item.minStock !== null && (
+                    <StockBar quantity={item.quantity} minStock={item.minStock} />
                   )}
                 </td>
                 <td className="py-2.5 text-muted">{item.unit ?? "—"}</td>
@@ -75,7 +107,7 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
                 <td className="py-2.5 text-muted text-xs">
                   {expiresAt ? expiresAt.toLocaleDateString("fr-FR") : "—"}
                 </td>
-                <td className={`py-2.5 text-xs font-mono ${status.variant === "danger" ? "text-danger" : "text-muted"}`}>
+                <td className={`py-2.5 text-xs font-mono ${timeUrgent ? "text-danger font-semibold" : status.variant === "danger" ? "text-danger" : "text-muted"}`}>
                   {timeLeft}
                 </td>
                 <td className="py-2.5">
@@ -83,9 +115,9 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
                 </td>
                 {(canEdit || canDelete) && (
                   <td className="py-2.5 text-right">
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex items-center justify-end gap-3">
                       {canEdit && (
-                        <Link href={`/inventory/${item.id}/edit`} className="text-xs text-muted hover:text-text">
+                        <Link href={`/inventory/${item.id}/edit`} className="text-xs text-muted hover:text-text transition-colors">
                           Modifier
                         </Link>
                       )}

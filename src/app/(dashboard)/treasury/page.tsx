@@ -46,7 +46,7 @@ export default async function TreasuryPage() {
       </div>
 
       {/* Solde */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <CardHeader><CardTitle className="text-xs uppercase tracking-wider text-muted">Solde</CardTitle></CardHeader>
           <p className={`text-3xl font-bold font-mono ${balance >= 0 ? "text-success" : "text-danger"}`}>
@@ -83,7 +83,7 @@ export default async function TreasuryPage() {
               </thead>
               <tbody>
                 {transactions.map((t) => (
-                  <tr key={t.id} className="border-b border-border/50 last:border-0">
+                  <tr key={t.id} className="border-b border-border/50 last:border-0 hover:bg-surface-2/50 transition-colors duration-150">
                     <td className="py-3">
                       <Badge variant={t.type === "INCOME" ? "success" : "danger"}>
                         {t.type === "INCOME" ? "Entrée" : "Sortie"}

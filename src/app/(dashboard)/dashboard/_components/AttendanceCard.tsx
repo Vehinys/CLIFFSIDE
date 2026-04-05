@@ -1,5 +1,4 @@
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { respondAttendance } from "../_actions";
 
@@ -15,69 +14,129 @@ interface Props {
   attendances: Attendance[];
 }
 
+function IconCheck() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M2 6l2.5 2.5L9 3" />
+    </svg>
+  );
+}
+
+function IconX() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <path d="M2 2l6 6M8 2L2 8" />
+    </svg>
+  );
+}
+
+function IconClock() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+      <circle cx="6.5" cy="6.5" r="5.5" />
+      <path d="M6.5 3.5v3l2 1.5" />
+    </svg>
+  );
+}
+
 export function AttendanceCard({ currentUserId, attendances }: Props) {
   const myAttendance = attendances.find((a) => a.userId === currentUserId);
   const presentCount = attendances.filter((a) => a.status === "PRESENT").length;
   const absentCount = attendances.filter((a) => a.status === "ABSENT").length;
+  const totalResponded = presentCount + absentCount;
 
   return (
-    <Card className={myAttendance ? "border-border" : "border-warning/60 bg-warning/5"}>
+    <Card className={myAttendance ? "border-border" : "border-warning/50 bg-warning/5"}>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <span>Présence ce soir — 21h00</span>
+        <CardTitle className="flex items-center gap-2 flex-wrap">
+          <span className="flex items-center gap-1.5">
+            <span className="text-muted"><IconClock /></span>
+            Présence ce soir — 21h00
+          </span>
           {myAttendance && (
-            <Badge variant={myAttendance.status === "PRESENT" ? "success" : "danger"}>
+            <span
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium border ${
+                myAttendance.status === "PRESENT"
+                  ? "bg-success/10 text-success border-success/30"
+                  : "bg-danger/10 text-danger border-danger/30"
+              }`}
+            >
+              {myAttendance.status === "PRESENT" ? <IconCheck /> : <IconX />}
               {myAttendance.status === "PRESENT" ? "Présent" : "Absent"}
-            </Badge>
+            </span>
           )}
-          <span className="ml-auto text-xs font-normal text-muted">
-            {presentCount} présent{presentCount !== 1 ? "s" : ""} · {absentCount} absent{absentCount !== 1 ? "s" : ""}
+          <span className="ml-auto text-xs font-normal text-muted whitespace-nowrap">
+            <span className="text-success">{presentCount}</span>
+            {" "}présent{presentCount !== 1 ? "s" : ""}{" "}·{" "}
+            <span className="text-danger">{absentCount}</span>
+            {" "}absent{absentCount !== 1 ? "s" : ""}
+            {totalResponded > 0 && (
+              <span className="ml-1 text-muted/50">({totalResponded} réponse{totalResponded !== 1 ? "s" : ""})</span>
+            )}
           </span>
         </CardTitle>
       </CardHeader>
 
       {!myAttendance && (
-        <div className="mb-4 flex items-center gap-3">
+        <div className="mb-4 flex items-center gap-3 flex-wrap">
           <p className="text-sm text-muted">Seras-tu là ce soir à 21h ?</p>
           <form action={respondAttendance.bind(null, "PRESENT")}>
-            <Button type="submit" variant="secondary" className="border-success/40 text-success hover:bg-success/10">
-              ✓ Présent
+            <Button
+              type="submit"
+              variant="secondary"
+              size="sm"
+              className="border-success/40 text-success hover:bg-success/10 hover:border-success/60 gap-1.5"
+            >
+              <IconCheck />
+              Présent
             </Button>
           </form>
           <form action={respondAttendance.bind(null, "ABSENT")}>
-            <Button type="submit" variant="secondary" className="border-danger/40 text-danger hover:bg-danger/10">
-              ✗ Absent
+            <Button
+              type="submit"
+              variant="secondary"
+              size="sm"
+              className="border-danger/40 text-danger hover:bg-danger/10 hover:border-danger/60 gap-1.5"
+            >
+              <IconX />
+              Absent
             </Button>
           </form>
         </div>
       )}
 
       {myAttendance && (
-        <div className="mb-4 flex items-center gap-2 text-sm text-muted">
+        <div className="mb-4 flex items-center gap-2 text-xs text-muted flex-wrap">
           <span>Changer ma réponse :</span>
           {myAttendance.status !== "PRESENT" && (
             <form action={respondAttendance.bind(null, "PRESENT")}>
-              <button type="submit" className="text-success hover:underline text-xs">Présent</button>
+              <button type="submit" className="cursor-pointer text-success hover:text-success/70 transition-colors">
+                Marquer présent
+              </button>
             </form>
           )}
           {myAttendance.status !== "ABSENT" && (
             <form action={respondAttendance.bind(null, "ABSENT")}>
-              <button type="submit" className="text-danger hover:underline text-xs">Absent</button>
+              <button type="submit" className="cursor-pointer text-danger hover:text-danger/70 transition-colors">
+                Marquer absent
+              </button>
             </form>
           )}
         </div>
       )}
 
       {attendances.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {attendances.map((a) => (
             <div
               key={a.id}
-              className="flex items-center gap-1.5 text-xs rounded-full px-2.5 py-1 bg-surface-2 border border-border/50"
+              className={`flex items-center gap-1.5 text-xs rounded-full px-2.5 py-1 border transition-colors ${
+                a.status === "PRESENT"
+                  ? "bg-success/5 border-success/20 text-success/80"
+                  : "bg-danger/5 border-danger/20 text-danger/80"
+              }`}
             >
-              <span className={a.status === "PRESENT" ? "text-success" : "text-danger"}>
-                {a.status === "PRESENT" ? "✓" : "✗"}
-              </span>
+              {a.status === "PRESENT" ? <IconCheck /> : <IconX />}
               <span className="text-text">{a.userName ?? a.userId}</span>
             </div>
           ))}
