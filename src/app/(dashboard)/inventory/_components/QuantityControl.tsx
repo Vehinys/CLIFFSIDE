@@ -50,7 +50,7 @@ export function QuantityControl({ itemId, quantity }: Props) {
           {pendingSub ? "…" : "−"}
         </button>
       </form>
-      <span className="font-mono text-text w-12 text-center tabular-nums text-base font-semibold">{quantity}</span>
+      <span className="font-mono text-text w-24 text-center tabular-nums text-base font-semibold">{quantity}</span>
       <form action={addAction}>
         <button
           type="submit"
