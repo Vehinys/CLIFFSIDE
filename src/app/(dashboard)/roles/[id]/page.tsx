@@ -14,14 +14,19 @@ export default async function EditRolePage({ params }: { params: Promise<{ id: s
   if (!session?.user) redirect("/login");
   if (!canDo(session.user.permissions, "roles", "update")) redirect("/roles");
 
-  const role = await prisma.role.findUnique({
-    where: { id },
-    include: { permissions: true },
-  });
+  const [role, allCategories] = await Promise.all([
+    prisma.role.findUnique({
+      where: { id },
+      include: { permissions: true, inventoryCategories: { select: { id: true } } },
+    }),
+    prisma.inventoryCategory.findMany({ orderBy: { name: "asc" } }),
+  ]);
   if (!role) notFound();
 
   const hasPermission = (resource: string, action: string) =>
     role.permissions.some((p) => p.resource === resource && p.action === action);
+
+  const assignedCategoryIds = new Set(role.inventoryCategories.map((c) => c.id));
 
   const updateWithId = updateRole.bind(null, id);
 
@@ -84,6 +89,31 @@ export default async function EditRolePage({ params }: { params: Promise<{ id: s
             </table>
           </div>
         </div>
+
+        {allCategories.length > 0 && (
+          <div>
+            <p className="text-sm font-semibold text-text mb-1">Accès inventaire</p>
+            <p className="text-xs text-muted mb-3">Les catégories cochées seront visibles par ce rôle.</p>
+            <div className="space-y-2 rounded-md border border-border p-3">
+              {allCategories.map((cat) => (
+                <label key={cat.id} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="categoryIds"
+                    value={cat.id}
+                    defaultChecked={assignedCategoryIds.has(cat.id)}
+                    className="h-4 w-4 rounded border-border accent-primary"
+                    aria-label={`Catégorie ${cat.name}`}
+                  />
+                  <span className="text-sm text-text">
+                    {cat.icon && <span className="mr-1">{cat.icon}</span>}
+                    {cat.name}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-3 pt-2">
           <Button type="submit">Enregistrer</Button>

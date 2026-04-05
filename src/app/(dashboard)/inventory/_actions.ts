@@ -24,6 +24,10 @@ const categorySchema = z.object({
   icon: z.string().optional().transform((v) => v ?? null),
 });
 
+function extractRoleIds(formData: FormData): string[] {
+  return formData.getAll("roleIds").map(String).filter(Boolean);
+}
+
 async function requirePermission(action: "create" | "update" | "delete" | "read") {
   const session = await auth();
   if (!session?.user) redirect("/login");
@@ -108,7 +112,13 @@ export async function deleteItem(
 export async function createCategory(formData: FormData) {
   const session = await requirePermission("create");
   const data = categorySchema.parse(Object.fromEntries(formData));
-  await prisma.inventoryCategory.create({ data });
+  const roleIds = extractRoleIds(formData);
+  await prisma.inventoryCategory.create({
+    data: {
+      ...data,
+      roles: roleIds.length > 0 ? { connect: roleIds.map((id) => ({ id })) } : undefined,
+    },
+  });
   await audit("inventory", "CATEGORY_CREATE", `[Catégorie] ${data.name}`, session.user.id, session.user.name);
   revalidatePath("/inventory");
   redirect("/inventory");
@@ -117,7 +127,14 @@ export async function createCategory(formData: FormData) {
 export async function updateCategory(id: string, formData: FormData) {
   const session = await requirePermission("update");
   const data = categorySchema.parse(Object.fromEntries(formData));
-  await prisma.inventoryCategory.update({ where: { id }, data });
+  const roleIds = extractRoleIds(formData);
+  await prisma.inventoryCategory.update({
+    where: { id },
+    data: {
+      ...data,
+      roles: { set: roleIds.map((rid) => ({ id: rid })) },
+    },
+  });
   await audit("inventory", "CATEGORY_UPDATE", `[Catégorie] ${data.name}`, session.user.id, session.user.name);
   revalidatePath("/inventory");
   redirect("/inventory");

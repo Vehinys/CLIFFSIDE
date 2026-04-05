@@ -18,13 +18,17 @@ export default async function EditInventoryCategoryPage({
   if (!session?.user) redirect("/login");
   if (!canDo(session.user.permissions, "inventory", "update")) redirect("/inventory");
 
-  const category = await prisma.inventoryCategory.findUnique({
-    where: { id },
-  });
+  const [category, roles] = await Promise.all([
+    prisma.inventoryCategory.findUnique({
+      where: { id },
+      include: { roles: { select: { id: true } } },
+    }),
+    prisma.role.findMany({ orderBy: { name: "asc" } }),
+  ]);
 
   if (!category) notFound();
 
-  const updateCategoryWithId = updateCategory.bind(null, category.id);
+  const assignedRoleIds = new Set(category.roles.map((r) => r.id));
 
   return (
     <div className="max-w-xl space-y-6">
@@ -34,7 +38,7 @@ export default async function EditInventoryCategoryPage({
         <h1 className="text-xl font-bold text-text">Modifier la catégorie</h1>
       </div>
 
-      <form action={updateCategoryWithId} className="rounded-lg border border-border bg-surface p-5 space-y-4">
+      <form action={updateCategory.bind(null, category.id)} className="rounded-lg border border-border bg-surface p-5 space-y-4">
         <div>
           <Label htmlFor="name" required>Nom de la catégorie</Label>
           <Input id="name" name="name" defaultValue={category.name} placeholder="Ex: Armes, Véhicules, Consommables…" required />
@@ -43,6 +47,28 @@ export default async function EditInventoryCategoryPage({
         <div>
           <Label htmlFor="icon">Icône (emoji)</Label>
           <Input id="icon" name="icon" defaultValue={category.icon ?? ""} placeholder="🔫, 🚗, 🍔…" className="w-24 text-center" />
+        </div>
+
+        <div>
+          <p className="text-sm font-medium text-text mb-2">Accès restreint aux rôles</p>
+          <p className="text-xs text-muted mb-3">Laissez vide = visible par tous. Cochez les rôles autorisés.</p>
+          <div className="space-y-2 rounded-md border border-border p-3">
+            {roles.map((r) => (
+              <label key={r.id} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="roleIds"
+                  value={r.id}
+                  defaultChecked={assignedRoleIds.has(r.id)}
+                  className="h-4 w-4 rounded border-border accent-primary"
+                />
+                <span className="text-sm text-text">{r.name}</span>
+              </label>
+            ))}
+            {roles.length === 0 && (
+              <p className="text-xs text-muted italic">Aucun rôle configuré.</p>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-3 pt-2">

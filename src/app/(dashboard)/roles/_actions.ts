@@ -61,6 +61,8 @@ export async function updateRole(id: string, formData: FormData) {
     )
   );
 
+  const categoryIds = formData.getAll("categoryIds").map(String).filter(Boolean);
+
   await prisma.role.update({
     where: { id },
     data: {
@@ -69,6 +71,9 @@ export async function updateRole(id: string, formData: FormData) {
       permissions: {
         deleteMany: {},
         create: permissions,
+      },
+      inventoryCategories: {
+        set: categoryIds.map((cid) => ({ id: cid })),
       },
     },
   });

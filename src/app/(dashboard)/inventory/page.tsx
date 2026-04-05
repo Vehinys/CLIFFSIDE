@@ -14,12 +14,25 @@ export default async function InventoryPage() {
   if (!session?.user) redirect("/login");
   if (!canDo(session.user.permissions, "inventory", "read")) redirect("/dashboard");
 
+  const allCategories = await prisma.inventoryCategory.findMany({
+    include: { roles: { select: { id: true } } },
+    orderBy: { name: "asc" },
+  });
+
+  // Filtrer les catégories selon le rôle (superadmin voit tout)
+  const categories = allCategories.filter((cat) => {
+    if (cat.roles.length === 0) return true; // pas de restriction
+    if (session.user.isSuperAdmin) return true;
+    return cat.roles.some((r) => r.id === session.user.roleId);
+  });
+
+  const categoryIds = categories.map((c) => c.id);
+
   const items = await prisma.inventoryItem.findMany({
+    where: { categoryId: { in: categoryIds } },
     include: { category: true },
     orderBy: [{ category: { name: "asc" } }, { name: "asc" }],
   });
-
-  const categories = await prisma.inventoryCategory.findMany({ orderBy: { name: "asc" } });
   const canWrite = canDo(session.user.permissions, "inventory", "create");
   const canDelete = canDo(session.user.permissions, "inventory", "delete");
   const canEdit = canDo(session.user.permissions, "inventory", "update");
