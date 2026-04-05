@@ -10,10 +10,10 @@ async function main() {
 
   // 1. Rôle ADMIN système (non supprimable)
   const adminRole = await prisma.role.upsert({
-    where: { name: "Admin" },
+    where: { name: "LEADER" },
     update: {},
     create: {
-      name: "Admin",
+      name: "LEADER",
       color: "#ef4444",
       description: "Accès total — rôle système",
       isSystem: true,
@@ -61,13 +61,13 @@ async function main() {
   });
 
   // 3. Utilisateur admin par défaut
-  const hashedPassword = await bcrypt.hash("Admin1234!", 12);
+  const hashedPassword = await bcrypt.hash("LEADER1234!", 12);
 
   const adminUser = await prisma.user.upsert({
     where: { email: "admin@cliffside.local" },
     update: {},
     create: {
-      name: "Admin",
+      name: "LEADER",
       email: "admin@cliffside.local",
       password: hashedPassword,
       roleId: adminRole.id,
@@ -75,8 +75,8 @@ async function main() {
   });
 
   console.log("✅ Seed terminé");
-  console.log(`   Rôle Admin : ${adminRole.id}`);
-  console.log(`   User admin : ${adminUser.email} / Admin1234!`);
+  console.log(`   Rôle LEADER : ${adminRole.id}`);
+  console.log(`   User admin : ${adminUser.email} / LEADER1234!`);
   console.log("   ⚠️  Change le mot de passe après la première connexion !");
 }
 
