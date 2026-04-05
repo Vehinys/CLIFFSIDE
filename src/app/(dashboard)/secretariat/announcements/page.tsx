@@ -24,12 +24,14 @@ export default async function AnnouncementsPage({ searchParams }: PageProps) {
   const canDelete = canDo(session.user.permissions, "secretariat", "delete");
 
   const announcements = await prisma.announcement.findMany({
-    where: search ? {
-      OR: [
-        { title: { contains: search, mode: "insensitive" } },
-        { content: { contains: search, mode: "insensitive" } },
-      ],
-    } : undefined,
+    ...(search ? {
+      where: {
+        OR: [
+          { title: { contains: search, mode: "insensitive" } },
+          { content: { contains: search, mode: "insensitive" } },
+        ],
+      },
+    } : {}),
     orderBy: { createdAt: "desc" },
   });
 
