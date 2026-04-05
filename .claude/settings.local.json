@@ -30,7 +30,12 @@
       "Bash(node -e \"const r = require; console.log\\(process.version\\)\")",
       "Bash(node -e ':*)",
       "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\('next:',p.dependencies.next\\);console.log\\('prisma:',p.devDependencies?.prisma||p.dependencies?.prisma\\)\")",
-      "Bash(ls -la vercel.json next.config*)"
+      "Bash(ls -la vercel.json next.config*)",
+      "Bash(python3 \"C:/Users/Vehinys/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"gaming dashboard dark management GTA roleplay organization\" --design-system -p \"CLIFFSIDE\" -f markdown)",
+      "Bash(py --version)",
+      "Bash(where python3:*)",
+      "Bash(where py:*)",
+      "Bash(C:/Users/Vehinys/AppData/Local/Microsoft/WindowsApps/python3.exe:*)"
     ]
   }
 }

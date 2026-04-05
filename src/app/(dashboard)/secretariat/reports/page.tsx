@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canDo } from "@/lib/permissions";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -73,10 +74,13 @@ export default async function ReportsPage({ searchParams }: PageProps) {
                     {r.content}
                   </div>
                   {r.imageUrl && (
-                    <img
+                    <Image
                       src={r.imageUrl}
                       alt=""
+                      width={800}
+                      height={600}
                       className="mt-3 rounded-md max-h-64 object-contain border border-border"
+                      unoptimized
                     />
                   )}
                 </div>
