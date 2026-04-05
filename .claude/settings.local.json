@@ -38,7 +38,9 @@
       "Bash(C:/Users/Vehinys/AppData/Local/Microsoft/WindowsApps/python3.exe:*)",
       "Bash(npx tsx -e ':*)",
       "Bash(node --import tsx/esm -e ':*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(node --env-file=.env.local -e ':*)",
+      "Bash(node --env-file=.env.local node_modules/.bin/tsx prisma/add-perishables-perms.ts)"
     ]
   }
 }
