@@ -116,7 +116,7 @@ export async function createCategory(formData: FormData) {
   await prisma.inventoryCategory.create({
     data: {
       ...data,
-      roles: roleIds.length > 0 ? { connect: roleIds.map((id) => ({ id })) } : undefined,
+      roles: { connect: roleIds.map((id) => ({ id })) },
     },
   });
   await audit("inventory", "CATEGORY_CREATE", `[Catégorie] ${data.name}`, session.user.id, session.user.name);
