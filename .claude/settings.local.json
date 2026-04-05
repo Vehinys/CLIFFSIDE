@@ -37,7 +37,8 @@
       "Bash(where py:*)",
       "Bash(C:/Users/Vehinys/AppData/Local/Microsoft/WindowsApps/python3.exe:*)",
       "Bash(npx tsx -e ':*)",
-      "Bash(node --import tsx/esm -e ':*)"
+      "Bash(node --import tsx/esm -e ':*)",
+      "Bash(npx tsx:*)"
     ]
   }
 }
