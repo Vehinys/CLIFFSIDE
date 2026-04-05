@@ -43,7 +43,7 @@ export function ConfirmDelete({
         }}
         className={
           className ??
-          "text-xs text-danger hover:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed"
+          "text-xs text-danger hover:text-danger/70 disabled:opacity-50 disabled:cursor-not-allowed"
         }
       >
         {isPending ? "…" : label}

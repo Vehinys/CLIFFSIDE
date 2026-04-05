@@ -10,7 +10,7 @@ export function Badge({ className, variant = "default", color, children, style, 
     default: "bg-surface-2 text-text border-border",
     success: "bg-green-950 text-green-400 border-green-900",
     warning: "bg-yellow-950 text-yellow-400 border-yellow-900",
-    danger: "bg-red-950 text-red-400 border-red-900",
+    danger: "bg-danger/20 text-danger border-danger/40",
   };
 
   return (

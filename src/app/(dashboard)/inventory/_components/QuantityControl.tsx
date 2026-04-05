@@ -44,7 +44,7 @@ export function QuantityControl({ itemId, quantity }: Props) {
         <button
           type="submit"
           disabled={pendingSub || pendingAdd}
-          className="w-8 h-8 rounded text-sm font-bold text-white bg-red-600 hover:bg-red-700 leading-none disabled:opacity-40 transition-colors"
+          className="w-8 h-8 rounded text-sm font-bold text-white bg-danger hover:bg-primary-hover leading-none disabled:opacity-40 transition-colors"
           aria-label="Retirer 1"
         >
           {pendingSub ? "…" : "−"}
@@ -55,7 +55,7 @@ export function QuantityControl({ itemId, quantity }: Props) {
         <button
           type="submit"
           disabled={pendingSub || pendingAdd}
-          className="w-8 h-8 rounded text-sm font-bold text-white bg-red-600 hover:bg-red-700 leading-none disabled:opacity-40 transition-colors"
+          className="w-8 h-8 rounded text-sm font-bold text-white bg-danger hover:bg-primary-hover leading-none disabled:opacity-40 transition-colors"
           aria-label="Ajouter 1"
         >
           {pendingAdd ? "…" : "+"}
