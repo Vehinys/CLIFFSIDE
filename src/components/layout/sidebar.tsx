@@ -20,20 +20,20 @@ interface NavItem {
   label: string;
   icon: () => React.ReactElement;
   resource: string;
+  altResource?: string;
   indent?: true;
 }
 
 const NAV: NavItem[] = [
-  { href: "/dashboard",                 label: "Dashboard",      icon: IconDashboard,   resource: "dashboard" },
-  { href: "/secretariat",               label: "Secrétariat",    icon: IconSecretariat, resource: "secretariat" },
-  { href: "/secretariat/announcements", label: "Annonces",       icon: IconAnnounce,    resource: "secretariat", indent: true },
-  { href: "/secretariat/reports",       label: "Comptes-rendus", icon: IconReport,      resource: "secretariat", indent: true },
-  { href: "/secretariat/notes",         label: "Notes",          icon: IconNotes,       resource: "secretariat", indent: true },
-  { href: "/secretariat/tasks",         label: "Tâches",         icon: IconTasks,       resource: "secretariat", indent: true },
-  { href: "/inventory",                 label: "Inventaire",     icon: IconInventory,   resource: "inventory" },
-  { href: "/treasury",                  label: "Trésorerie",     icon: IconTreasury,    resource: "treasury" },
-  { href: "/members",                   label: "Membres",        icon: IconMembers,     resource: "members" },
-  { href: "/roles",                     label: "Rôles",          icon: IconRoles,       resource: "roles" },
+  { href: "/dashboard",                 label: "Dashboard",        icon: IconDashboard,   resource: "dashboard" },
+  { href: "/secretariat",               label: "Secrétariat",      icon: IconSecretariat, resource: "secretariat" },
+  { href: "/secretariat/announcements", label: "Annonces",         icon: IconAnnounce,    resource: "secretariat", indent: true },
+  { href: "/secretariat/reports",       label: "Comptes-rendus",   icon: IconReport,      resource: "secretariat", indent: true },
+  { href: "/secretariat/notes",         label: "Notes",            icon: IconNotes,       resource: "secretariat", indent: true },
+  { href: "/secretariat/tasks",         label: "Tâches",           icon: IconTasks,       resource: "secretariat", indent: true },
+  { href: "/inventory",                 label: "Inventaire",       icon: IconInventory,   resource: "inventory" },
+  { href: "/treasury",                  label: "Trésorerie",       icon: IconTreasury,    resource: "treasury" },
+  { href: "/members",                   label: "Membres & Rôles",  icon: IconTeam,        resource: "members",    altResource: "roles" },
 ];
 
 /* ─── Icônes SVG inline ──────────────────────────────────────────────── */
@@ -118,22 +118,16 @@ function IconTreasury() {
   );
 }
 
-function IconMembers() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <circle cx="6" cy="5" r="2.5" />
-      <path d="M1 14c0-2.8 2.2-5 5-5s5 2.2 5 5" />
-      <circle cx="12" cy="5" r="2" />
-      <path d="M12 10c1.7 0 3 1.3 3 3" />
-    </svg>
-  );
-}
 
-function IconRoles() {
+function IconTeam() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <circle cx="8" cy="8" r="2" />
-      <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M11.4 3.2l-1.4 1.4M4.6 11.4l-1.4 1.4" />
+      <circle cx="5.5" cy="5" r="2.5" />
+      <path d="M1 14c0-2.5 2-4.5 4.5-4.5S10 11.5 10 14" />
+      <circle cx="12" cy="5" r="2" />
+      <path d="M12 10.5c1.8.2 3 1.5 3 3" />
+      <line x1="12" y1="2" x2="14" y2="4" strokeWidth="1" />
+      <circle cx="13" cy="13" r="2" fill="currentColor" stroke="none" opacity="0.4" />
     </svg>
   );
 }
@@ -178,7 +172,10 @@ interface NavContentProps {
 }
 
 function NavContent({ permissions, pathname, onLinkClick, userName, roleName }: NavContentProps) {
-  const visibleNav = NAV.filter((item) => canDo(permissions, item.resource, "read"));
+  const visibleNav = NAV.filter((item) =>
+    canDo(permissions, item.resource, "read") ||
+    (item.altResource !== undefined && canDo(permissions, item.altResource, "read"))
+  );
 
   return (
     <>

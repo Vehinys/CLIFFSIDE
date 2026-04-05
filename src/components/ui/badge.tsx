@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: "default" | "success" | "warning" | "danger";
-  color?: string; // couleur custom hex pour les rôles
+  color?: string | undefined; // couleur custom hex pour les rôles
 }
 
 export function Badge({ className, variant = "default", color, children, style, ...props }: BadgeProps) {
