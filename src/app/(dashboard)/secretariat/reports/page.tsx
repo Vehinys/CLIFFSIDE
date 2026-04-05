@@ -13,6 +13,7 @@ export default async function ReportsPage() {
   if (!canDo(session.user.permissions, "secretariat", "read")) redirect("/dashboard");
 
   const canWrite = canDo(session.user.permissions, "secretariat", "create");
+  const canEdit = canDo(session.user.permissions, "secretariat", "update");
   const canDelete = canDo(session.user.permissions, "secretariat", "delete");
 
   const reports = await prisma.meetingReport.findMany({ orderBy: { meetingDate: "desc" } });
@@ -51,11 +52,16 @@ export default async function ReportsPage() {
                   <p className="text-xs text-muted mt-0.5">Rédigé par {r.createdByName ?? "—"}</p>
                   <p className="text-sm text-text/80 mt-3 whitespace-pre-wrap">{r.content}</p>
                 </div>
-                {canDelete && (
-                  <form action={deleteReport.bind(null, r.id)} className="flex-shrink-0">
-                    <button type="submit" className="text-xs text-muted hover:text-danger transition-colors">Supprimer</button>
-                  </form>
-                )}
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  {canEdit && (
+                    <Link href={`/secretariat/reports/${r.id}/edit`} className="text-xs text-muted hover:text-text transition-colors">Modifier</Link>
+                  )}
+                  {canDelete && (
+                    <form action={deleteReport.bind(null, r.id)}>
+                      <button type="submit" className="text-xs text-muted hover:text-danger transition-colors">Supprimer</button>
+                    </form>
+                  )}
+                </div>
               </div>
             </Card>
           ))}

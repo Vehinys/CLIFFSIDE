@@ -13,6 +13,7 @@ export default async function AnnouncementsPage() {
   if (!canDo(session.user.permissions, "secretariat", "read")) redirect("/dashboard");
 
   const canWrite = canDo(session.user.permissions, "secretariat", "create");
+  const canEdit = canDo(session.user.permissions, "secretariat", "update");
   const canDelete = canDo(session.user.permissions, "secretariat", "delete");
 
   const announcements = await prisma.announcement.findMany({ orderBy: { createdAt: "desc" } });
@@ -48,11 +49,16 @@ export default async function AnnouncementsPage() {
                   </p>
                   <p className="text-sm text-text/80 mt-3 whitespace-pre-wrap">{a.content}</p>
                 </div>
-                {canDelete && (
-                  <form action={deleteAnnouncement.bind(null, a.id)} className="flex-shrink-0">
-                    <button type="submit" className="text-xs text-muted hover:text-danger transition-colors">Supprimer</button>
-                  </form>
-                )}
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  {canEdit && (
+                    <Link href={`/secretariat/announcements/${a.id}/edit`} className="text-xs text-muted hover:text-text transition-colors">Modifier</Link>
+                  )}
+                  {canDelete && (
+                    <form action={deleteAnnouncement.bind(null, a.id)}>
+                      <button type="submit" className="text-xs text-muted hover:text-danger transition-colors">Supprimer</button>
+                    </form>
+                  )}
+                </div>
               </div>
             </Card>
           ))}

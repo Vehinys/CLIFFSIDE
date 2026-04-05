@@ -33,6 +33,15 @@ export async function createAnnouncement(formData: FormData) {
   redirect("/secretariat/announcements");
 }
 
+export async function updateAnnouncement(id: string, formData: FormData) {
+  const session = await requirePermission("update");
+  const data = announcementSchema.parse(Object.fromEntries(formData));
+  await prisma.announcement.update({ where: { id }, data });
+  await audit("secretariat", "ANNOUNCE_CREATE", data.title, session.user.id, session.user.name);
+  revalidatePath("/secretariat/announcements");
+  redirect("/secretariat/announcements");
+}
+
 export async function deleteAnnouncement(id: string) {
   const session = await requirePermission("delete");
   const item = await prisma.announcement.findUnique({ where: { id }, select: { title: true } });
@@ -55,6 +64,15 @@ export async function createReport(formData: FormData) {
   await prisma.meetingReport.create({
     data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
   });
+  await audit("secretariat", "REPORT_CREATE", data.title, session.user.id, session.user.name);
+  revalidatePath("/secretariat/reports");
+  redirect("/secretariat/reports");
+}
+
+export async function updateReport(id: string, formData: FormData) {
+  const session = await requirePermission("update");
+  const data = reportSchema.parse(Object.fromEntries(formData));
+  await prisma.meetingReport.update({ where: { id }, data });
   await audit("secretariat", "REPORT_CREATE", data.title, session.user.id, session.user.name);
   revalidatePath("/secretariat/reports");
   redirect("/secretariat/reports");
