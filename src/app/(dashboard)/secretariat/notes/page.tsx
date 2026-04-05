@@ -6,17 +6,32 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { deleteNote } from "../_actions";
+import { SearchInput } from "@/components/ui/search-input";
 
-export default async function NotesPage() {
+interface PageProps {
+  searchParams: Promise<{ search?: string }>;
+}
+
+export default async function NotesPage({ searchParams }: PageProps) {
   const session = await auth();
   if (!session?.user) redirect("/login");
   if (!canDo(session.user.permissions, "secretariat", "read")) redirect("/dashboard");
+
+  const { search } = await searchParams;
 
   const canWrite = canDo(session.user.permissions, "secretariat", "create");
   const canEdit = canDo(session.user.permissions, "secretariat", "update");
   const canDelete = canDo(session.user.permissions, "secretariat", "delete");
 
-  const notes = await prisma.sharedNote.findMany({ orderBy: { updatedAt: "desc" } });
+  const notes = await prisma.sharedNote.findMany({
+    where: search ? {
+      OR: [
+        { title: { contains: search, mode: "insensitive" } },
+        { content: { contains: search, mode: "insensitive" } },
+      ],
+    } : undefined,
+    orderBy: { updatedAt: "desc" },
+  });
 
   return (
     <div className="space-y-6">
@@ -33,9 +48,11 @@ export default async function NotesPage() {
         )}
       </div>
 
+      <SearchInput placeholder="Rechercher une note…" />
+
       {notes.length === 0 ? (
         <Card className="py-12 text-center">
-          <p className="text-muted">Aucune note partagée pour le moment.</p>
+          <p className="text-muted">{search ? "Aucun résultat." : "Aucune note partagée pour le moment."}</p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -47,7 +64,16 @@ export default async function NotesPage() {
                   <p className="text-xs text-muted mt-0.5">
                     {n.createdByName ?? "—"} · modifié le {new Date(n.updatedAt).toLocaleDateString("fr-FR")}
                   </p>
-                  <p className="text-sm text-text/80 mt-2 line-clamp-3 whitespace-pre-wrap">{n.content}</p>
+                  <div className="text-sm text-text/80 mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap pr-1">
+                    {n.content}
+                  </div>
+                  {n.imageUrl && (
+                    <img
+                      src={n.imageUrl}
+                      alt=""
+                      className="mt-3 rounded-md max-h-48 object-contain border border-border w-full"
+                    />
+                  )}
                 </div>
               </div>
               {(canEdit || canDelete) && (

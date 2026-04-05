@@ -67,7 +67,7 @@ export default async function TasksPage() {
               <ul className="space-y-3">
                 {grouped[status].map((t) => (
                   <li key={t.id} className="border border-border/50 rounded-md p-2.5 bg-surface-2/50">
-                    <p className="font-medium text-sm text-text">{t.title}</p>
+                    <Link href={`/secretariat/tasks/${t.id}`} className="font-medium text-sm text-text hover:text-primary transition-colors">{t.title}</Link>
                     {t.description && <p className="text-xs text-muted mt-0.5 line-clamp-2">{t.description}</p>}
                     {t.assignedToName && (
                       <p className="text-xs text-muted mt-1">→ {t.assignedToName}</p>
