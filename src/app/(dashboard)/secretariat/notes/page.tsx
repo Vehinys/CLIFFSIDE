@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { canDo } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
 import { SearchInput } from "@/components/ui/search-input";
 import { NotesList } from "./_components/notes-list";
 import { NewNoteButton } from "../_components/new-item-buttons";
@@ -53,17 +52,12 @@ export default async function NotesPage({ searchParams }: PageProps) {
 
       <SearchInput placeholder="Rechercher une note…" />
 
-      {notes.length === 0 ? (
-        <Card className="py-12 text-center">
-          <p className="text-muted">{search ? "Aucun résultat." : "Aucune note partagée pour le moment."}</p>
-        </Card>
-      ) : (
-        <NotesList 
-          notes={notes} 
-          canEdit={canEdit} 
-          canDelete={canDelete} 
-        />
-      )}
+      <NotesList
+        notes={notes}
+        canEdit={canEdit}
+        canDelete={canDelete}
+        search={search}
+      />
     </div>
   );
 }

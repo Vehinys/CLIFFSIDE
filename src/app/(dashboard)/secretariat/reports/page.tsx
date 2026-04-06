@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { canDo } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
 import { SearchInput } from "@/components/ui/search-input";
 import { ReportsList } from "./_components/reports-list";
 import { NewReportButton } from "../_components/new-item-buttons";
@@ -53,17 +52,12 @@ export default async function ReportsPage({ searchParams }: PageProps) {
 
       <SearchInput placeholder="Rechercher un compte-rendu…" />
 
-      {reports.length === 0 ? (
-        <Card className="py-12 text-center">
-          <p className="text-muted">{search ? "Aucun résultat." : "Aucun compte-rendu pour le moment."}</p>
-        </Card>
-      ) : (
-        <ReportsList 
-          reports={reports} 
-          canEdit={canEdit} 
-          canDelete={canDelete} 
-        />
-      )}
+      <ReportsList
+        reports={reports}
+        canEdit={canEdit}
+        canDelete={canDelete}
+        search={search}
+      />
     </div>
   );
 }
