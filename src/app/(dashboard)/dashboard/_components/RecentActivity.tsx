@@ -2,9 +2,12 @@ import Link from "next/link";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatMoney, formatDate } from "@/lib/utils";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 import type { Prisma } from "@/generated/prisma/client";
 
-type Transaction = Prisma.TreasuryTransactionGetPayload<object>;
+type Transaction = Prisma.TreasuryTransactionGetPayload<{
+  include: { createdBy: { include: { role: { select: { color: true } } } } };
+}>;
 type LowStockItem = Prisma.InventoryItemGetPayload<{ include: { category: true } }>;
 
 interface Props {
@@ -76,7 +79,10 @@ export function RecentActivity({ transactions, lowStockItems }: Props) {
                   </span>
                   <div className="min-w-0">
                     <span className="text-sm text-text truncate block">{t.description}</span>
-                    <span className="text-xs text-muted">{formatDate(t.createdAt)}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-muted">{formatDate(t.createdAt)}</span>
+                      <span className="text-[10px] text-muted/60">— <UserPseudo name={t.createdByName} color={t.createdBy?.role?.color} className="text-inherit" /></span>
+                    </div>
                   </div>
                 </div>
                 <span className={`ml-4 shrink-0 text-sm font-mono font-semibold ${t.type === "INCOME" ? "text-success" : "text-danger"}`}>

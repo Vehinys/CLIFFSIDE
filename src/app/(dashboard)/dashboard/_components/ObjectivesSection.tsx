@@ -88,6 +88,11 @@ function ObjectiveList({ objectives, canUpdate, canDelete, day, canWrite, placeh
               )}
               <span className={`text-sm flex-1 ${obj.done ? "line-through text-muted" : "text-text"}`}>
                 {obj.content}
+                {obj.createdByName && (
+                  <span className="ml-2 text-[10px] text-muted opacity-60">
+                    — <UserPseudo name={obj.createdByName} color={obj.createdBy?.role?.color} className="text-inherit" />
+                  </span>
+                )}
               </span>
               {canDelete && (
                 <form action={deleteObjective.bind(null, obj.id)} className="opacity-0 group-hover:opacity-100 transition-opacity">

@@ -8,7 +8,9 @@ import { ObjectivesSection } from "./_components/ObjectivesSection";
 import { KpiGrid } from "./_components/KpiGrid";
 import { RecentActivity } from "./_components/RecentActivity";
 
-type Transaction = Prisma.TreasuryTransactionGetPayload<object>;
+type Transaction = Prisma.TreasuryTransactionGetPayload<{
+  include: { createdBy: { include: { role: { select: { color: true } } } } };
+}>;
 type LowStockItem = Prisma.InventoryItemGetPayload<{ include: { category: true } }>;
 type BalanceSummary = Array<{ type: string; _sum: { amount: number | null } }>;
 
@@ -75,7 +77,11 @@ export default async function DashboardPage() {
           }).then((items) => items.filter((i) => i.quantity <= (i.minStock ?? Infinity)) as LowStockItem[])
         : Promise.resolve([] as LowStockItem[]),
       canReadTreasury
-        ? prisma.treasuryTransaction.findMany({ orderBy: { createdAt: "desc" }, take: 5 }) as Promise<Transaction[]>
+        ? prisma.treasuryTransaction.findMany({ 
+            include: { createdBy: { include: { role: { select: { color: true } } } } },
+            orderBy: { createdAt: "desc" }, 
+            take: 5 
+          }) as Promise<Transaction[]>
         : Promise.resolve([] as Transaction[]),
       canReadTreasury
         ? prisma.treasuryTransaction.groupBy({ by: ["type"], _sum: { amount: true } }).then((r) => r as BalanceSummary)
