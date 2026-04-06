@@ -34,6 +34,11 @@ export default async function NotesPage({ searchParams }: PageProps) {
         ],
       },
     } : {}),
+    include: {
+      createdBy: {
+        include: { role: { select: { color: true } } }
+      }
+    },
     orderBy: { updatedAt: "desc" },
   });
 

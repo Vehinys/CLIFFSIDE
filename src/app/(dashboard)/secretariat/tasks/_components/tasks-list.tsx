@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 import { updateTaskStatus, deleteTask, createTask, updateTask } from "../../_actions";
 import { TaskModal } from "./task-modal";
 
@@ -27,6 +28,9 @@ interface Task {
   assignedToId: string | null;
   assignedToName: string | null;
   status: "TODO" | "IN_PROGRESS" | "DONE";
+  createdByName: string | null;
+  createdBy?: { role?: { color: string } | null } | null;
+  assignedTo?: { role?: { color: string } | null } | null;
 }
 
 interface Member {
@@ -104,9 +108,15 @@ export function TasksList({ tasks, members, canWrite, canEdit, canDelete }: Prop
                       {t.assignedToName && (
                         <div className="flex items-center gap-1.5 mt-1">
                           <div className="w-1.5 h-1.5 rounded-full bg-primary/60" />
-                          <p className="text-[10px] uppercase font-bold tracking-wider text-muted">{t.assignedToName}</p>
+                          <p className="text-[10px] uppercase font-bold tracking-wider text-muted">
+                            Assigné à : <UserPseudo name={t.assignedToName} color={t.assignedTo?.role?.color} className="text-inherit" />
+                          </p>
                         </div>
                       )}
+                      
+                      <p className="text-[9px] text-muted/60 absolute bottom-1 right-2 group-hover:block transition-all">
+                        Par <UserPseudo name={t.createdByName} color={t.createdBy?.role?.color} className="text-inherit" />
+                      </p>
 
                       <div className="flex items-center gap-2 mt-2 pt-2 border-t border-border/30">
                         {canEdit && status !== "DONE" && (

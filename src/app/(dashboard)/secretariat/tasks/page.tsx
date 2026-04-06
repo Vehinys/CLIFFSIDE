@@ -29,7 +29,13 @@ export default async function TasksPage() {
   const canEdit = canDo(session.user.permissions, "secretariat", "update");
   const canDelete = canDo(session.user.permissions, "secretariat", "delete");
 
-  const tasks = await prisma.secretariatTask.findMany({ orderBy: { createdAt: "desc" } });
+  const tasks = await prisma.secretariatTask.findMany({ 
+    include: {
+      createdBy: { include: { role: { select: { color: true } } } },
+      assignedTo: { include: { role: { select: { color: true } } } },
+    },
+    orderBy: { createdAt: "desc" } 
+  });
 
   const members = canDo(session.user.permissions, "members", "read")
     ? (await prisma.user.findMany({ select: { id: true, name: true, email: true }, orderBy: { name: "asc" } }))

@@ -34,6 +34,11 @@ export default async function AnnouncementsPage({ searchParams }: PageProps) {
         ],
       },
     } : {}),
+    include: {
+      createdBy: {
+        include: { role: { select: { color: true } } }
+      }
+    },
     orderBy: { createdAt: "desc" },
   });
 

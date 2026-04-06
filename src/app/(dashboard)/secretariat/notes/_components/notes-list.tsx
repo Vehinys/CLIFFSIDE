@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { deleteNote, createNote, updateNote } from "../../_actions";
 import { NoteModal } from "./note-modal";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 
 interface Note {
   id: string;
@@ -15,6 +16,11 @@ interface Note {
   imageUrl: string | null;
   updatedAt: Date;
   createdByName: string | null;
+  createdBy?: {
+    role?: {
+      color: string;
+    } | null;
+  } | null;
 }
 
 interface Props {
@@ -65,7 +71,7 @@ export function NotesList({ notes, canEdit, canDelete }: Omit<Props, "canWrite">
               <div className="flex-1 min-w-0">
                 <h2 className="font-semibold text-text group-hover:text-primary transition-colors">{n.title}</h2>
                 <p className="text-xs text-muted mt-0.5">
-                  {n.createdByName ?? "—"} · modifié le {new Date(n.updatedAt).toLocaleDateString("fr-FR")}
+                  <UserPseudo name={n.createdByName} color={n.createdBy?.role?.color} className="text-inherit" /> · modifié le {new Date(n.updatedAt).toLocaleDateString("fr-FR")}
                 </p>
                 <div className="text-sm text-text/80 mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap pr-1">
                   {n.content}

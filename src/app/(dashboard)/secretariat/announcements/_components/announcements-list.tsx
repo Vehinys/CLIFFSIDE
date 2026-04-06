@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { deleteAnnouncement, createAnnouncement, updateAnnouncement } from "../../_actions";
 import { AnnouncementModal } from "./announcement-modal";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 
 interface Announcement {
   id: string;
@@ -15,6 +16,11 @@ interface Announcement {
   imageUrl: string | null;
   createdAt: Date;
   createdByName: string | null;
+  createdBy?: {
+    role?: {
+      color: string;
+    } | null;
+  } | null;
 }
 
 interface Props {

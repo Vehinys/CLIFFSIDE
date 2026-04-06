@@ -1,12 +1,18 @@
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { respondAttendance } from "../_actions";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 
 type Attendance = {
   id: string;
   userId: string;
   userName: string | null;
   status: string;
+  user?: {
+    role?: {
+      color: string;
+    } | null;
+  } | null;
 };
 
 interface Props {
@@ -137,7 +143,7 @@ export function AttendanceCard({ currentUserId, attendances }: Props) {
               }`}
             >
               {a.status === "PRESENT" ? <IconCheck /> : <IconX />}
-              <span className="text-text">{a.userName ?? a.userId}</span>
+              <UserPseudo name={a.userName} color={a.user?.role?.color} className="text-inherit" fallback={a.userId} />
             </div>
           ))}
         </div>

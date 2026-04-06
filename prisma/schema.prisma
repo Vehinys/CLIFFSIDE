@@ -23,6 +23,18 @@ model User {
   role          Role?     @relation(fields: [roleId], references: [id])
   accounts      Account[]
   sessions      Session[]
+  
+  // Relations inverses
+  attendances   DailyAttendance[]
+  objectives    DailyObjective[]
+  announcements Announcement[]
+  reports       MeetingReport[]
+  notes         SharedNote[]
+  createdTasks  SecretariatTask[]  @relation("CreatedTasks")
+  assignedTasks SecretariatTask[]  @relation("AssignedTasks")
+  transactions  TreasuryTransaction[]
+  auditLogs     AuditLog[]
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   lastSeen      DateTime?
@@ -139,6 +151,7 @@ model AuditLog {
   action     String
   targetName String                   // dénormalisé (conservé après suppression)
   userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userName   String?
   details    String?
   createdAt  DateTime @default(now())
@@ -177,6 +190,7 @@ model DailyAttendance {
   sessionId String
   session   DailySession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userName  String?
   status    AttendanceStatus
   createdAt DateTime         @default(now())
@@ -193,6 +207,7 @@ model DailyObjective {
   content       String
   done          Boolean      @default(false)
   createdById   String
+  createdBy     User         @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdByName String?
   createdAt     DateTime     @default(now())
 
@@ -209,6 +224,7 @@ model Announcement {
   content       String
   imageUrl      String?
   createdById   String
+  createdBy     User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdByName String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -221,6 +237,7 @@ model MeetingReport {
   imageUrl      String?
   meetingDate   DateTime
   createdById   String
+  createdBy     User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdByName String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -232,6 +249,7 @@ model SharedNote {
   content       String
   imageUrl      String?
   createdById   String
+  createdBy     User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdByName String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -248,9 +266,11 @@ model SecretariatTask {
   title          String
   description    String?
   assignedToId   String?
+  assignedTo     User?      @relation("AssignedTasks", fields: [assignedToId], references: [id], onDelete: SetNull)
   assignedToName String?
   status         TaskStatus @default(TODO)
   createdById    String
+  createdBy      User       @relation("CreatedTasks", fields: [createdById], references: [id], onDelete: Cascade)
   createdByName  String?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
@@ -267,7 +287,9 @@ model TreasuryTransaction {
   description   String
   category      String?         // ex: "Vente", "Achat", "Salaire"
   createdById   String          // ID du User auteur
+  createdBy     User            @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdByName String?         // dénormalisé
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 }
+

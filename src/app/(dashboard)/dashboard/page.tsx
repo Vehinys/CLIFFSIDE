@@ -48,8 +48,14 @@ export default async function DashboardPage() {
       prisma.dailySession.findUnique({
         where: { date: today },
         include: {
-          attendances: { orderBy: { updatedAt: "asc" } },
-          objectives: { orderBy: { createdAt: "asc" } },
+          attendances: { 
+            orderBy: { updatedAt: "asc" },
+            include: { user: { include: { role: { select: { color: true } } } } }
+          },
+          objectives: { 
+            orderBy: { createdAt: "asc" },
+            include: { createdBy: { include: { role: { select: { color: true } } } } }
+          },
         },
       }),
       canReadObjectives

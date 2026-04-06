@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { deleteReport, createReport, updateReport } from "../../_actions";
 import { ReportModal } from "./report-modal";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 
 interface Report {
   id: string;
@@ -15,6 +16,11 @@ interface Report {
   meetingDate: Date;
   imageUrl: string | null;
   createdByName: string | null;
+  createdBy?: {
+    role?: {
+      color: string;
+    } | null;
+  } | null;
 }
 
 interface Props {
@@ -61,7 +67,9 @@ export function ReportsList({ reports, canEdit, canDelete }: Omit<Props, "canWri
                         {new Date(r.meetingDate).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
                       </span>
                     </div>
-                    <p className="text-xs text-muted mt-0.5">Rédigé par {r.createdByName ?? "—"}</p>
+                    <p className="text-xs text-muted mt-0.5">
+                      Rédigé par <UserPseudo name={r.createdByName} color={r.createdBy?.role?.color} className="text-inherit" />
+                    </p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     {canEdit && (

@@ -34,6 +34,11 @@ export default async function ReportsPage({ searchParams }: PageProps) {
         ],
       },
     } : {}),
+    include: {
+      createdBy: {
+        include: { role: { select: { color: true } } }
+      }
+    },
     orderBy: { meetingDate: "desc" },
   });
 

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/select";
 import { formatDate } from "@/lib/utils";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 import { deleteUserAccount, updateUserRole } from "./_actions";
 import { deleteRole } from "../roles/_actions";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
@@ -176,7 +177,9 @@ export default async function MembersPage({
                             {u.email}
                           </div>
                         </td>
-                        <td className="py-4 px-2 text-muted group-hover/row:text-text/80 transition-colors">{u.name ?? "—"}</td>
+                        <td className="py-4 px-2 text-muted group-hover/row:text-text/80 transition-colors">
+                          <UserPseudo name={u.name} color={u.role?.color} />
+                        </td>
                         <td className="py-3">
                           {canEditMembers ? (
                             <form action={updateRoleWithId} className="flex items-center gap-2">
