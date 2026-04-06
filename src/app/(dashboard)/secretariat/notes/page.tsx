@@ -60,8 +60,20 @@ export default async function NotesPage({ searchParams }: PageProps) {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {notes.map((n) => (
-            <Card key={n.id}>
-              <div className="flex items-start justify-between gap-2">
+            <Card key={n.id} className="flex flex-col">
+              <div className="flex items-start gap-4 flex-1">
+                {n.imageUrl && (
+                  <div className="shrink-0 w-24 h-24 sm:w-32 sm:h-32 rounded-lg border border-white/10 bg-surface/50 overflow-hidden flex items-center justify-center p-1.5 mt-1">
+                    <Image
+                      src={n.imageUrl}
+                      alt=""
+                      width={200}
+                      height={200}
+                      className="w-full h-full object-contain"
+                      unoptimized
+                    />
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <h2 className="font-semibold text-text">{n.title}</h2>
                   <p className="text-xs text-muted mt-0.5">
@@ -70,20 +82,10 @@ export default async function NotesPage({ searchParams }: PageProps) {
                   <div className="text-sm text-text/80 mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap pr-1">
                     {n.content}
                   </div>
-                  {n.imageUrl && (
-                    <Image
-                      src={n.imageUrl}
-                      alt=""
-                      width={800}
-                      height={600}
-                      className="mt-3 rounded-md max-h-48 object-contain border border-border w-full"
-                      unoptimized
-                    />
-                  )}
                 </div>
               </div>
               {(canEdit || canDelete) && (
-                <div className="flex gap-3 mt-3 pt-3 border-t border-border/50">
+                <div className="flex gap-3 mt-4 pt-3 border-t border-border/50">
                   {canEdit && (
                     <Link href={`/secretariat/notes/${n.id}/edit`} className="text-xs text-muted hover:text-text">Modifier</Link>
                   )}

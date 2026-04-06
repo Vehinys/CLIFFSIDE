@@ -63,7 +63,7 @@ export default async function ReportsPage({ searchParams }: PageProps) {
             <Card key={r.id}>
               <div className="flex items-start gap-4">
                 {r.imageUrl && (
-                  <div className="flex-shrink-0 w-48 h-48 rounded-lg border border-white/10 bg-surface/50 overflow-hidden flex items-center justify-center p-2">
+                  <div className="shrink-0 w-48 h-48 rounded-lg border border-white/10 bg-surface/50 overflow-hidden flex items-center justify-center p-2">
                     <Image
                       src={r.imageUrl}
                       alt=""
@@ -85,7 +85,7 @@ export default async function ReportsPage({ searchParams }: PageProps) {
                       </div>
                       <p className="text-xs text-muted mt-0.5">Rédigé par {r.createdByName ?? "—"}</p>
                     </div>
-                    <div className="flex items-center gap-3 flex-shrink-0">
+                    <div className="flex items-center gap-3 shrink-0">
                       {canEdit && (
                         <Link href={`/secretariat/reports/${r.id}/edit`} className="text-xs text-muted hover:text-text transition-colors">Modifier</Link>
                       )}

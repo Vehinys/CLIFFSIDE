@@ -63,7 +63,7 @@ export default async function AnnouncementsPage({ searchParams }: PageProps) {
             <Card key={a.id}>
               <div className="flex items-start gap-4">
                 {a.imageUrl && (
-                  <div className="flex-shrink-0 w-48 h-48 rounded-lg border border-white/10 bg-surface/50 overflow-hidden flex items-center justify-center p-2">
+                  <div className="shrink-0 w-48 h-48 rounded-lg border border-white/10 bg-surface/50 overflow-hidden flex items-center justify-center p-2">
                     <Image
                       src={a.imageUrl}
                       alt=""
@@ -82,7 +82,7 @@ export default async function AnnouncementsPage({ searchParams }: PageProps) {
                         {a.createdByName ?? "—"} · {new Date(a.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
                       </p>
                     </div>
-                    <div className="flex items-center gap-3 flex-shrink-0">
+                    <div className="flex items-center gap-3 shrink-0">
                       {canEdit && (
                         <Link href={`/secretariat/announcements/${a.id}/edit`} className="text-xs text-muted hover:text-text transition-colors">Modifier</Link>
                       )}
