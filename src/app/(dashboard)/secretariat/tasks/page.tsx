@@ -6,9 +6,7 @@ import Link from "next/link";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExpandableText } from "@/components/ui/expandable-text";
-import { updateTaskStatus, deleteTask } from "../_actions";
-import { ConfirmDelete } from "@/components/ui/confirm-delete";
+import { TasksList } from "./_components/tasks-list";
 
 const STATUS_META = {
   TODO:        { label: "À faire",  variant: "default"  as const },
@@ -33,11 +31,9 @@ export default async function TasksPage() {
 
   const tasks = await prisma.secretariatTask.findMany({ orderBy: { createdAt: "desc" } });
 
-  const grouped = {
-    TODO: tasks.filter((t) => t.status === "TODO"),
-    IN_PROGRESS: tasks.filter((t) => t.status === "IN_PROGRESS"),
-    DONE: tasks.filter((t) => t.status === "DONE"),
-  };
+  const members = canDo(session.user.permissions, "members", "read")
+    ? (await prisma.user.findMany({ select: { id: true, name: true, email: true }, orderBy: { name: "asc" } }))
+    : [];
 
   return (
     <div className="space-y-6">
@@ -47,59 +43,15 @@ export default async function TasksPage() {
           <span className="text-border">/</span>
           <h1 className="text-xl font-bold text-text">Tâches</h1>
         </div>
-        {canWrite && (
-          <Link href="/secretariat/tasks/new">
-            <Button>+ Nouvelle tâche</Button>
-          </Link>
-        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {(["TODO", "IN_PROGRESS", "DONE"] as const).map((status) => (
-          <Card key={status}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm">
-                <Badge variant={STATUS_META[status].variant}>{STATUS_META[status].label}</Badge>
-                <span className="text-muted font-normal">({grouped[status].length})</span>
-              </CardTitle>
-            </CardHeader>
-            {grouped[status].length === 0 ? (
-              <p className="text-xs text-muted italic">Aucune tâche.</p>
-            ) : (
-              <ul className="space-y-3">
-                {grouped[status].map((t) => (
-                  <li key={t.id} className="border border-border/50 rounded-md p-2.5 bg-surface-2/50">
-                    <Link href={`/secretariat/tasks/${t.id}`} className="font-medium text-sm text-text hover:text-primary transition-colors">{t.title}</Link>
-                    {t.description && <ExpandableText text={t.description} />}
-                    {t.assignedToName && (
-                      <p className="text-xs text-muted mt-1">→ {t.assignedToName}</p>
-                    )}
-                    <div className="flex items-center gap-2 mt-2">
-                      {canEdit && status !== "DONE" && (
-                        <form action={updateTaskStatus.bind(null, t.id, NEXT_STATUS[status])}>
-                          <button type="submit" className="text-xs text-primary hover:underline">
-                            {status === "TODO" ? "Démarrer →" : "Terminer →"}
-                          </button>
-                        </form>
-                      )}
-                      {canEdit && (
-                        <Link href={`/secretariat/tasks/${t.id}/edit`} className="text-xs text-muted hover:text-text ml-auto">Modifier</Link>
-                      )}
-                      {canDelete && (
-                        <ConfirmDelete
-                          action={deleteTask.bind(null, t.id)}
-                          confirmMessage={`Supprimer la tâche "${t.title}" ?`}
-                          successMessage="Tâche supprimée"
-                        />
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
-        ))}
-      </div>
+      <TasksList 
+        tasks={tasks} 
+        members={members} 
+        canWrite={canWrite} 
+        canEdit={canEdit} 
+        canDelete={canDelete} 
+      />
     </div>
   );
 }

@@ -24,23 +24,31 @@ const announcementSchema = z.object({
 });
 
 export async function createAnnouncement(formData: FormData) {
-  const session = await requirePermission("create");
-  const data = announcementSchema.parse(Object.fromEntries(formData));
-  await prisma.announcement.create({
-    data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
-  });
-  await audit("secretariat", "ANNOUNCE_CREATE", data.title, session.user.id, session.user.name);
-  revalidatePath("/secretariat/announcements");
-  redirect("/secretariat/announcements");
+  try {
+    const session = await requirePermission("create");
+    const data = announcementSchema.parse(Object.fromEntries(formData));
+    await prisma.announcement.create({
+      data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
+    });
+    await audit("secretariat", "ANNOUNCE_CREATE", data.title, session.user.id, session.user.name);
+    revalidatePath("/secretariat/announcements");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur de création" };
+  }
 }
 
 export async function updateAnnouncement(id: string, formData: FormData) {
-  const session = await requirePermission("update");
-  const data = announcementSchema.parse(Object.fromEntries(formData));
-  await prisma.announcement.update({ where: { id }, data });
-  await audit("secretariat", "ANNOUNCE_UPDATE", data.title, session.user.id, session.user.name);
-  revalidatePath("/secretariat/announcements");
-  redirect("/secretariat/announcements");
+  try {
+    const session = await requirePermission("update");
+    const data = announcementSchema.parse(Object.fromEntries(formData));
+    await prisma.announcement.update({ where: { id }, data });
+    await audit("secretariat", "ANNOUNCE_UPDATE", data.title, session.user.id, session.user.name);
+    revalidatePath("/secretariat/announcements");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur de mise à jour" };
+  }
 }
 
 export async function deleteAnnouncement(id: string) {
@@ -66,23 +74,31 @@ const reportSchema = z.object({
 });
 
 export async function createReport(formData: FormData) {
-  const session = await requirePermission("create");
-  const data = reportSchema.parse(Object.fromEntries(formData));
-  await prisma.meetingReport.create({
-    data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
-  });
-  await audit("secretariat", "REPORT_CREATE", data.title, session.user.id, session.user.name);
-  revalidatePath("/secretariat/reports");
-  redirect("/secretariat/reports");
+  try {
+    const session = await requirePermission("create");
+    const data = reportSchema.parse(Object.fromEntries(formData));
+    await prisma.meetingReport.create({
+      data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
+    });
+    await audit("secretariat", "REPORT_CREATE", data.title, session.user.id, session.user.name);
+    revalidatePath("/secretariat/reports");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur de création" };
+  }
 }
 
 export async function updateReport(id: string, formData: FormData) {
-  const session = await requirePermission("update");
-  const data = reportSchema.parse(Object.fromEntries(formData));
-  await prisma.meetingReport.update({ where: { id }, data });
-  await audit("secretariat", "REPORT_UPDATE", data.title, session.user.id, session.user.name);
-  revalidatePath("/secretariat/reports");
-  redirect("/secretariat/reports");
+  try {
+    const session = await requirePermission("update");
+    const data = reportSchema.parse(Object.fromEntries(formData));
+    await prisma.meetingReport.update({ where: { id }, data });
+    await audit("secretariat", "REPORT_UPDATE", data.title, session.user.id, session.user.name);
+    revalidatePath("/secretariat/reports");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur de mise à jour" };
+  }
 }
 
 export async function deleteReport(id: string) {
@@ -107,23 +123,31 @@ const noteSchema = z.object({
 });
 
 export async function createNote(formData: FormData) {
-  const session = await requirePermission("create");
-  const data = noteSchema.parse(Object.fromEntries(formData));
-  await prisma.sharedNote.create({
-    data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
-  });
-  await audit("secretariat", "NOTE_CREATE", data.title, session.user.id, session.user.name);
-  revalidatePath("/secretariat/notes");
-  redirect("/secretariat/notes");
+  try {
+    const session = await requirePermission("create");
+    const data = noteSchema.parse(Object.fromEntries(formData));
+    await prisma.sharedNote.create({
+      data: { ...data, createdById: session.user.id, createdByName: session.user.name ?? null },
+    });
+    await audit("secretariat", "NOTE_CREATE", data.title, session.user.id, session.user.name);
+    revalidatePath("/secretariat/notes");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur" };
+  }
 }
 
 export async function updateNote(id: string, formData: FormData) {
-  const session = await requirePermission("update");
-  const data = noteSchema.parse(Object.fromEntries(formData));
-  await prisma.sharedNote.update({ where: { id }, data });
-  await audit("secretariat", "NOTE_UPDATE", data.title, session.user.id, session.user.name);
-  revalidatePath("/secretariat/notes");
-  redirect("/secretariat/notes");
+  try {
+    const session = await requirePermission("update");
+    const data = noteSchema.parse(Object.fromEntries(formData));
+    await prisma.sharedNote.update({ where: { id }, data });
+    await audit("secretariat", "NOTE_UPDATE", data.title, session.user.id, session.user.name);
+    revalidatePath("/secretariat/notes");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur" };
+  }
 }
 
 export async function deleteNote(id: string) {
@@ -149,40 +173,53 @@ const taskSchema = z.object({
 });
 
 export async function createTask(formData: FormData) {
-  const session = await requirePermission("create");
-  const data = taskSchema.parse(Object.fromEntries(formData));
-  const assignedUser = data.assignedToId
-    ? await prisma.user.findUnique({ where: { id: data.assignedToId }, select: { name: true, email: true } })
-    : null;
-  const assignedToName = assignedUser ? (assignedUser.name ?? assignedUser.email) : null;
-  await prisma.secretariatTask.create({
-    data: { ...data, assignedToName, createdById: session.user.id, createdByName: session.user.name ?? null },
-  });
-  await audit("secretariat", "TASK_CREATE", data.title, session.user.id, session.user.name,
-    assignedToName ? `Assigné à ${assignedToName}` : undefined);
-  revalidatePath("/secretariat/tasks");
-  redirect("/secretariat/tasks");
+  try {
+    const session = await requirePermission("create");
+    const data = taskSchema.parse(Object.fromEntries(formData));
+    const assignedUser = data.assignedToId
+      ? await prisma.user.findUnique({ where: { id: data.assignedToId }, select: { name: true, email: true } })
+      : null;
+    const assignedToName = assignedUser ? (assignedUser.name ?? assignedUser.email) : null;
+    await prisma.secretariatTask.create({
+      data: { ...data, assignedToName, createdById: session.user.id, createdByName: session.user.name ?? null },
+    });
+    await audit("secretariat", "TASK_CREATE", data.title, session.user.id, session.user.name,
+      assignedToName ? `Assigné à ${assignedToName}` : undefined);
+    revalidatePath("/secretariat/tasks");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur" };
+  }
 }
 
 export async function updateTask(id: string, formData: FormData) {
-  const session = await requirePermission("update");
-  const data = taskSchema.parse(Object.fromEntries(formData));
-  const assignedUser = data.assignedToId
-    ? await prisma.user.findUnique({ where: { id: data.assignedToId }, select: { name: true, email: true } })
-    : null;
-  const assignedToName = assignedUser ? (assignedUser.name ?? assignedUser.email) : null;
-  await prisma.secretariatTask.update({ where: { id }, data: { ...data, assignedToName } });
-  await audit("secretariat", "TASK_UPDATE", data.title, session.user.id, session.user.name, `Statut: ${data.status}`);
-  revalidatePath("/secretariat/tasks");
-  redirect("/secretariat/tasks");
+  try {
+    const session = await requirePermission("update");
+    const data = taskSchema.parse(Object.fromEntries(formData));
+    const assignedUser = data.assignedToId
+      ? await prisma.user.findUnique({ where: { id: data.assignedToId }, select: { name: true, email: true } })
+      : null;
+    const assignedToName = assignedUser ? (assignedUser.name ?? assignedUser.email) : null;
+    await prisma.secretariatTask.update({ where: { id }, data: { ...data, assignedToName } });
+    await audit("secretariat", "TASK_UPDATE", data.title, session.user.id, session.user.name, `Statut: ${data.status}`);
+    revalidatePath("/secretariat/tasks");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur" };
+  }
 }
 
 export async function updateTaskStatus(id: string, status: "TODO" | "IN_PROGRESS" | "DONE") {
-  const session = await requirePermission("update");
-  const task = await prisma.secretariatTask.findUnique({ where: { id }, select: { title: true } });
-  await prisma.secretariatTask.update({ where: { id }, data: { status } });
-  await audit("secretariat", "TASK_UPDATE", task?.title ?? id, session.user.id, session.user.name, `Statut → ${status}`);
-  revalidatePath("/secretariat/tasks");
+  try {
+    const session = await requirePermission("update");
+    const task = await prisma.secretariatTask.findUnique({ where: { id }, select: { title: true } });
+    await prisma.secretariatTask.update({ where: { id }, data: { status } });
+    await audit("secretariat", "TASK_UPDATE", task?.title ?? id, session.user.id, session.user.name, `Statut → ${status}`);
+    revalidatePath("/secretariat/tasks");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur lors de la mise à jour" };
+  }
 }
 
 export async function deleteTask(id: string) {
