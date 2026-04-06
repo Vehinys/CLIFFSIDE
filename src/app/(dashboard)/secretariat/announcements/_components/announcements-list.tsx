@@ -1,0 +1,113 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ConfirmDelete } from "@/components/ui/confirm-delete";
+import { deleteAnnouncement, createAnnouncement, updateAnnouncement } from "../../_actions";
+import { AnnouncementModal } from "./announcement-modal";
+
+interface Announcement {
+  id: string;
+  title: string;
+  content: string;
+  imageUrl: string | null;
+  createdAt: Date;
+  createdByName: string | null;
+}
+
+interface Props {
+  announcements: Announcement[];
+  canWrite: boolean;
+  canEdit: boolean;
+  canDelete: boolean;
+}
+
+export function AnnouncementsList({ announcements, canWrite, canEdit, canDelete }: Props) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null);
+
+  const handleEdit = (announcement: Announcement) => {
+    setEditingAnnouncement(announcement);
+    setModalOpen(true);
+  };
+
+  const handleCreate = () => {
+    setEditingAnnouncement(null);
+    setModalOpen(true);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-end -mt-12">
+        {canWrite && (
+          <Button onClick={handleCreate}>+ Nouvelle annonce</Button>
+        )}
+      </div>
+
+      <div className="space-y-4 mt-6">
+        {announcements.map((a) => (
+          <Card key={a.id} className="group hover:border-primary/30 transition-all">
+            <div className="flex items-start gap-4">
+              {a.imageUrl && (
+                <div className="shrink-0 w-48 h-48 rounded-lg border border-white/10 bg-surface/50 overflow-hidden flex items-center justify-center p-2">
+                  <Image
+                    src={a.imageUrl}
+                    alt=""
+                    width={400}
+                    height={400}
+                    className="w-full h-full object-contain"
+                    unoptimized
+                  />
+                </div>
+              )}
+              <div className="flex-1 min-w-0 flex flex-col justify-start">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className="font-semibold text-text group-hover:text-primary transition-colors">{a.title}</h2>
+                    <p className="text-xs text-muted mt-0.5">
+                      {a.createdByName ?? "—"} · {new Date(a.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    {canEdit && (
+                      <button 
+                        onClick={() => handleEdit(a)}
+                        className="text-xs text-muted hover:text-text transition-colors"
+                      >
+                        Modifier
+                      </button>
+                    )}
+                    {canDelete && (
+                      <ConfirmDelete
+                        action={deleteAnnouncement.bind(null, a.id)}
+                        confirmMessage={`Supprimer l'annonce "${a.title}" ?`}
+                        successMessage="Annonce supprimée"
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className="text-sm text-text/80 mt-3 max-h-48 overflow-y-auto whitespace-pre-wrap pr-1">
+                  {a.content}
+                </div>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <AnnouncementModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        title={editingAnnouncement ? "Modifier l'annonce" : "Nouvelle annonce"}
+        initialData={editingAnnouncement ? {
+          title: editingAnnouncement.title,
+          content: editingAnnouncement.content,
+          imageUrl: editingAnnouncement.imageUrl,
+        } : undefined}
+        action={editingAnnouncement ? updateAnnouncement.bind(null, editingAnnouncement.id) : createAnnouncement}
+      />
+    </div>
+  );
+}
