@@ -256,25 +256,6 @@ model SecretariatTask {
 }
 
 // ─────────────────────────────────────────────
-// PÉRISSABLES
-// ─────────────────────────────────────────────
-
-model PerishableItem {
-  id            String   @id @default(cuid())
-  name          String
-  description   String?
-  quantity      Int      @default(1)
-  unit          String?                        // ex: "unité", "kg", "boite"
-  category      String?                        // ex: "Nourriture", "Médical"
-  enteredAt     DateTime @default(now())       // date d'entrée en stock
-  expiresAt     DateTime                       // date d'expiration (obligatoire)
-  createdById   String
-  createdByName String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-// ─────────────────────────────────────────────
 // TRÉSORERIE
 // ─────────────────────────────────────────────
 

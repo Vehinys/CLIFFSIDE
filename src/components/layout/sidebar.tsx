@@ -32,7 +32,6 @@ const NAV: NavItem[] = [
   { href: "/secretariat/notes",         label: "Notes",            icon: IconNotes,       resource: "secretariat", indent: true },
   { href: "/secretariat/tasks",         label: "Tâches",           icon: IconTasks,       resource: "secretariat", indent: true },
   { href: "/inventory",                 label: "Inventaire",       icon: IconInventory,   resource: "inventory" },
-  { href: "/perishables",               label: "Périssables",      icon: IconPerishable,  resource: "perishables", indent: true },
   { href: "/treasury",                  label: "Trésorerie",       icon: IconTreasury,    resource: "treasury" },
   { href: "/members",                   label: "Membres & Rôles",  icon: IconTeam,        resource: "members",    altResource: "roles" },
 ];
@@ -105,15 +104,6 @@ function IconInventory() {
       <path d="M1 5l7-4 7 4v8l-7 3-7-3V5z" />
       <path d="M1 5l7 4 7-4" />
       <line x1="8" y1="9" x2="8" y2="16" />
-    </svg>
-  );
-}
-
-function IconPerishable() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <path d="M8 2a4 4 0 014 4c0 3-4 8-4 8S4 9 4 6a4 4 0 014-4z" />
-      <circle cx="8" cy="6" r="1.5" fill="currentColor" stroke="none" />
     </svg>
   );
 }

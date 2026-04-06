@@ -24,7 +24,6 @@ export const RESOURCES = [
   "secretariat",
   "members",
   "inventory",
-  "perishables",
   "treasury",
   "roles",
 ] as const;
@@ -40,7 +39,6 @@ export const RESOURCE_LABELS: Record<Resource, string> = {
   secretariat: "Secrétariat",
   members:     "Membres",
   inventory:   "Inventaire",
-  perishables: "Périssables",
   treasury:    "Trésorerie",
   roles:       "Rôles & Permissions",
 };
