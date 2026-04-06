@@ -121,8 +121,8 @@ async function runChecks(): Promise<CheckResult[]> {
   // ── Variables d'environnement ────────────────────────────────────────────
   const envVars = [
     "DATABASE_URL",
-    "NEXTAUTH_SECRET",
-    "NEXTAUTH_URL",
+    "AUTH_SECRET",
+    "AUTH_URL",
   ];
   const missing = envVars.filter((v) => !process.env[v]);
   results.push({
