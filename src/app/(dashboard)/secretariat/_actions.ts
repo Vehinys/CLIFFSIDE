@@ -51,7 +51,11 @@ export async function updateAnnouncement(id: string, formData: FormData) {
   }
 }
 
-export async function deleteAnnouncement(id: string) {
+export async function deleteAnnouncement(
+  id: string,
+  _prevState: { error: string } | null,
+  _formData: FormData
+): Promise<{ error: string } | null> {
   try {
     const session = await requirePermission("delete");
     const item = await prisma.announcement.findUnique({ where: { id }, select: { title: true } });
@@ -101,7 +105,11 @@ export async function updateReport(id: string, formData: FormData) {
   }
 }
 
-export async function deleteReport(id: string) {
+export async function deleteReport(
+  id: string,
+  _prevState: { error: string } | null,
+  _formData: FormData
+): Promise<{ error: string } | null> {
   try {
     const session = await requirePermission("delete");
     const item = await prisma.meetingReport.findUnique({ where: { id }, select: { title: true } });
@@ -150,7 +158,11 @@ export async function updateNote(id: string, formData: FormData) {
   }
 }
 
-export async function deleteNote(id: string) {
+export async function deleteNote(
+  id: string,
+  _prevState: { error: string } | null,
+  _formData: FormData
+): Promise<{ error: string } | null> {
   try {
     const session = await requirePermission("delete");
     const item = await prisma.sharedNote.findUnique({ where: { id }, select: { title: true } });
@@ -222,7 +234,11 @@ export async function updateTaskStatus(id: string, status: "TODO" | "IN_PROGRESS
   }
 }
 
-export async function deleteTask(id: string) {
+export async function deleteTask(
+  id: string,
+  _prevState: { error: string } | null,
+  _formData: FormData
+): Promise<{ error: string } | null> {
   try {
     const session = await requirePermission("delete");
     const item = await prisma.secretariatTask.findUnique({ where: { id }, select: { title: true } });
