@@ -43,7 +43,7 @@ function ProgressBar({ done, total }: { done: number; total: number }) {
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="text-xs text-muted flex-shrink-0">{done}/{total}</span>
+      <span className="text-xs text-muted shrink-0">{done}/{total}</span>
     </div>
   );
 }
@@ -74,14 +74,14 @@ function ObjectiveList({ objectives, canUpdate, canDelete, day, canWrite, placeh
                 <form action={toggleObjectiveDone.bind(null, obj.id, !obj.done)}>
                   <button
                     type="submit"
-                    className={`w-4 h-4 rounded border flex-shrink-0 transition-colors cursor-pointer ${
+                    className={`w-4 h-4 rounded border shrink-0 transition-colors cursor-pointer ${
                       obj.done ? "bg-success border-success" : "border-border hover:border-primary"
                     }`}
                     aria-label={obj.done ? "Marquer non fait" : "Marquer fait"}
                   />
                 </form>
               ) : (
-                <span className={`w-4 h-4 rounded border flex-shrink-0 ${obj.done ? "bg-success border-success" : "border-border"}`} />
+                <span className={`w-4 h-4 rounded border shrink-0 ${obj.done ? "bg-success border-success" : "border-border"}`} />
               )}
               <span className={`text-sm flex-1 ${obj.done ? "line-through text-muted" : "text-text"}`}>
                 {obj.content}
@@ -106,7 +106,7 @@ function ObjectiveList({ objectives, canUpdate, canDelete, day, canWrite, placeh
         <form action={createObjective} className="flex gap-2 mt-1">
           <input type="hidden" name="day" value={day} />
           <Input name="content" placeholder={placeholder} className="h-8 text-xs" required />
-          <Button type="submit" size="sm" className="flex-shrink-0">Ajouter</Button>
+          <Button type="submit" size="sm" className="shrink-0">Ajouter</Button>
         </form>
       )}
     </>

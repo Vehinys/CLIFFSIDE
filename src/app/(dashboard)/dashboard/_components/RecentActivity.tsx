@@ -71,7 +71,7 @@ export function RecentActivity({ transactions, lowStockItems }: Props) {
                 className="flex items-center justify-between rounded-md px-2 py-2 hover:bg-surface-2 transition-colors duration-150 -mx-2"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <span className={`flex-shrink-0 ${t.type === "INCOME" ? "text-success" : "text-danger"}`}>
+                  <span className={`shrink-0 ${t.type === "INCOME" ? "text-success" : "text-danger"}`}>
                     <IconArrow up={t.type === "INCOME"} />
                   </span>
                   <div className="min-w-0">
@@ -79,7 +79,7 @@ export function RecentActivity({ transactions, lowStockItems }: Props) {
                     <span className="text-xs text-muted">{formatDate(t.createdAt)}</span>
                   </div>
                 </div>
-                <span className={`ml-4 flex-shrink-0 text-sm font-mono font-semibold ${t.type === "INCOME" ? "text-success" : "text-danger"}`}>
+                <span className={`ml-4 shrink-0 text-sm font-mono font-semibold ${t.type === "INCOME" ? "text-success" : "text-danger"}`}>
                   {t.type === "INCOME" ? "+" : "−"}{formatMoney(t.amount)}
                 </span>
               </li>
@@ -112,7 +112,7 @@ export function RecentActivity({ transactions, lowStockItems }: Props) {
                     <Badge variant="warning" className="mt-0.5">{item.category.name}</Badge>
                   </div>
                 </div>
-                <span className="ml-4 flex-shrink-0 text-sm font-mono font-semibold text-danger">
+                <span className="ml-4 shrink-0 text-sm font-mono font-semibold text-danger">
                   {item.quantity} <span className="text-muted font-normal">/ {item.minStock}</span>
                 </span>
               </li>
