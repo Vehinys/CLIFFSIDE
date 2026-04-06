@@ -32,7 +32,7 @@ const NAV: NavItem[] = [
   { href: "/secretariat/notes",         label: "Notes",            icon: IconNotes,       resource: "secretariat", indent: true },
   { href: "/secretariat/tasks",         label: "Tâches",           icon: IconTasks,       resource: "secretariat", indent: true },
   { href: "/inventory",                 label: "Inventaire",       icon: IconInventory,   resource: "inventory" },
-  { href: "/perishables",               label: "Périssables",      icon: IconPerishable,  resource: "perishables" },
+  { href: "/perishables",               label: "Périssables",      icon: IconPerishable,  resource: "perishables", indent: true },
   { href: "/treasury",                  label: "Trésorerie",       icon: IconTreasury,    resource: "treasury" },
   { href: "/members",                   label: "Membres & Rôles",  icon: IconTeam,        resource: "members",    altResource: "roles" },
 ];
