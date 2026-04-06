@@ -328,9 +328,14 @@ export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
         >
           <IconHamburger />
         </button>
-        <span className="text-base font-bold tracking-widest text-primary" aria-hidden="true">
-          CLIFFSIDE
-        </span>
+        <div className="flex items-center gap-2" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 22 22" fill="none" stroke="#dc2626" strokeWidth="1.5" aria-hidden="true">
+            <path d="M11 2L3 7v8l8 5 8-5V7L11 2z" />
+            <path d="M3 7l8 5 8-5" />
+            <line x1="11" y1="12" x2="11" y2="20" />
+          </svg>
+          <span className="text-base font-bold tracking-widest text-primary">CLIFFSIDE</span>
+        </div>
       </div>
 
       {/* ── Backdrop mobile ─────────────────────────────────────────── */}
@@ -357,7 +362,14 @@ export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
         aria-hidden={!mobileOpen}
       >
         <div className="flex h-14 items-center border-b border-border px-4">
-          <span className="text-base font-bold tracking-widest text-primary flex-1">CLIFFSIDE</span>
+          <div className="flex items-center gap-2 flex-1">
+            <svg width="14" height="14" viewBox="0 0 22 22" fill="none" stroke="#dc2626" strokeWidth="1.5" aria-hidden="true">
+              <path d="M11 2L3 7v8l8 5 8-5V7L11 2z" />
+              <path d="M3 7l8 5 8-5" />
+              <line x1="11" y1="12" x2="11" y2="20" />
+            </svg>
+            <span className="text-base font-bold tracking-widest text-primary">CLIFFSIDE</span>
+          </div>
           <button
             onClick={closeDrawer}
             className="rounded p-1.5 text-muted hover:bg-surface-2 hover:text-text transition-colors"
@@ -380,7 +392,12 @@ export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
         className="hidden md:flex h-full w-56 flex-col border-r border-border bg-surface"
         aria-label="Navigation principale"
       >
-        <div className="flex h-14 items-center border-b border-border px-4">
+        <div className="flex h-14 items-center gap-2 border-b border-border px-4">
+          <svg width="14" height="14" viewBox="0 0 22 22" fill="none" stroke="#dc2626" strokeWidth="1.5" aria-hidden="true">
+            <path d="M11 2L3 7v8l8 5 8-5V7L11 2z" />
+            <path d="M3 7l8 5 8-5" />
+            <line x1="11" y1="12" x2="11" y2="20" />
+          </svg>
           <span className="text-base font-bold tracking-widest text-primary">CLIFFSIDE</span>
         </div>
         <NavContent

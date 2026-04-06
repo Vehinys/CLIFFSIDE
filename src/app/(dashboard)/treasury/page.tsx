@@ -47,19 +47,19 @@ export default async function TreasuryPage() {
 
       {/* Solde */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader><CardTitle className="text-xs uppercase tracking-wider text-muted">Solde</CardTitle></CardHeader>
+        <Card className={`relative overflow-hidden border-l-2 ${balance >= 0 ? "border-l-success" : "border-l-danger"}`}>
+          <CardHeader className="mb-1"><CardTitle className="text-xs uppercase tracking-wider text-muted">Solde actuel</CardTitle></CardHeader>
           <p className={`text-3xl font-bold font-mono ${balance >= 0 ? "text-success" : "text-danger"}`}>
             {formatMoney(balance)}
           </p>
         </Card>
-        <Card>
-          <CardHeader><CardTitle className="text-xs uppercase tracking-wider text-muted">Total entrées</CardTitle></CardHeader>
+        <Card className="relative overflow-hidden border-l-2 border-l-success">
+          <CardHeader className="mb-1"><CardTitle className="text-xs uppercase tracking-wider text-muted">Total entrées</CardTitle></CardHeader>
           <p className="text-2xl font-bold font-mono text-success">+{formatMoney(totalIncome)}</p>
         </Card>
-        <Card>
-          <CardHeader><CardTitle className="text-xs uppercase tracking-wider text-muted">Total sorties</CardTitle></CardHeader>
-          <p className="text-2xl font-bold font-mono text-danger">-{formatMoney(totalExpense)}</p>
+        <Card className="relative overflow-hidden border-l-2 border-l-danger">
+          <CardHeader className="mb-1"><CardTitle className="text-xs uppercase tracking-wider text-muted">Total sorties</CardTitle></CardHeader>
+          <p className="text-2xl font-bold font-mono text-danger">−{formatMoney(totalExpense)}</p>
         </Card>
       </div>
 

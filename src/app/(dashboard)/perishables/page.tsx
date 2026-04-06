@@ -68,29 +68,29 @@ export default async function PerishablesPage() {
       {/* KPIs */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="list" aria-label="Résumé des stocks périssables">
         <Card role="listitem" aria-label={`Total : ${items.length} article${items.length !== 1 ? "s" : ""}`}>
-          <CardHeader>
+          <CardHeader className="mb-1">
             <CardTitle className="text-xs uppercase tracking-wider text-muted">Total</CardTitle>
           </CardHeader>
           <p className="text-3xl font-bold text-text" aria-hidden="true">{items.length}</p>
         </Card>
-        <Card role="listitem" aria-label={`Expirés : ${expired} article${expired !== 1 ? "s" : ""}`}>
-          <CardHeader>
+        <Card className={`border-l-2 ${expired > 0 ? "border-l-danger" : "border-l-border"}`} role="listitem" aria-label={`Expirés : ${expired} article${expired !== 1 ? "s" : ""}`}>
+          <CardHeader className="mb-1">
             <CardTitle className="text-xs uppercase tracking-wider text-muted">Expirés</CardTitle>
           </CardHeader>
           <p className={`text-3xl font-bold ${expired > 0 ? "text-danger" : "text-muted"}`} aria-hidden="true">
             {expired}
           </p>
         </Card>
-        <Card role="listitem" aria-label={`Expirant bientôt (moins de 3 jours) : ${expiringSoon} article${expiringSoon !== 1 ? "s" : ""}`}>
-          <CardHeader>
+        <Card className={`border-l-2 ${expiringSoon > 0 ? "border-l-warning" : "border-l-border"}`} role="listitem" aria-label={`Expirant bientôt (moins de 3 jours) : ${expiringSoon} article${expiringSoon !== 1 ? "s" : ""}`}>
+          <CardHeader className="mb-1">
             <CardTitle className="text-xs uppercase tracking-wider text-muted">Bientôt (&lt; 3j)</CardTitle>
           </CardHeader>
           <p className={`text-3xl font-bold ${expiringSoon > 0 ? "text-warning" : "text-muted"}`} aria-hidden="true">
             {expiringSoon}
           </p>
         </Card>
-        <Card role="listitem" aria-label={`Sains : ${ok} article${ok !== 1 ? "s" : ""}`}>
-          <CardHeader>
+        <Card className={`border-l-2 ${ok > 0 ? "border-l-success" : "border-l-border"}`} role="listitem" aria-label={`Sains : ${ok} article${ok !== 1 ? "s" : ""}`}>
+          <CardHeader className="mb-1">
             <CardTitle className="text-xs uppercase tracking-wider text-muted">Sains</CardTitle>
           </CardHeader>
           <p className={`text-3xl font-bold ${ok > 0 ? "text-success" : "text-muted"}`} aria-hidden="true">{ok}</p>
@@ -122,7 +122,13 @@ export default async function PerishablesPage() {
                   return (
                     <tr
                       key={item.id}
-                      className="border-b border-border/50 last:border-0 hover:bg-surface-2/50 transition-colors duration-150"
+                      className={`border-b border-border/50 last:border-0 transition-colors duration-150 ${
+                        item.status === "expired"
+                          ? "bg-danger/5 hover:bg-danger/10"
+                          : item.status === "expiring_soon"
+                          ? "bg-warning/5 hover:bg-warning/10"
+                          : "hover:bg-surface-2/50"
+                      }`}
                     >
                       <td className="py-3">
                         <Badge variant={meta.variant}>{meta.label}</Badge>

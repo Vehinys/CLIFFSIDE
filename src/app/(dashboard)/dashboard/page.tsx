@@ -81,14 +81,30 @@ export default async function DashboardPage() {
   const expense = balanceSummary.find((b) => b.type === "EXPENSE")?._sum.amount ?? 0;
   const currentBalance = income - expense;
 
+  const greeting = hourParis < 12 ? "Bonjour" : hourParis < 18 ? "Bon après-midi" : "Bonsoir";
+  const dateStr = now.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Paris" });
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-text">Dashboard</h1>
-        <p className="text-sm text-muted mt-1">
-          Bienvenue, {session.user.name ?? session.user.email}
-          {session.user.roleName && ` — ${session.user.roleName}`}
-        </p>
+      <div className="flex items-start justify-between flex-wrap gap-2">
+        <div>
+          <h1 className="text-2xl font-bold text-text">
+            {greeting}, {session.user.name ?? session.user.email}
+          </h1>
+          <p className="text-sm text-muted mt-1">
+            {session.user.roleName && <span className="text-primary font-medium">{session.user.roleName}</span>}
+            {session.user.roleName && " · "}
+            <span className="capitalize">{dateStr}</span>
+          </p>
+        </div>
+        <div className="flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-xs text-muted">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <circle cx="6" cy="6" r="5" />
+            <path d="M6 3v3l2 1.5" strokeLinecap="round" />
+          </svg>
+          <span aria-label="Session active">En ligne</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-success" aria-hidden="true" />
+        </div>
       </div>
 
       {showAttendance && dailySession && (

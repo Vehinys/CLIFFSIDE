@@ -53,6 +53,7 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
             const now = new Date();
             const activatedAt = item.activatedAt ? new Date(item.activatedAt) : null;
             const expiresAt = item.expiresAt ? new Date(item.expiresAt) : null;
+            const isLowStock = item.minStock !== null && item.quantity <= item.minStock;
 
             let status: { label: string; variant: "default" | "success" | "warning" | "danger" } = {
               label: "Permanent",
@@ -82,7 +83,13 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
             return (
               <tr
                 key={item.id}
-                className="border-b border-border/50 last:border-0 hover:bg-surface-2/50 transition-colors duration-150"
+                className={`border-b border-border/50 last:border-0 transition-colors duration-150 ${
+                  timeUrgent || status.variant === "danger"
+                    ? "bg-danger/5 hover:bg-danger/10"
+                    : isLowStock
+                    ? "bg-warning/5 hover:bg-warning/10"
+                    : "hover:bg-surface-2/50"
+                }`}
               >
                 <td className="py-2.5 font-medium text-text">{item.name}</td>
                 <td className="py-2.5">
