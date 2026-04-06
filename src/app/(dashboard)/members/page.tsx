@@ -84,14 +84,13 @@ export default async function MembersPage({
         </div>
       </div>
 
-      {/* ── Onglets ─────────────────────────────���───────────────────────────── */}
+      {/* ── Onglets ─────────────────────────────────────────────────────────── */}
       <div className="border-b border-border mb-6">
-        <nav className="flex gap-0 -mb-px" aria-label="Onglets Membres & Rôles" role="tablist">
+        <nav className="flex gap-0 -mb-px" aria-label="Sections Membres & Rôles">
           {canReadMembers && (
             <Link
               href="/members"
-              role="tab"
-              aria-selected={activeTab === "members"}
+              aria-current={activeTab === "members" ? "page" : undefined}
               className={cn(
                 "px-4 py-2.5 text-sm font-medium border-b-2 transition-colors duration-150 whitespace-nowrap",
                 activeTab === "members"
@@ -103,7 +102,7 @@ export default async function MembersPage({
               <span className={cn(
                 "ml-2 rounded-full px-1.5 py-0.5 text-xs",
                 activeTab === "members" ? "bg-primary/15 text-primary" : "bg-surface-2 text-muted"
-              )}>
+              )} aria-label={`${users.length} membres`}>
                 {users.length}
               </span>
             </Link>
@@ -111,8 +110,7 @@ export default async function MembersPage({
           {canReadRoles && (
             <Link
               href="/members?tab=roles"
-              role="tab"
-              aria-selected={activeTab === "roles"}
+              aria-current={activeTab === "roles" ? "page" : undefined}
               className={cn(
                 "px-4 py-2.5 text-sm font-medium border-b-2 transition-colors duration-150 whitespace-nowrap",
                 activeTab === "roles"
@@ -124,7 +122,7 @@ export default async function MembersPage({
               <span className={cn(
                 "ml-2 rounded-full px-1.5 py-0.5 text-xs",
                 activeTab === "roles" ? "bg-primary/15 text-primary" : "bg-surface-2 text-muted"
-              )}>
+              )} aria-label={`${roles.length} rôles`}>
                 {roles.length}
               </span>
             </Link>
@@ -140,6 +138,7 @@ export default async function MembersPage({
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
+                <caption className="sr-only">Liste des membres — {users.length} compte{users.length !== 1 ? "s" : ""}</caption>
                 <thead>
                   <tr className="border-b border-border text-left">
                     <th className="pb-3 font-medium text-muted">Email</th>
@@ -212,6 +211,7 @@ export default async function MembersPage({
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
+                <caption className="sr-only">Liste des rôles — {roles.length} rôle{roles.length !== 1 ? "s" : ""}</caption>
                 <thead>
                   <tr className="border-b border-border text-left">
                     <th className="pb-3 font-medium text-muted">Rôle</th>

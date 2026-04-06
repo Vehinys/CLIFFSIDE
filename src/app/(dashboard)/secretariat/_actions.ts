@@ -38,7 +38,7 @@ export async function updateAnnouncement(id: string, formData: FormData) {
   const session = await requirePermission("update");
   const data = announcementSchema.parse(Object.fromEntries(formData));
   await prisma.announcement.update({ where: { id }, data });
-  await audit("secretariat", "ANNOUNCE_CREATE", data.title, session.user.id, session.user.name);
+  await audit("secretariat", "ANNOUNCE_UPDATE", data.title, session.user.id, session.user.name);
   revalidatePath("/secretariat/announcements");
   redirect("/secretariat/announcements");
 }
@@ -75,7 +75,7 @@ export async function updateReport(id: string, formData: FormData) {
   const session = await requirePermission("update");
   const data = reportSchema.parse(Object.fromEntries(formData));
   await prisma.meetingReport.update({ where: { id }, data });
-  await audit("secretariat", "REPORT_CREATE", data.title, session.user.id, session.user.name);
+  await audit("secretariat", "REPORT_UPDATE", data.title, session.user.id, session.user.name);
   revalidatePath("/secretariat/reports");
   redirect("/secretariat/reports");
 }

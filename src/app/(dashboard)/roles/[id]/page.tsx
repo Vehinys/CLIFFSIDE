@@ -56,8 +56,8 @@ export default async function EditRolePage({ params }: { params: Promise<{ id: s
           <Input id="description" name="description" defaultValue={role.description ?? ""} />
         </div>
 
-        <div>
-          <p className="text-sm font-semibold text-text mb-3">Permissions</p>
+        <fieldset>
+          <legend className="text-sm font-semibold text-text mb-3">Permissions</legend>
           <div className="overflow-x-auto rounded-md border border-border">
             <table className="w-full text-sm">
               <thead>
@@ -88,7 +88,7 @@ export default async function EditRolePage({ params }: { params: Promise<{ id: s
               </tbody>
             </table>
           </div>
-        </div>
+        </fieldset>
 
         {allCategories.length > 0 && (
           <div>

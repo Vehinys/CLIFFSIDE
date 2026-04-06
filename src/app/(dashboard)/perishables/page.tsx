@@ -66,34 +66,34 @@ export default async function PerishablesPage() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Card>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="list" aria-label="Résumé des stocks périssables">
+        <Card role="listitem" aria-label={`Total : ${items.length} article${items.length !== 1 ? "s" : ""}`}>
           <CardHeader>
             <CardTitle className="text-xs uppercase tracking-wider text-muted">Total</CardTitle>
           </CardHeader>
-          <p className="text-3xl font-bold text-text">{items.length}</p>
+          <p className="text-3xl font-bold text-text" aria-hidden="true">{items.length}</p>
         </Card>
-        <Card>
+        <Card role="listitem" aria-label={`Expirés : ${expired} article${expired !== 1 ? "s" : ""}`}>
           <CardHeader>
             <CardTitle className="text-xs uppercase tracking-wider text-muted">Expirés</CardTitle>
           </CardHeader>
-          <p className={`text-3xl font-bold ${expired > 0 ? "text-danger" : "text-muted"}`}>
+          <p className={`text-3xl font-bold ${expired > 0 ? "text-danger" : "text-muted"}`} aria-hidden="true">
             {expired}
           </p>
         </Card>
-        <Card>
+        <Card role="listitem" aria-label={`Expirant bientôt (moins de 3 jours) : ${expiringSoon} article${expiringSoon !== 1 ? "s" : ""}`}>
           <CardHeader>
             <CardTitle className="text-xs uppercase tracking-wider text-muted">Bientôt (&lt; 3j)</CardTitle>
           </CardHeader>
-          <p className={`text-3xl font-bold ${expiringSoon > 0 ? "text-warning" : "text-muted"}`}>
+          <p className={`text-3xl font-bold ${expiringSoon > 0 ? "text-warning" : "text-muted"}`} aria-hidden="true">
             {expiringSoon}
           </p>
         </Card>
-        <Card>
+        <Card role="listitem" aria-label={`Sains : ${ok} article${ok !== 1 ? "s" : ""}`}>
           <CardHeader>
             <CardTitle className="text-xs uppercase tracking-wider text-muted">Sains</CardTitle>
           </CardHeader>
-          <p className={`text-3xl font-bold ${ok > 0 ? "text-success" : "text-muted"}`}>{ok}</p>
+          <p className={`text-3xl font-bold ${ok > 0 ? "text-success" : "text-muted"}`} aria-hidden="true">{ok}</p>
         </Card>
       </div>
 
@@ -104,6 +104,7 @@ export default async function PerishablesPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
+              <caption className="sr-only">Articles périssables — {items.length} article{items.length !== 1 ? "s" : ""}</caption>
               <thead>
                 <tr className="border-b border-border text-left">
                   <th className="pb-3 font-medium text-muted">Statut</th>

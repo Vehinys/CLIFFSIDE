@@ -70,6 +70,7 @@ export default async function TreasuryPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
+              <caption className="sr-only">Historique des transactions — {transactions.length} transaction{transactions.length !== 1 ? "s" : ""}</caption>
               <thead>
                 <tr className="border-b border-border text-left">
                   <th className="pb-3 font-medium text-muted">Type</th>
@@ -92,7 +93,9 @@ export default async function TreasuryPage() {
                     <td className="py-3 text-text">{t.description}</td>
                     <td className="py-3 text-muted">{t.category ?? "—"}</td>
                     <td className={`py-3 font-mono font-semibold ${t.type === "INCOME" ? "text-success" : "text-danger"}`}>
-                      {t.type === "INCOME" ? "+" : "-"}{formatMoney(t.amount)}
+                      <span aria-label={`${t.type === "INCOME" ? "Crédit" : "Débit"} ${formatMoney(t.amount)}`}>
+                        {t.type === "INCOME" ? "+" : "−"}{formatMoney(t.amount)}
+                      </span>
                     </td>
                     <td className="py-3 text-muted text-xs">{t.createdByName ?? "—"}</td>
                     <td className="py-3 text-muted text-xs">{formatDate(t.createdAt)}</td>

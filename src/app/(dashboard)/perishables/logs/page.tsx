@@ -42,6 +42,7 @@ export default async function PerishablesLogsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
+              <caption className="sr-only">Journal périssables — {logs.length} entrée{logs.length !== 1 ? "s" : ""}</caption>
               <thead>
                 <tr className="border-b border-border text-left">
                   <th className="pb-2 font-medium text-muted">Date</th>

@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const registerSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -12,11 +14,17 @@ const registerSchema = z.object({
 });
 
 export async function registerAction(_prevState: { error: string } | undefined, formData: FormData) {
+  const h = await headers();
+  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? h.get("x-real-ip") ?? "unknown";
+
+  if (!checkRateLimit(`register:${ip}`, 3, 60 * 60 * 1000)) {
+    return { error: "Trop de tentatives. Réessayez dans 1 heure." };
+  }
+
   let isSuccess = false;
-  
+
   try {
-    const rawData = Object.fromEntries(formData);
-    const result = registerSchema.safeParse(rawData);
+    const result = registerSchema.safeParse(Object.fromEntries(formData));
 
     if (!result.success) {
       return { error: result.error.issues[0]?.message ?? "Erreur de validation" };
@@ -30,22 +38,11 @@ export async function registerAction(_prevState: { error: string } | undefined, 
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    await prisma.user.create({
-      data: {
-        email,
-        name,
-        password: hashedPassword,
-      },
-    });
-
+    await prisma.user.create({ data: { email, name, password: hashedPassword } });
     isSuccess = true;
-  } catch (error) {
-    console.error("Erreur inscription:", error);
+  } catch {
     return { error: "Une erreur s'est produite lors de l'inscription." };
   }
 
-  if (isSuccess) {
-    redirect("/login");
-  }
+  if (isSuccess) redirect("/login");
 }

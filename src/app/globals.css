@@ -6,7 +6,7 @@
   --color-surface-2: #1f1f1f;
   --color-border: #262626;
   --color-text: #f0f0f0;
-  --color-muted: #6b6b6b;
+  --color-muted: #ababab; /* ratio ≥7:1 WCAG AAA sur bg/surface/surface-2 */
   --color-primary: #dc2626;
   --color-primary-hover: #b91c1c;
   --color-success: #16a34a;
