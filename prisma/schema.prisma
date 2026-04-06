@@ -71,6 +71,7 @@ model Role {
   color               String              @default("#6b7280")
   description         String?
   isSystem            Boolean             @default(false) // rôle ADMIN non supprimable
+  position            Int                 @default(0)     // ordre d'affichage (0 = premier)
   users               User[]
   permissions         Permission[]
   inventoryCategories InventoryCategory[] @relation("InventoryCategoryRoles")

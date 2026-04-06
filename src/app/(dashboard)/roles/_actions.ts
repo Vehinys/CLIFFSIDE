@@ -33,9 +33,13 @@ export async function createRole(formData: FormData) {
     )
   );
 
+  const maxPos = await prisma.role.aggregate({ _max: { position: true } });
+  const position = (maxPos._max.position ?? -1) + 1;
+
   await prisma.role.create({
     data: {
       ...data,
+      position,
       description: data.description ?? null,
       permissions: { create: permissions },
     },
