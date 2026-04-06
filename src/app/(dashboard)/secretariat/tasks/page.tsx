@@ -4,6 +4,7 @@ import { canDo } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { TasksList } from "./_components/tasks-list";
+import { NewTaskButton } from "../_components/new-item-buttons";
 
 export default async function TasksPage() {
   const session = await auth();
