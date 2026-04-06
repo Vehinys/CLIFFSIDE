@@ -24,12 +24,12 @@ interface Note {
 
 interface Props {
   notes: Note[];
-  canWrite: boolean;
   canEdit: boolean;
   canDelete: boolean;
+  search?: string;
 }
 
-export function NotesList({ notes, canEdit, canDelete }: Omit<Props, "canWrite">) {
+export function NotesList({ notes, canEdit, canDelete, search }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
 

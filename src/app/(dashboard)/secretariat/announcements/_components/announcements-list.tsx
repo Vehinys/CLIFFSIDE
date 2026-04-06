@@ -38,6 +38,22 @@ export function AnnouncementsList({ announcements, canEdit, canDelete, search }:
     return () => window.removeEventListener("announcements:create", handler);
   }, []);
 
+  if (announcements.length === 0) {
+    return (
+      <>
+        <Card className="py-12 text-center">
+          <p className="text-muted">{search ? "Aucun résultat." : "Aucune annonce pour le moment."}</p>
+        </Card>
+        <AnnouncementModal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          title="Nouvelle annonce"
+          action={createAnnouncement}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="space-y-4">
