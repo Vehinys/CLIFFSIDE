@@ -62,13 +62,41 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
+      // À la connexion initiale, stocker l'ID
       if (user) {
         token.id = user.id;
-        (token as Record<string, unknown>).roleId = user.roleId ?? null;
-        (token as Record<string, unknown>).roleName = user.roleName ?? null;
-        (token as Record<string, unknown>).isSuperAdmin = user.isSuperAdmin ?? false;
-        (token as Record<string, unknown>).permissions = user.permissions ?? [];
       }
+
+      // Re-fetch systématique depuis la DB pour refléter les changements de rôle/permissions
+      // sans nécessiter de re-connexion
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: {
+            id: true,
+            roleId: true,
+            isSuperAdmin: true,
+            role: {
+              select: {
+                name: true,
+                permissions: { select: { resource: true, action: true } },
+              },
+            },
+          },
+        });
+        if (dbUser) {
+          (token as Record<string, unknown>).roleId = dbUser.roleId ?? null;
+          (token as Record<string, unknown>).roleName = dbUser.role?.name ?? null;
+          (token as Record<string, unknown>).isSuperAdmin = dbUser.isSuperAdmin;
+          (token as Record<string, unknown>).permissions = dbUser.isSuperAdmin
+            ? ALL_PERMISSIONS
+            : (dbUser.role?.permissions ?? []).map((p) => ({
+                resource: p.resource,
+                action: p.action,
+              }));
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
