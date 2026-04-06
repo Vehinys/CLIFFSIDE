@@ -34,7 +34,7 @@ export default function LoginPage() {
               <line x1="11" y1="12" x2="11" y2="20" strokeLinecap="round" />
             </svg>
           </div>
-          <h1 className="text-4xl font-black tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/40 drop-shadow-sm uppercase">
+          <h1 className="text-4xl font-black tracking-[0.2em] text-transparent bg-clip-text bg-linear-to-b from-white via-white/90 to-white/40 drop-shadow-sm uppercase">
             Cliffside
           </h1>
           <p className="mt-3 text-sm font-medium uppercase tracking-[0.15em] text-primary/80 drop-shadow-[0_0_8px_rgba(220,38,38,0.4)]">

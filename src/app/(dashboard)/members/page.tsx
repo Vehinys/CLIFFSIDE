@@ -56,7 +56,7 @@ export default async function MembersPage({
     <div className="space-y-0">
       {/* ── En-tête ────────────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-4 border-b border-border/40 relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent blur-xl -z-10 rounded-full" />
+        <div className="absolute inset-0 bg-linear-to-r from-primary/10 to-transparent blur-xl -z-10 rounded-full" />
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-linear-to-br from-text to-muted/70 drop-shadow-sm">
             Membres & Rôles
@@ -138,7 +138,7 @@ export default async function MembersPage({
       {/* ── Onglet Membres ──────────────────────────────────────────────────── */}
       {activeTab === "members" && (
         <Card className="border-border/40 shadow-xl bg-surface/60 backdrop-blur-lg overflow-hidden group">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
           {users.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="w-16 h-16 rounded-full bg-surface-2 flex items-center justify-center mb-4 ring-1 ring-border/50 shadow-inner">
@@ -170,7 +170,7 @@ export default async function MembersPage({
                       >
                         <td className="py-4 pl-4 pr-2 font-medium text-text group-hover/row:text-primary transition-colors">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-surface-2 to-surface border border-border/50 flex items-center justify-center text-xs font-bold shadow-sm">
+                            <div className="w-8 h-8 rounded-full bg-linear-to-br from-surface-2 to-surface border border-border/50 flex items-center justify-center text-xs font-bold shadow-sm">
                               {u.email.charAt(0).toUpperCase()}
                             </div>
                             {u.email}
@@ -225,7 +225,7 @@ export default async function MembersPage({
       {/* ── Onglet Rôles ────────────────────────────────────────────────────── */}
       {activeTab === "roles" && (
         <Card className="border-border/40 shadow-xl bg-surface/60 backdrop-blur-lg overflow-hidden group">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
           {roles.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="w-16 h-16 rounded-full bg-surface-2 flex items-center justify-center mb-4 ring-1 ring-border/50 shadow-inner">
