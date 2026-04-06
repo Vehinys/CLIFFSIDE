@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatMoney, formatDate } from "@/lib/utils";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 import { deleteTransaction } from "./_actions";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 
@@ -16,6 +17,7 @@ export default async function TreasuryPage() {
   if (!canDo(session.user.permissions, "treasury", "read")) redirect("/dashboard");
 
   const transactions = await prisma.treasuryTransaction.findMany({
+    include: { createdBy: { include: { role: { select: { color: true } } } } },
     orderBy: { createdAt: "desc" },
   });
 
@@ -97,7 +99,7 @@ export default async function TreasuryPage() {
                         {t.type === "INCOME" ? "+" : "−"}{formatMoney(t.amount)}
                       </span>
                     </td>
-                    <td className="py-3 text-muted text-xs">{t.createdByName ?? "—"}</td>
+                    <td className="py-3 text-muted text-xs"><UserPseudo name={t.createdByName} color={t.createdBy?.role?.color} className="text-inherit" /></td>
                     <td className="py-3 text-muted text-xs">{formatDate(t.createdAt)}</td>
                     {(canEdit || canDelete) && (
                       <td className="py-3 text-right">

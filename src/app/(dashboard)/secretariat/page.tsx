@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 
 const STATUS_META = {
   TODO:        { label: "À faire",    variant: "default"  as const },
@@ -18,10 +19,14 @@ export default async function SecretariatPage() {
   if (!canDo(session.user.permissions, "secretariat", "read")) redirect("/dashboard");
 
   const [announcements, reports, notes, tasks] = await Promise.all([
-    prisma.announcement.findMany({ orderBy: { createdAt: "desc" }, take: 3 }),
+    prisma.announcement.findMany({
+      include: { createdBy: { include: { role: { select: { color: true } } } } },
+      orderBy: { createdAt: "desc" }, take: 3,
+    }),
     prisma.meetingReport.findMany({ orderBy: { meetingDate: "desc" }, take: 3 }),
     prisma.sharedNote.findMany({ orderBy: { updatedAt: "desc" }, take: 3 }),
     prisma.secretariatTask.findMany({
+      include: { assignedTo: { include: { role: { select: { color: true } } } } },
       where: { status: { not: "DONE" } },
       orderBy: { createdAt: "desc" },
       take: 5,
@@ -52,7 +57,7 @@ export default async function SecretariatPage() {
                 <li key={a.id} className="border-b border-border/50 last:border-0 pb-3 last:pb-0">
                   <p className="font-medium text-sm text-text">{a.title}</p>
                   <p className="text-xs text-muted line-clamp-2 mt-0.5">{a.content}</p>
-                  <p className="text-xs text-muted/60 mt-1">{a.createdByName ?? "—"} · {new Date(a.createdAt).toLocaleDateString("fr-FR")}</p>
+                  <p className="text-xs text-muted/60 mt-1"><UserPseudo name={a.createdByName} color={a.createdBy?.role?.color} className="text-inherit" /> · {new Date(a.createdAt).toLocaleDateString("fr-FR")}</p>
                 </li>
               ))}
             </ul>
@@ -119,7 +124,7 @@ export default async function SecretariatPage() {
                 <li key={t.id} className="flex items-center justify-between text-sm border-b border-border/50 last:border-0 pb-2 last:pb-0">
                   <div>
                     <span className="text-text font-medium">{t.title}</span>
-                    {t.assignedToName && <span className="ml-2 text-xs text-muted">→ {t.assignedToName}</span>}
+                    {t.assignedToName && <span className="ml-2 text-xs text-muted">→ <UserPseudo name={t.assignedToName} color={t.assignedTo?.role?.color} className="text-inherit" /></span>}
                   </div>
                   <Badge variant={STATUS_META[t.status].variant}>{STATUS_META[t.status].label}</Badge>
                 </li>

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 
 const ACTION_META: Record<string, { label: string; variant: "default" | "success" | "warning" | "danger" }> = {
   CREATE: { label: "Transaction créée",   variant: "success" },
@@ -19,6 +20,7 @@ export default async function TreasuryLogsPage() {
 
   const logs = await prisma.auditLog.findMany({
     where: { section: "treasury" },
+    include: { user: { include: { role: { select: { color: true } } } } },
     orderBy: { createdAt: "desc" },
     take: 200,
   });
@@ -63,7 +65,9 @@ export default async function TreasuryLogsPage() {
                       </td>
                       <td className="py-2.5 font-medium text-text">{log.targetName}</td>
                       <td className="py-2.5 text-muted text-xs">{log.details ?? "—"}</td>
-                      <td className="py-2.5 text-muted text-xs">{log.userName ?? log.userId}</td>
+                      <td className="py-2.5 text-muted text-xs">
+                        <UserPseudo name={log.userName} color={log.user?.role?.color} className="text-inherit" fallback={log.userId ?? "—"} />
+                      </td>
                     </tr>
                   );
                 })}

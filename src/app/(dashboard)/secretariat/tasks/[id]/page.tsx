@@ -5,6 +5,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 
 const STATUS_META = {
   TODO:        { label: "À faire",  variant: "default"  as const },
@@ -18,7 +19,13 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
   if (!session?.user) redirect("/login");
   if (!canDo(session.user.permissions, "secretariat", "read")) redirect("/dashboard");
 
-  const task = await prisma.secretariatTask.findUnique({ where: { id } });
+  const task = await prisma.secretariatTask.findUnique({
+    where: { id },
+    include: {
+      createdBy: { include: { role: { select: { color: true } } } },
+      assignedTo: { include: { role: { select: { color: true } } } },
+    },
+  });
   if (!task) notFound();
 
   const canEdit = canDo(session.user.permissions, "secretariat", "update");
@@ -35,7 +42,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
         <div className="flex items-center gap-3">
           <Badge variant={STATUS_META[task.status].variant}>{STATUS_META[task.status].label}</Badge>
           {task.assignedToName && (
-            <span className="text-sm text-muted">→ {task.assignedToName}</span>
+            <span className="text-sm text-muted">→ <UserPseudo name={task.assignedToName} color={task.assignedTo?.role?.color} className="text-inherit" /></span>
           )}
         </div>
 
@@ -48,7 +55,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
         )}
 
         <p className="text-xs text-muted pt-2 border-t border-border/50">
-          Créée par {task.createdByName ?? "—"} · {new Date(task.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+          Créée par <UserPseudo name={task.createdByName} color={task.createdBy?.role?.color} className="text-inherit" /> · {new Date(task.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
         </p>
 
         {canEdit && (
