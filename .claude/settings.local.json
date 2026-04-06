@@ -46,7 +46,9 @@
       "Bash(npm i:*)",
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('packages',{}\\).get\\('',{}\\), indent=2\\)\\)\")",
       "Bash(node -e \"const l=require\\('./package-lock.json'\\); const root=l.packages['']; console.log\\(JSON.stringify\\(root, null,2\\)\\)\")",
-      "Bash(python3 -c ':*)"
+      "Bash(python3 -c ':*)",
+      "Bash(node -p \"JSON.stringify\\(require\\('F:/PROJET PERSONNEL/CLIFFSIDE/package-lock.json'\\).lockfileVersion\\)\")",
+      "Bash(node:*)"
     ]
   }
 }
