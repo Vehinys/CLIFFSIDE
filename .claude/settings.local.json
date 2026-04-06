@@ -40,7 +40,9 @@
       "Bash(node --import tsx/esm -e ':*)",
       "Bash(npx tsx:*)",
       "Bash(node --env-file=.env.local -e ':*)",
-      "Bash(node --env-file=.env.local node_modules/.bin/tsx prisma/add-perishables-perms.ts)"
+      "Bash(node --env-file=.env.local node_modules/.bin/tsx prisma/add-perishables-perms.ts)",
+      "Bash(npm list:*)",
+      "Bash(npm view:*)"
     ]
   }
 }
