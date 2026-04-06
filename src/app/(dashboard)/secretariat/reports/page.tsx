@@ -56,7 +56,7 @@ export default async function ReportsPage({ searchParams }: PageProps) {
         reports={reports}
         canEdit={canEdit}
         canDelete={canDelete}
-        search={search}
+        {...(search !== undefined ? { search } : {})}
       />
     </div>
   );

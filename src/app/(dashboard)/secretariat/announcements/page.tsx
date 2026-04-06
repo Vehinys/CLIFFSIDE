@@ -56,7 +56,7 @@ export default async function AnnouncementsPage({ searchParams }: PageProps) {
         announcements={announcements}
         canEdit={canEdit}
         canDelete={canDelete}
-        search={search}
+        {...(search !== undefined ? { search } : {})}
       />
     </div>
   );

@@ -56,7 +56,7 @@ export default async function NotesPage({ searchParams }: PageProps) {
         notes={notes}
         canEdit={canEdit}
         canDelete={canDelete}
-        search={search}
+        {...(search !== undefined ? { search } : {})}
       />
     </div>
   );
