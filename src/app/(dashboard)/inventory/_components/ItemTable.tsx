@@ -100,17 +100,18 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
               >
                 <td className="py-2.5 font-medium text-text">{item.name}</td>
                 <td className="py-2.5">
-                  {canEdit ? (
-                    <QuantityControl itemId={item.id} quantity={item.quantity} />
-                  ) : (
-                    <div>
+                  <div className="flex items-center gap-2">
+                    {canEdit ? (
+                      <QuantityControl itemId={item.id} quantity={item.quantity} />
+                    ) : (
                       <span className="font-mono text-text">{item.quantity}</span>
-                      {item.minStock !== null && (
-                        <StockBar quantity={item.quantity} minStock={item.minStock} />
-                      )}
-                    </div>
-                  )}
-                  {canEdit && item.minStock !== null && (
+                    )}
+
+                    {item.quantity < 5 && (
+                      <Badge variant="danger" className="text-[10px] px-1.5 py-0">Critique ({"<"} 5)</Badge>
+                    )}
+                  </div>
+                  {item.minStock !== null && (
                     <StockBar quantity={item.quantity} minStock={item.minStock} />
                   )}
                 </td>

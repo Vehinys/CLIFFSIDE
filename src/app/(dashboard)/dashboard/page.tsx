@@ -107,10 +107,10 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {showAttendance && dailySession && (
+      {showAttendance && (
         <AttendanceCard
           currentUserId={session.user.id}
-          attendances={dailySession.attendances}
+          attendances={dailySession?.attendances ?? []}
         />
       )}
 

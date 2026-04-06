@@ -33,6 +33,7 @@ const NAV: NavItem[] = [
   { href: "/secretariat/tasks",         label: "Tâches",           icon: IconTasks,       resource: "secretariat", indent: true },
   { href: "/inventory",                 label: "Inventaire",       icon: IconInventory,   resource: "inventory" },
   { href: "/treasury",                  label: "Trésorerie",       icon: IconTreasury,    resource: "treasury" },
+  { href: "/presences",                 label: "Présences & Act.", icon: IconTeam,        resource: "members" },
   { href: "/members",                   label: "Membres & Rôles",  icon: IconTeam,        resource: "members",    altResource: "roles" },
 ];
 
