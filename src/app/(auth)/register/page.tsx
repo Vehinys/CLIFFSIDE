@@ -72,7 +72,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2 group">
-              <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted group-focus-within:text-primary transition-colors" required>Email d'agent</Label>
+              <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted group-focus-within:text-primary transition-colors" required>Email d&apos;agent</Label>
               <div className="relative">
                 <Input
                   id="email"
@@ -152,7 +152,7 @@ export default function RegisterPage() {
         </div>
 
         <p className="mt-8 text-center text-xs font-semibold tracking-widest text-muted/30 uppercase">
-          Organisation CLIFFSIDE · Niveau d'accès restreint
+          Organisation CLIFFSIDE · Niveau d&apos;accès restreint
         </p>
       </div>
     </div>

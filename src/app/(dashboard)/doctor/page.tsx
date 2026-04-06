@@ -24,8 +24,8 @@ async function runChecks(): Promise<CheckResult[]> {
       value: `${latency}ms`,
       detail: latency < 200 ? "Connexion rapide" : latency < 500 ? "Latence élevée" : "Connexion lente",
     });
-  } catch (e: any) {
-    results.push({ name: "Base de données", status: "error", value: "Hors ligne", detail: e.message });
+  } catch (e: unknown) {
+    results.push({ name: "Base de données", status: "error", value: "Hors ligne", detail: e instanceof Error ? e.message : String(e) });
   }
 
   // ── Utilisateurs ────────────────────────────────────────────────────────
@@ -42,8 +42,8 @@ async function runChecks(): Promise<CheckResult[]> {
       value: `${total} total`,
       detail: `${superAdmins} super-admin · ${noRole} sans rôle · ${noPassword} sans mot de passe`,
     });
-  } catch (e: any) {
-    results.push({ name: "Utilisateurs", status: "error", value: "Erreur", detail: e.message });
+  } catch (e: unknown) {
+    results.push({ name: "Utilisateurs", status: "error", value: "Erreur", detail: e instanceof Error ? e.message : String(e) });
   }
 
   // ── Rôles & permissions ──────────────────────────────────────────────────
@@ -59,8 +59,8 @@ async function runChecks(): Promise<CheckResult[]> {
       value: `${roleCount} rôles · ${permCount} permissions`,
       detail: emptyRoles > 0 ? `${emptyRoles} rôle(s) sans aucune permission` : "Tous les rôles ont des permissions",
     });
-  } catch (e: any) {
-    results.push({ name: "Rôles & Permissions", status: "error", value: "Erreur", detail: e.message });
+  } catch (e: unknown) {
+    results.push({ name: "Rôles & Permissions", status: "error", value: "Erreur", detail: e instanceof Error ? e.message : String(e) });
   }
 
   // ── Inventaire ──────────────────────────────────────────────────────────
@@ -76,8 +76,8 @@ async function runChecks(): Promise<CheckResult[]> {
       value: `${total} articles · ${categories} catégories`,
       detail: lowStock > 0 ? `${lowStock} article(s) en rupture de stock` : "Stock OK",
     });
-  } catch (e: any) {
-    results.push({ name: "Inventaire", status: "error", value: "Erreur", detail: e.message });
+  } catch (e: unknown) {
+    results.push({ name: "Inventaire", status: "error", value: "Erreur", detail: e instanceof Error ? e.message : String(e) });
   }
 
   // ── Trésorerie ──────────────────────────────────────────────────────────

@@ -146,7 +146,7 @@ export default async function MembersPage({
                 <span className="text-2xl opacity-50">👥</span>
               </div>
               <p className="text-lg font-medium text-text">Aucun compte</p>
-              <p className="text-muted mt-1 max-w-sm">Il n'y a actuellement aucun utilisateur inscrit dans la base de données.</p>
+              <p className="text-muted mt-1 max-w-sm">Il n&apos;y a actuellement aucun utilisateur inscrit dans la base de données.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
