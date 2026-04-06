@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { deleteNote } from "../_actions";
 import { SearchInput } from "@/components/ui/search-input";
+import { ConfirmDelete } from "@/components/ui/confirm-delete";
 
 interface PageProps {
   searchParams: Promise<{ search?: string }>;
@@ -90,9 +91,11 @@ export default async function NotesPage({ searchParams }: PageProps) {
                     <Link href={`/secretariat/notes/${n.id}/edit`} className="text-xs text-muted hover:text-text">Modifier</Link>
                   )}
                   {canDelete && (
-                    <form action={deleteNote.bind(null, n.id)}>
-                      <button type="submit" className="text-xs text-muted hover:text-danger">Supprimer</button>
-                    </form>
+                    <ConfirmDelete
+                      action={deleteNote.bind(null, n.id)}
+                      confirmMessage={`Supprimer la note "${n.title}" ?`}
+                      successMessage="Note supprimée"
+                    />
                   )}
                 </div>
               )}
