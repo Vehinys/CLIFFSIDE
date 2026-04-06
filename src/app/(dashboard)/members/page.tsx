@@ -54,17 +54,21 @@ export default async function MembersPage({
 
   return (
     <div className="space-y-0">
-      {/* ── En-tête ─────────���───────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between mb-5">
+      {/* ── En-tête ────────────────────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-4 border-b border-border/40 relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent blur-xl -z-10 rounded-full" />
         <div>
-          <h1 className="text-2xl font-bold text-text">Membres &amp; Rôles</h1>
-          <p className="text-sm text-muted mt-1">
+          <h1 className="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-text to-muted/70 drop-shadow-sm">
+            Membres & Rôles
+          </h1>
+          <p className="text-sm font-medium text-muted/80 mt-1.5 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(220,38,38,0.8)]" />
             {activeTab === "members"
               ? `${users.length} compte${users.length !== 1 ? "s" : ""} enregistré${users.length !== 1 ? "s" : ""}`
               : `${roles.length} rôle${roles.length !== 1 ? "s" : ""} configuré${roles.length !== 1 ? "s" : ""}`}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mt-4 sm:mt-0">
           {activeTab === "members" && (
             <Link href="/members/logs">
               <Button variant="secondary" size="sm">Journal</Button>
@@ -86,23 +90,23 @@ export default async function MembersPage({
       </div>
 
       {/* ── Onglets ─────────────────────────────────────────────────────────── */}
-      <div className="border-b border-border mb-6">
-        <nav className="flex gap-0 -mb-px" aria-label="Sections Membres & Rôles">
+      <div className="mb-6 relative">
+        <nav className="flex gap-2 p-1 bg-surface-2/40 backdrop-blur-md rounded-xl border border-border/50 inline-flex" aria-label="Sections Membres & Rôles">
           {canReadMembers && (
             <Link
               href="/members"
               aria-current={activeTab === "members" ? "page" : undefined}
               className={cn(
-                "px-4 py-2.5 text-sm font-medium border-b-2 transition-colors duration-150 whitespace-nowrap",
+                "relative flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300",
                 activeTab === "members"
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted hover:text-text hover:border-border"
+                  ? "bg-primary text-white shadow-[0_0_20px_rgba(220,38,38,0.3)] scale-[1.02]"
+                  : "text-muted hover:text-text hover:bg-surface-2/80"
               )}
             >
               Membres
               <span className={cn(
-                "ml-2 rounded-full px-1.5 py-0.5 text-xs",
-                activeTab === "members" ? "bg-primary/15 text-primary" : "bg-surface-2 text-muted"
+                "rounded-md px-2 py-0.5 text-xs font-bold transition-colors",
+                activeTab === "members" ? "bg-white/20 text-white" : "bg-surface text-muted"
               )} aria-label={`${users.length} membres`}>
                 {users.length}
               </span>
@@ -113,16 +117,16 @@ export default async function MembersPage({
               href="/members?tab=roles"
               aria-current={activeTab === "roles" ? "page" : undefined}
               className={cn(
-                "px-4 py-2.5 text-sm font-medium border-b-2 transition-colors duration-150 whitespace-nowrap",
+                "relative flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300",
                 activeTab === "roles"
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted hover:text-text hover:border-border"
+                  ? "bg-primary text-white shadow-[0_0_20px_rgba(220,38,38,0.3)] scale-[1.02]"
+                  : "text-muted hover:text-text hover:bg-surface-2/80"
               )}
             >
-              Rôles &amp; Permissions
+              Rôles & Permissions
               <span className={cn(
-                "ml-2 rounded-full px-1.5 py-0.5 text-xs",
-                activeTab === "roles" ? "bg-primary/15 text-primary" : "bg-surface-2 text-muted"
+                "rounded-md px-2 py-0.5 text-xs font-bold transition-colors",
+                activeTab === "roles" ? "bg-white/20 text-white" : "bg-surface text-muted"
               )} aria-label={`${roles.length} rôles`}>
                 {roles.length}
               </span>
@@ -131,17 +135,24 @@ export default async function MembersPage({
         </nav>
       </div>
 
-      {/* ── Onglet Membres ─────────────────────────���────────────────────────── */}
+      {/* ── Onglet Membres ──────────────────────────────────────────────────── */}
       {activeTab === "members" && (
-        <Card>
+        <Card className="border-border/40 shadow-xl bg-surface/60 backdrop-blur-lg overflow-hidden group">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
           {users.length === 0 ? (
-            <p className="text-center text-muted py-8">Aucun compte utilisateur inscrit.</p>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-16 h-16 rounded-full bg-surface-2 flex items-center justify-center mb-4 ring-1 ring-border/50 shadow-inner">
+                <span className="text-2xl opacity-50">👥</span>
+              </div>
+              <p className="text-lg font-medium text-text">Aucun compte</p>
+              <p className="text-muted mt-1 max-w-sm">Il n'y a actuellement aucun utilisateur inscrit dans la base de données.</p>
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <caption className="sr-only">Liste des membres — {users.length} compte{users.length !== 1 ? "s" : ""}</caption>
                 <thead>
-                  <tr className="border-b border-border text-left">
+                  <tr className="border-b border-border/50 bg-surface-2/30 text-left">
                     <th className="pb-3 font-medium text-muted">Email</th>
                     <th className="pb-3 font-medium text-muted">Pseudo</th>
                     <th className="pb-3 font-medium text-muted">Rôle</th>
@@ -155,10 +166,17 @@ export default async function MembersPage({
                     return (
                       <tr
                         key={u.id}
-                        className="border-b border-border/50 last:border-0 hover:bg-surface-2/50 transition-colors duration-150"
+                        className="border-b border-border/30 last:border-0 hover:bg-primary/5 transition-all duration-200 group/row"
                       >
-                        <td className="py-3 font-semibold text-text">{u.email}</td>
-                        <td className="py-3 text-muted">{u.name ?? "—"}</td>
+                        <td className="py-4 pl-4 pr-2 font-medium text-text group-hover/row:text-primary transition-colors">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-surface-2 to-surface border border-border/50 flex items-center justify-center text-xs font-bold shadow-sm">
+                              {u.email.charAt(0).toUpperCase()}
+                            </div>
+                            {u.email}
+                          </div>
+                        </td>
+                        <td className="py-4 px-2 text-muted group-hover/row:text-text/80 transition-colors">{u.name ?? "—"}</td>
                         <td className="py-3">
                           {canEditMembers ? (
                             <form action={updateRoleWithId} className="flex items-center gap-2">
@@ -206,15 +224,22 @@ export default async function MembersPage({
 
       {/* ── Onglet Rôles ────────────────────────────────────────────────────── */}
       {activeTab === "roles" && (
-        <Card>
+        <Card className="border-border/40 shadow-xl bg-surface/60 backdrop-blur-lg overflow-hidden group">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
           {roles.length === 0 ? (
-            <p className="text-center text-muted py-8">Aucun rôle configuré.</p>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-16 h-16 rounded-full bg-surface-2 flex items-center justify-center mb-4 ring-1 ring-border/50 shadow-inner">
+                <span className="text-2xl opacity-50">🛡️</span>
+              </div>
+              <p className="text-lg font-medium text-text">Aucun rôle</p>
+              <p className="text-muted mt-1 max-w-sm">Configurez des rôles pour attribuer des permissions spécifiques aux membres.</p>
+            </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <div className="overflow-x-auto p-1">
+              <table className="w-full text-sm border-separate border-spacing-y-2">
                 <caption className="sr-only">Liste des rôles — {roles.length} rôle{roles.length !== 1 ? "s" : ""}</caption>
                 <thead>
-                  <tr className="border-b border-border text-left">
+                  <tr className="text-left px-4">
                     <th className="pb-3 font-medium text-muted">Rôle</th>
                     <th className="pb-3 font-medium text-muted">Permissions</th>
                     <th className="pb-3 font-medium text-muted">Membres</th>
@@ -227,13 +252,16 @@ export default async function MembersPage({
                   {roles.map((r, i) => (
                     <tr
                       key={r.id}
-                      className="border-b border-border/50 last:border-0 hover:bg-surface-2/50 transition-colors duration-150"
+                      className="bg-surface-2/30 hover:bg-surface-2/80 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 ring-1 ring-border/30 hover:ring-primary/30 rounded-xl group/role hidden sm:table-row"
+                      style={{ display: "table-row" }}
                     >
-                      <td className="py-3">
-                        <Badge color={r.color}>{r.name}</Badge>
-                        {r.description && (
-                          <p className="text-xs text-muted mt-0.5">{r.description}</p>
-                        )}
+                      <td className="py-4 pl-4 pr-3 rounded-l-xl">
+                        <div className="flex flex-col gap-1.5">
+                          <Badge color={r.color} className="w-fit shadow-sm">{r.name}</Badge>
+                          {r.description && (
+                            <p className="text-xs text-muted/70 line-clamp-1 group-hover/role:text-muted transition-colors">{r.description}</p>
+                          )}
+                        </div>
                       </td>
                       <td className="py-3 text-muted tabular-nums">
                         {r._count.permissions}
