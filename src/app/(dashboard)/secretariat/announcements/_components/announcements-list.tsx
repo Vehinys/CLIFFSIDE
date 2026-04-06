@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Card, CardEmpty } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { deleteAnnouncement, createAnnouncement, updateAnnouncement } from "../../_actions";
 import { AnnouncementModal } from "./announcement-modal";
@@ -23,12 +23,12 @@ interface Announcement {
 
 interface Props {
   announcements: Announcement[];
-  canWrite: boolean;
   canEdit: boolean;
   canDelete: boolean;
+  search?: string;
 }
 
-export function AnnouncementsList({ announcements, canEdit, canDelete }: Omit<Props, "canWrite">) {
+export function AnnouncementsList({ announcements, canEdit, canDelete, search }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null);
 
