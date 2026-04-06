@@ -48,7 +48,8 @@
       "Bash(node -e \"const l=require\\('./package-lock.json'\\); const root=l.packages['']; console.log\\(JSON.stringify\\(root, null,2\\)\\)\")",
       "Bash(python3 -c ':*)",
       "Bash(node -p \"JSON.stringify\\(require\\('F:/PROJET PERSONNEL/CLIFFSIDE/package-lock.json'\\).lockfileVersion\\)\")",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(npx next:*)"
     ]
   }
 }
