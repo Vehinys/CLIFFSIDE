@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 interface Props {
-  action: (formData: FormData) => Promise<void>;
+  action: (formData: FormData) => Promise<{ error: string } | null>;
   initialData?: {
     title: string;
     content: string;
@@ -21,20 +21,17 @@ interface Props {
 
 export function ReportForm({ action, initialData, onSuccess, onCancel }: Props) {
   const [state, formAction, isPending] = useActionState(async (prevState: any, formData: FormData) => {
-    try {
-      await action(formData);
-      onSuccess?.();
-      return { success: true };
-    } catch (err: any) {
-      return { error: err.message || "Une erreur est survenue" };
-    }
+    const result = await action(formData);
+    if (result?.error) return result;
+    onSuccess?.();
+    return { success: true };
   }, null);
 
   useEffect(() => {
-    if (state?.error) {
-      toast.error(state.error);
+    if (state && "error" in state) {
+      toast.error(state.error as string);
     }
-    if (state?.success) {
+    if (state && "success" in state) {
       toast.success(initialData ? "Mis à jour" : "Créé avec succès");
     }
   }, [state, initialData]);
