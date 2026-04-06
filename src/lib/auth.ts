@@ -79,6 +79,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             role: {
               select: {
                 name: true,
+                color: true,
                 permissions: { select: { resource: true, action: true } },
               },
             },
@@ -87,6 +88,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (dbUser) {
           (token as Record<string, unknown>).roleId = dbUser.roleId ?? null;
           (token as Record<string, unknown>).roleName = dbUser.role?.name ?? null;
+          (token as Record<string, unknown>).roleColor = dbUser.role?.color ?? null;
           (token as Record<string, unknown>).isSuperAdmin = dbUser.isSuperAdmin;
           (token as Record<string, unknown>).permissions = dbUser.isSuperAdmin
             ? ALL_PERMISSIONS
@@ -104,6 +106,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id as string;
         session.user.roleId = (token.roleId as string | null) ?? null;
         session.user.roleName = (token.roleName as string | null) ?? null;
+        session.user.roleColor = (token.roleColor as string | null) ?? null;
         session.user.isSuperAdmin = (token.isSuperAdmin as boolean) ?? false;
         session.user.permissions = (token.permissions as Array<{ resource: string; action: string }>) ?? [];
       }

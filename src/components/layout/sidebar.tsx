@@ -12,6 +12,7 @@ type Permission = { resource: string; action: string };
 interface SidebarProps {
   userName: string | null | undefined;
   roleName: string | null | undefined;
+  roleColor?: string | null;
   permissions: Permission[];
 }
 
@@ -170,9 +171,10 @@ interface NavContentProps {
   onLinkClick?: () => void;
   userName: string | null | undefined;
   roleName: string | null | undefined;
+  roleColor?: string | null;
 }
 
-function NavContent({ permissions, pathname, onLinkClick, userName, roleName }: NavContentProps) {
+function NavContent({ permissions, pathname, onLinkClick, userName, roleName, roleColor }: NavContentProps) {
   const visibleNav = NAV.filter((item) =>
     canDo(permissions, item.resource, "read") ||
     (item.altResource !== undefined && canDo(permissions, item.altResource, "read"))
@@ -215,7 +217,9 @@ function NavContent({ permissions, pathname, onLinkClick, userName, roleName }: 
       {/* Utilisateur + déconnexion */}
       <div className="border-t border-border p-3">
         <div className="mb-2 px-1">
-          <p className="text-sm font-medium text-text truncate">{userName ?? "—"}</p>
+          <p className="text-sm font-medium truncate" style={{ color: roleColor ?? undefined }}>
+            {userName ?? "—"}
+          </p>
           {roleName && <p className="text-xs text-muted truncate">{roleName}</p>}
         </div>
         <form action={signOutAction}>
@@ -234,7 +238,7 @@ function NavContent({ permissions, pathname, onLinkClick, userName, roleName }: 
 
 /* ─── Sidebar principale ─────────────────────────────────────────────── */
 
-export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
+export function Sidebar({ userName, roleName, roleColor, permissions }: SidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const drawerRef = useRef<HTMLElement>(null);
@@ -375,6 +379,7 @@ export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
           onLinkClick={closeDrawer}
           userName={userName}
           roleName={roleName}
+          roleColor={roleColor ?? null}
         />
       </aside>
 
@@ -396,6 +401,7 @@ export function Sidebar({ userName, roleName, permissions }: SidebarProps) {
           pathname={pathname}
           userName={userName}
           roleName={roleName}
+          roleColor={roleColor ?? null}
         />
       </aside>
     </>
