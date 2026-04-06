@@ -104,3 +104,34 @@ export async function deleteRole(
     return { error: e instanceof Error ? e.message : "Erreur lors de la suppression" };
   }
 }
+
+export async function moveRole(id: string, direction: "up" | "down") {
+  const session = await requirePermission("update");
+
+  const role = await prisma.role.findUnique({ where: { id } });
+  if (!role) throw new Error("Rôle introuvable");
+
+  const allRoles = await prisma.role.findMany({
+    orderBy: { position: "asc" },
+  });
+
+  const currentIndex = allRoles.findIndex((r) => r.id === id);
+  if (currentIndex === -1) return;
+
+  if (direction === "up" && currentIndex > 0) {
+    const swapRole = allRoles[currentIndex - 1];
+    await prisma.$transaction([
+      prisma.role.update({ where: { id: role.id }, data: { position: swapRole.position } }),
+      prisma.role.update({ where: { id: swapRole.id }, data: { position: role.position } }),
+    ]);
+  } else if (direction === "down" && currentIndex < allRoles.length - 1) {
+    const swapRole = allRoles[currentIndex + 1];
+    await prisma.$transaction([
+      prisma.role.update({ where: { id: role.id }, data: { position: swapRole.position } }),
+      prisma.role.update({ where: { id: swapRole.id }, data: { position: role.position } }),
+    ]);
+  }
+
+  revalidatePath("/members");
+  revalidatePath("/roles");
+}

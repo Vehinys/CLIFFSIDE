@@ -69,14 +69,21 @@ export function ItemTable({ items, canEdit, canDelete }: Props) {
                 timeLeft = "Terminé";
                 timeUrgent = true;
               } else {
-                status =
-                  activatedAt && now < activatedAt
-                    ? { label: "Programmé", variant: "warning" }
-                    : { label: "Actif", variant: "success" };
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 timeLeft = days > 0 ? `${days}j ${hours}h` : `${hours}h`;
-                timeUrgent = days === 0 && hours < 6;
+
+                if (activatedAt && now < activatedAt) {
+                  status = { label: "Programmé", variant: "default" };
+                } else if (days < 1) {
+                  status = { label: "< 1 jour", variant: "danger" };
+                  timeUrgent = true;
+                } else if (days < 3) {
+                  status = { label: "< 3 jours", variant: "warning" };
+                  timeUrgent = false;
+                } else {
+                  status = { label: "Actif", variant: "success" };
+                }
               }
             }
 
