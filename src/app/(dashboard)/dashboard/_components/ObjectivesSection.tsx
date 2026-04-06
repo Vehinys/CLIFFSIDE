@@ -1,12 +1,15 @@
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { UserPseudo } from "@/components/ui/user-pseudo";
 import { createObjective, toggleObjectiveDone, deleteObjective } from "../_actions";
 
 type Objective = {
   id: string;
   content: string;
   done: boolean;
+  createdByName?: string | null;
+  createdBy?: { role?: { color: string } | null } | null;
 };
 
 interface Props {
