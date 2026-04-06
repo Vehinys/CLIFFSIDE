@@ -35,14 +35,14 @@ export default async function TasksPage() {
           <span className="text-border">/</span>
           <h1 className="text-xl font-bold text-text">Tâches</h1>
         </div>
+        {canWrite && <NewTaskButton />}
       </div>
 
-      <TasksList 
-        tasks={tasks} 
-        members={members} 
-        canWrite={canWrite} 
-        canEdit={canEdit} 
-        canDelete={canDelete} 
+      <TasksList
+        tasks={tasks}
+        members={members}
+        canEdit={canEdit}
+        canDelete={canDelete}
       />
     </div>
   );
