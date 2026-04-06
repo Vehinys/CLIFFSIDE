@@ -58,7 +58,7 @@ export default async function MembersPage({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-4 border-b border-border/40 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent blur-xl -z-10 rounded-full" />
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-text to-muted/70 drop-shadow-sm">
+          <h1 className="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-linear-to-br from-text to-muted/70 drop-shadow-sm">
             Membres & Rôles
           </h1>
           <p className="text-sm font-medium text-muted/80 mt-1.5 flex items-center gap-2">
@@ -91,7 +91,7 @@ export default async function MembersPage({
 
       {/* ── Onglets ─────────────────────────────────────────────────────────── */}
       <div className="mb-6 relative">
-        <nav className="flex gap-2 p-1 bg-surface-2/40 backdrop-blur-md rounded-xl border border-border/50 inline-flex" aria-label="Sections Membres & Rôles">
+        <nav className="inline-flex gap-2 p-1 bg-surface-2/40 backdrop-blur-md rounded-xl border border-border/50" aria-label="Sections Membres & Rôles">
           {canReadMembers && (
             <Link
               href="/members"
