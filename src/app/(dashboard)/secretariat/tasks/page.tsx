@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ExpandableText } from "@/components/ui/expandable-text";
 import { updateTaskStatus, deleteTask } from "../_actions";
 
 const STATUS_META = {
@@ -68,7 +69,7 @@ export default async function TasksPage() {
                 {grouped[status].map((t) => (
                   <li key={t.id} className="border border-border/50 rounded-md p-2.5 bg-surface-2/50">
                     <Link href={`/secretariat/tasks/${t.id}`} className="font-medium text-sm text-text hover:text-primary transition-colors">{t.title}</Link>
-                    {t.description && <p className="text-xs text-muted mt-0.5 line-clamp-2">{t.description}</p>}
+                    {t.description && <ExpandableText text={t.description} />}
                     {t.assignedToName && (
                       <p className="text-xs text-muted mt-1">→ {t.assignedToName}</p>
                     )}

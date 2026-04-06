@@ -61,35 +61,41 @@ export default async function AnnouncementsPage({ searchParams }: PageProps) {
         <div className="space-y-4">
           {announcements.map((a) => (
             <Card key={a.id}>
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <h2 className="font-semibold text-text">{a.title}</h2>
-                  <p className="text-xs text-muted mt-0.5">
-                    {a.createdByName ?? "—"} · {new Date(a.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
-                  </p>
-                  <div className="text-sm text-text/80 mt-3 max-h-48 overflow-y-auto whitespace-pre-wrap pr-1">
-                    {a.content}
-                  </div>
-                  {a.imageUrl && (
+              <div className="flex items-start gap-4">
+                {a.imageUrl && (
+                  <div className="flex-shrink-0 w-48 h-48 rounded-lg border border-white/10 bg-surface/50 overflow-hidden flex items-center justify-center p-2">
                     <Image
                       src={a.imageUrl}
                       alt=""
-                      width={800}
-                      height={600}
-                      className="mt-3 rounded-md max-h-64 object-contain border border-border"
+                      width={400}
+                      height={400}
+                      className="w-full h-full object-contain"
                       unoptimized
                     />
-                  )}
-                </div>
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  {canEdit && (
-                    <Link href={`/secretariat/announcements/${a.id}/edit`} className="text-xs text-muted hover:text-text transition-colors">Modifier</Link>
-                  )}
-                  {canDelete && (
-                    <form action={deleteAnnouncement.bind(null, a.id)}>
-                      <button type="submit" className="text-xs text-muted hover:text-danger transition-colors">Supprimer</button>
-                    </form>
-                  )}
+                  </div>
+                )}
+                <div className="flex-1 min-w-0 flex flex-col justify-start">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h2 className="font-semibold text-text">{a.title}</h2>
+                      <p className="text-xs text-muted mt-0.5">
+                        {a.createdByName ?? "—"} · {new Date(a.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                      {canEdit && (
+                        <Link href={`/secretariat/announcements/${a.id}/edit`} className="text-xs text-muted hover:text-text transition-colors">Modifier</Link>
+                      )}
+                      {canDelete && (
+                        <form action={deleteAnnouncement.bind(null, a.id)}>
+                          <button type="submit" className="text-xs text-muted hover:text-danger transition-colors">Supprimer</button>
+                        </form>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-sm text-text/80 mt-3 max-h-48 overflow-y-auto whitespace-pre-wrap pr-1">
+                    {a.content}
+                  </div>
                 </div>
               </div>
             </Card>
