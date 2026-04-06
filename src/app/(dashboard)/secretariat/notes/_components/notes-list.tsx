@@ -44,6 +44,22 @@ export function NotesList({ notes, canEdit, canDelete, search }: Props) {
     setModalOpen(true);
   };
 
+  if (notes.length === 0) {
+    return (
+      <>
+        <Card className="py-12 text-center">
+          <p className="text-muted">{search ? "Aucun résultat." : "Aucune note partagée pour le moment."}</p>
+        </Card>
+        <NoteModal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          title="Nouvelle note"
+          action={createNote}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

@@ -24,12 +24,12 @@ interface Report {
 
 interface Props {
   reports: Report[];
-  canWrite: boolean;
   canEdit: boolean;
   canDelete: boolean;
+  search?: string;
 }
 
-export function ReportsList({ reports, canEdit, canDelete }: Omit<Props, "canWrite">) {
+export function ReportsList({ reports, canEdit, canDelete, search }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingReport, setEditingReport] = useState<Report | null>(null);
 
@@ -38,6 +38,22 @@ export function ReportsList({ reports, canEdit, canDelete }: Omit<Props, "canWri
     window.addEventListener("reports:create", handler);
     return () => window.removeEventListener("reports:create", handler);
   }, []);
+
+  if (reports.length === 0) {
+    return (
+      <>
+        <Card className="py-12 text-center">
+          <p className="text-muted">{search ? "Aucun résultat." : "Aucun compte-rendu pour le moment."}</p>
+        </Card>
+        <ReportModal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          title="Nouveau compte-rendu"
+          action={createReport}
+        />
+      </>
+    );
+  }
 
   return (
     <div className="space-y-4">
