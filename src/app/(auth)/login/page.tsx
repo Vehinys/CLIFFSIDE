@@ -26,7 +26,7 @@ export default function LoginPage() {
         
         {/* Branding */}
         <div className="mb-10 flex flex-col items-center">
-          <div className="group relative mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-surface to-bg border border-white/10 shadow-[0_0_40px_rgba(220,38,38,0.2)] transition-all hover:scale-105 hover:shadow-[0_0_60px_rgba(220,38,38,0.4)] hover:border-primary/50">
+          <div className="group relative mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-surface to-bg border border-white/10 shadow-[0_0_40px_rgba(220,38,38,0.2)] transition-all hover:scale-105 hover:shadow-[0_0_60px_rgba(220,38,38,0.4)] hover:border-primary/50">
             <div className="absolute inset-0 rounded-2xl bg-primary/20 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
             <svg className="relative z-10 text-primary drop-shadow-[0_0_15px_rgba(220,38,38,1)]" width="28" height="28" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M11 2L3 7v8l8 5 8-5V7L11 2z" strokeLinejoin="round" />
@@ -44,7 +44,7 @@ export default function LoginPage() {
 
         {/* Form Card */}
         <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-surface/40 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-inset ring-white/10">
-          <div className="absolute inset-x-0 -top-px h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+          <div className="absolute inset-x-0 -top-px h-[2px] bg-linear-to-r from-transparent via-primary/60 to-transparent" />
           
           <div className="mb-8 border-b border-white/5 pb-4">
             <h2 className="text-xl font-bold text-white tracking-wide">Accès Autorisé</h2>
