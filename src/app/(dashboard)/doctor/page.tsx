@@ -95,8 +95,8 @@ async function runChecks(): Promise<CheckResult[]> {
       value: `${total} transactions`,
       detail: `Solde : ${net >= 0 ? "+" : ""}${net.toFixed(2)} €`,
     });
-  } catch (e: any) {
-    results.push({ name: "Trésorerie", status: "error", value: "Erreur", detail: e.message });
+  } catch (e: unknown) {
+    results.push({ name: "Trésorerie", status: "error", value: "Erreur", detail: e instanceof Error ? e.message : String(e) });
   }
 
   // ── Secrétariat ─────────────────────────────────────────────────────────
@@ -114,8 +114,8 @@ async function runChecks(): Promise<CheckResult[]> {
       value: `${reports} CR · ${notes} notes · ${announcements} annonces`,
       detail: `${tasks} tâche(s) ouverte(s) · ${tasksDone} terminée(s)`,
     });
-  } catch (e: any) {
-    results.push({ name: "Secrétariat", status: "error", value: "Erreur", detail: e.message });
+  } catch (e: unknown) {
+    results.push({ name: "Secrétariat", status: "error", value: "Erreur", detail: e instanceof Error ? e.message : String(e) });
   }
 
   // ── Variables d'environnement ────────────────────────────────────────────

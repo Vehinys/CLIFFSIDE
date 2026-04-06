@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { deleteNote, createNote, updateNote } from "../../_actions";
 import { NoteModal } from "./note-modal";
@@ -42,11 +41,6 @@ export function NotesList({ notes, canEdit, canDelete }: Omit<Props, "canWrite">
 
   const handleEdit = (note: Note) => {
     setEditingNote(note);
-    setModalOpen(true);
-  };
-
-  const handleCreate = () => {
-    setEditingNote(null);
     setModalOpen(true);
   };
 

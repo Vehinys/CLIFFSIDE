@@ -3,22 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { canDo } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { TasksList } from "./_components/tasks-list";
-
-const STATUS_META = {
-  TODO:        { label: "À faire",  variant: "default"  as const },
-  IN_PROGRESS: { label: "En cours", variant: "warning"  as const },
-  DONE:        { label: "Terminé",  variant: "success"  as const },
-};
-
-const NEXT_STATUS: Record<"TODO" | "IN_PROGRESS" | "DONE", "TODO" | "IN_PROGRESS" | "DONE"> = {
-  TODO: "IN_PROGRESS",
-  IN_PROGRESS: "DONE",
-  DONE: "TODO",
-};
 
 export default async function TasksPage() {
   const session = await auth();

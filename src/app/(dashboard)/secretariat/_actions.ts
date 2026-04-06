@@ -33,8 +33,8 @@ export async function createAnnouncement(formData: FormData) {
     await audit("secretariat", "ANNOUNCE_CREATE", data.title, session.user.id, session.user.name);
     revalidatePath("/secretariat/announcements");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur de création" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur de création" };
   }
 }
 
@@ -46,8 +46,8 @@ export async function updateAnnouncement(id: string, formData: FormData) {
     await audit("secretariat", "ANNOUNCE_UPDATE", data.title, session.user.id, session.user.name);
     revalidatePath("/secretariat/announcements");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur de mise à jour" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur de mise à jour" };
   }
 }
 
@@ -59,8 +59,8 @@ export async function deleteAnnouncement(id: string) {
     await audit("secretariat", "ANNOUNCE_DELETE", item?.title ?? id, session.user.id, session.user.name);
     revalidatePath("/secretariat/announcements");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur lors de la suppression" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur lors de la suppression" };
   }
 }
 
@@ -83,8 +83,8 @@ export async function createReport(formData: FormData) {
     await audit("secretariat", "REPORT_CREATE", data.title, session.user.id, session.user.name);
     revalidatePath("/secretariat/reports");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur de création" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur de création" };
   }
 }
 
@@ -96,8 +96,8 @@ export async function updateReport(id: string, formData: FormData) {
     await audit("secretariat", "REPORT_UPDATE", data.title, session.user.id, session.user.name);
     revalidatePath("/secretariat/reports");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur de mise à jour" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur de mise à jour" };
   }
 }
 
@@ -109,8 +109,8 @@ export async function deleteReport(id: string) {
     await audit("secretariat", "REPORT_DELETE", item?.title ?? id, session.user.id, session.user.name);
     revalidatePath("/secretariat/reports");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur lors de la suppression" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur lors de la suppression" };
   }
 }
 
@@ -132,8 +132,8 @@ export async function createNote(formData: FormData) {
     await audit("secretariat", "NOTE_CREATE", data.title, session.user.id, session.user.name);
     revalidatePath("/secretariat/notes");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur" };
   }
 }
 
@@ -145,8 +145,8 @@ export async function updateNote(id: string, formData: FormData) {
     await audit("secretariat", "NOTE_UPDATE", data.title, session.user.id, session.user.name);
     revalidatePath("/secretariat/notes");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur" };
   }
 }
 
@@ -158,8 +158,8 @@ export async function deleteNote(id: string) {
     await audit("secretariat", "NOTE_DELETE", item?.title ?? id, session.user.id, session.user.name);
     revalidatePath("/secretariat/notes");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur lors de la suppression" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur lors de la suppression" };
   }
 }
 
@@ -187,8 +187,8 @@ export async function createTask(formData: FormData) {
       assignedToName ? `Assigné à ${assignedToName}` : undefined);
     revalidatePath("/secretariat/tasks");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur" };
   }
 }
 
@@ -204,8 +204,8 @@ export async function updateTask(id: string, formData: FormData) {
     await audit("secretariat", "TASK_UPDATE", data.title, session.user.id, session.user.name, `Statut: ${data.status}`);
     revalidatePath("/secretariat/tasks");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur" };
   }
 }
 
@@ -217,8 +217,8 @@ export async function updateTaskStatus(id: string, status: "TODO" | "IN_PROGRESS
     await audit("secretariat", "TASK_UPDATE", task?.title ?? id, session.user.id, session.user.name, `Statut → ${status}`);
     revalidatePath("/secretariat/tasks");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur lors de la mise à jour" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur lors de la mise à jour" };
   }
 }
 
@@ -230,7 +230,7 @@ export async function deleteTask(id: string) {
     await audit("secretariat", "TASK_DELETE", item?.title ?? id, session.user.id, session.user.name);
     revalidatePath("/secretariat/tasks");
     return null;
-  } catch (err: any) {
-    return { error: err.message || "Erreur lors de la suppression" };
+  } catch (err: unknown) {
+    return { error: err instanceof Error ? err.message : "Erreur lors de la suppression" };
   }
 }

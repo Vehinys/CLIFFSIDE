@@ -106,7 +106,7 @@ export async function deleteRole(
 }
 
 export async function moveRole(id: string, direction: "up" | "down") {
-  const session = await requirePermission("update");
+  await requirePermission("update");
 
   const role = await prisma.role.findUnique({ where: { id } });
   if (!role) throw new Error("Rôle introuvable");

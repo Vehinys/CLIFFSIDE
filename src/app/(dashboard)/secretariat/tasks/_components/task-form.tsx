@@ -27,7 +27,7 @@ interface Props {
 }
 
 export function TaskForm({ action, members, initialData, onSuccess, onCancel }: Props) {
-  const [state, formAction, isPending] = useActionState(async (prevState: any, formData: FormData) => {
+  const [state, formAction, isPending] = useActionState(async (_prevState: unknown, formData: FormData) => {
     const result = await action(formData);
     if (result?.error) return result;
     onSuccess?.();

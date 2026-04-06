@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { deleteAnnouncement, createAnnouncement, updateAnnouncement } from "../../_actions";
 import { AnnouncementModal } from "./announcement-modal";
-import { UserPseudo } from "@/components/ui/user-pseudo";
 
 interface Announcement {
   id: string;
