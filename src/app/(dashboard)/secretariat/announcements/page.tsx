@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { deleteAnnouncement } from "../_actions";
 import { SearchInput } from "@/components/ui/search-input";
+import { ConfirmDelete } from "@/components/ui/confirm-delete";
 
 interface PageProps {
   searchParams: Promise<{ search?: string }>;
@@ -87,9 +88,11 @@ export default async function AnnouncementsPage({ searchParams }: PageProps) {
                         <Link href={`/secretariat/announcements/${a.id}/edit`} className="text-xs text-muted hover:text-text transition-colors">Modifier</Link>
                       )}
                       {canDelete && (
-                        <form action={deleteAnnouncement.bind(null, a.id)}>
-                          <button type="submit" className="text-xs text-muted hover:text-danger transition-colors">Supprimer</button>
-                        </form>
+                        <ConfirmDelete
+                          action={deleteAnnouncement.bind(null, a.id)}
+                          confirmMessage={`Supprimer l'annonce "${a.title}" ?`}
+                          successMessage="Annonce supprimée"
+                        />
                       )}
                     </div>
                   </div>

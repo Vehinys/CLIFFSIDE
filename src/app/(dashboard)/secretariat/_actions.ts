@@ -44,11 +44,16 @@ export async function updateAnnouncement(id: string, formData: FormData) {
 }
 
 export async function deleteAnnouncement(id: string) {
-  const session = await requirePermission("delete");
-  const item = await prisma.announcement.findUnique({ where: { id }, select: { title: true } });
-  await prisma.announcement.delete({ where: { id } });
-  await audit("secretariat", "ANNOUNCE_DELETE", item?.title ?? id, session.user.id, session.user.name);
-  revalidatePath("/secretariat/announcements");
+  try {
+    const session = await requirePermission("delete");
+    const item = await prisma.announcement.findUnique({ where: { id }, select: { title: true } });
+    await prisma.announcement.delete({ where: { id } });
+    await audit("secretariat", "ANNOUNCE_DELETE", item?.title ?? id, session.user.id, session.user.name);
+    revalidatePath("/secretariat/announcements");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur lors de la suppression" };
+  }
 }
 
 // ─── Comptes-rendus ───────────────────────────────────────────────────────────
@@ -81,11 +86,16 @@ export async function updateReport(id: string, formData: FormData) {
 }
 
 export async function deleteReport(id: string) {
-  const session = await requirePermission("delete");
-  const item = await prisma.meetingReport.findUnique({ where: { id }, select: { title: true } });
-  await prisma.meetingReport.delete({ where: { id } });
-  await audit("secretariat", "REPORT_DELETE", item?.title ?? id, session.user.id, session.user.name);
-  revalidatePath("/secretariat/reports");
+  try {
+    const session = await requirePermission("delete");
+    const item = await prisma.meetingReport.findUnique({ where: { id }, select: { title: true } });
+    await prisma.meetingReport.delete({ where: { id } });
+    await audit("secretariat", "REPORT_DELETE", item?.title ?? id, session.user.id, session.user.name);
+    revalidatePath("/secretariat/reports");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur lors de la suppression" };
+  }
 }
 
 // ─── Notes partagées ──────────────────────────────────────────────────────────
@@ -117,11 +127,16 @@ export async function updateNote(id: string, formData: FormData) {
 }
 
 export async function deleteNote(id: string) {
-  const session = await requirePermission("delete");
-  const item = await prisma.sharedNote.findUnique({ where: { id }, select: { title: true } });
-  await prisma.sharedNote.delete({ where: { id } });
-  await audit("secretariat", "NOTE_DELETE", item?.title ?? id, session.user.id, session.user.name);
-  revalidatePath("/secretariat/notes");
+  try {
+    const session = await requirePermission("delete");
+    const item = await prisma.sharedNote.findUnique({ where: { id }, select: { title: true } });
+    await prisma.sharedNote.delete({ where: { id } });
+    await audit("secretariat", "NOTE_DELETE", item?.title ?? id, session.user.id, session.user.name);
+    revalidatePath("/secretariat/notes");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur lors de la suppression" };
+  }
 }
 
 // ─── Tâches ───────────────────────────────────────────────────────────────────
@@ -171,9 +186,14 @@ export async function updateTaskStatus(id: string, status: "TODO" | "IN_PROGRESS
 }
 
 export async function deleteTask(id: string) {
-  const session = await requirePermission("delete");
-  const item = await prisma.secretariatTask.findUnique({ where: { id }, select: { title: true } });
-  await prisma.secretariatTask.delete({ where: { id } });
-  await audit("secretariat", "TASK_DELETE", item?.title ?? id, session.user.id, session.user.name);
-  revalidatePath("/secretariat/tasks");
+  try {
+    const session = await requirePermission("delete");
+    const item = await prisma.secretariatTask.findUnique({ where: { id }, select: { title: true } });
+    await prisma.secretariatTask.delete({ where: { id } });
+    await audit("secretariat", "TASK_DELETE", item?.title ?? id, session.user.id, session.user.name);
+    revalidatePath("/secretariat/tasks");
+    return null;
+  } catch (err: any) {
+    return { error: err.message || "Erreur lors de la suppression" };
+  }
 }

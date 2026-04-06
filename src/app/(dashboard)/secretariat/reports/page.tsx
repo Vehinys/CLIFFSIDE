@@ -6,8 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { deleteReport } from "../_actions";
 import { SearchInput } from "@/components/ui/search-input";
+import { ReportsList } from "./_components/reports-list";
 
 interface PageProps {
   searchParams: Promise<{ search?: string }>;
@@ -44,11 +44,6 @@ export default async function ReportsPage({ searchParams }: PageProps) {
           <span className="text-border">/</span>
           <h1 className="text-xl font-bold text-text">Comptes-rendus</h1>
         </div>
-        {canWrite && (
-          <Link href="/secretariat/reports/new">
-            <Button>+ Nouveau compte-rendu</Button>
-          </Link>
-        )}
       </div>
 
       <SearchInput placeholder="Rechercher un compte-rendu…" />
@@ -58,52 +53,12 @@ export default async function ReportsPage({ searchParams }: PageProps) {
           <p className="text-muted">{search ? "Aucun résultat." : "Aucun compte-rendu pour le moment."}</p>
         </Card>
       ) : (
-        <div className="space-y-4">
-          {reports.map((r) => (
-            <Card key={r.id}>
-              <div className="flex items-start gap-4">
-                {r.imageUrl && (
-                  <div className="shrink-0 w-48 h-48 rounded-lg border border-white/10 bg-surface/50 overflow-hidden flex items-center justify-center p-2">
-                    <Image
-                      src={r.imageUrl}
-                      alt=""
-                      width={400}
-                      height={400}
-                      className="w-full h-full object-contain"
-                      unoptimized
-                    />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0 flex flex-col justify-start">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <h2 className="font-semibold text-text">{r.title}</h2>
-                        <span className="text-xs text-muted border border-border rounded px-2 py-0.5">
-                          {new Date(r.meetingDate).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
-                        </span>
-                      </div>
-                      <p className="text-xs text-muted mt-0.5">Rédigé par {r.createdByName ?? "—"}</p>
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      {canEdit && (
-                        <Link href={`/secretariat/reports/${r.id}/edit`} className="text-xs text-muted hover:text-text transition-colors">Modifier</Link>
-                      )}
-                      {canDelete && (
-                        <form action={deleteReport.bind(null, r.id)}>
-                          <button type="submit" className="text-xs text-muted hover:text-danger transition-colors">Supprimer</button>
-                        </form>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-sm text-text/80 mt-3 max-h-48 overflow-y-auto whitespace-pre-wrap pr-1">
-                    {r.content}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+        <ReportsList 
+          reports={reports} 
+          canWrite={canWrite} 
+          canEdit={canEdit} 
+          canDelete={canDelete} 
+        />
       )}
     </div>
   );

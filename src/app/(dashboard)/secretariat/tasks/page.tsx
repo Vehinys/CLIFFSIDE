@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExpandableText } from "@/components/ui/expandable-text";
 import { updateTaskStatus, deleteTask } from "../_actions";
+import { ConfirmDelete } from "@/components/ui/confirm-delete";
 
 const STATUS_META = {
   TODO:        { label: "À faire",  variant: "default"  as const },
@@ -85,9 +86,11 @@ export default async function TasksPage() {
                         <Link href={`/secretariat/tasks/${t.id}/edit`} className="text-xs text-muted hover:text-text ml-auto">Modifier</Link>
                       )}
                       {canDelete && (
-                        <form action={deleteTask.bind(null, t.id)}>
-                          <button type="submit" className="text-xs text-muted hover:text-danger">Supprimer</button>
-                        </form>
+                        <ConfirmDelete
+                          action={deleteTask.bind(null, t.id)}
+                          confirmMessage={`Supprimer la tâche "${t.title}" ?`}
+                          successMessage="Tâche supprimée"
+                        />
                       )}
                     </div>
                   </li>
