@@ -172,7 +172,7 @@ export default async function MembersPage({
                                   <option key={r.id} value={r.id}>{r.name}</option>
                                 ))}
                               </Select>
-                              <Button type="submit" size="sm" variant="secondary" className="h-8 px-3 text-xs flex-shrink-0">
+                              <Button type="submit" size="sm" variant="secondary" className="h-8 px-3 text-xs shrink-0">
                                 Sauver
                               </Button>
                             </form>
