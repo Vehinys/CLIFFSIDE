@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { canDo } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
 import { SearchInput } from "@/components/ui/search-input";
 import { AnnouncementsList } from "./_components/announcements-list";
 import { NewAnnouncementButton } from "../_components/new-item-buttons";
@@ -53,17 +52,12 @@ export default async function AnnouncementsPage({ searchParams }: PageProps) {
 
       <SearchInput placeholder="Rechercher une annonce…" />
 
-      {announcements.length === 0 ? (
-        <Card className="py-12 text-center">
-          <p className="text-muted">{search ? "Aucun résultat." : "Aucune annonce pour le moment."}</p>
-        </Card>
-      ) : (
-        <AnnouncementsList 
-          announcements={announcements} 
-          canEdit={canEdit} 
-          canDelete={canDelete} 
-        />
-      )}
+      <AnnouncementsList
+        announcements={announcements}
+        canEdit={canEdit}
+        canDelete={canDelete}
+        search={search}
+      />
     </div>
   );
 }
