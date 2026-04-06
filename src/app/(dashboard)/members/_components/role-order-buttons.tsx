@@ -1,7 +1,6 @@
 "use client";
 
 import { useTransition } from "react";
-import { ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { moveRole } from "../../roles/_actions";
 
@@ -23,23 +22,29 @@ export function RoleOrderButtons({ roleId, isFirst, isLast }: RoleOrderButtonsPr
   return (
     <div className="flex flex-col gap-0.5">
       <Button
+        type="button"
         variant="ghost"
-        size="icon"
-        className="h-5 w-5 text-muted hover:text-text"
+        size="sm"
+        className="h-5 w-5 p-0 text-muted hover:text-text"
         disabled={isFirst || isPending}
         onClick={() => handleMove("up")}
       >
-        <ChevronUp className="h-3.5 w-3.5" />
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
         <span className="sr-only">Monter</span>
       </Button>
       <Button
+        type="button"
         variant="ghost"
-        size="icon"
-        className="h-5 w-5 text-muted hover:text-text"
+        size="sm"
+        className="h-5 w-5 p-0 text-muted hover:text-text"
         disabled={isLast || isPending}
         onClick={() => handleMove("down")}
       >
-        <ChevronDown className="h-3.5 w-3.5" />
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
         <span className="sr-only">Descendre</span>
       </Button>
     </div>

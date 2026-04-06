@@ -12,6 +12,7 @@ import { formatDate } from "@/lib/utils";
 import { deleteUserAccount, updateUserRole } from "./_actions";
 import { deleteRole } from "../roles/_actions";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
+import { RoleOrderButtons } from "./_components/role-order-buttons";
 
 export default async function MembersPage({
   searchParams,
@@ -37,7 +38,7 @@ export default async function MembersPage({
     canReadMembers || canReadRoles
       ? prisma.role.findMany({
           include: { _count: { select: { users: true, permissions: true } } },
-          orderBy: { name: "asc" },
+          orderBy: { position: "asc" },
         })
       : Promise.resolve([]),
   ]);
@@ -218,11 +219,12 @@ export default async function MembersPage({
                     <th className="pb-3 font-medium text-muted">Permissions</th>
                     <th className="pb-3 font-medium text-muted">Membres</th>
                     <th className="pb-3 font-medium text-muted">Type</th>
+                    <th className="pb-3 font-medium text-muted text-center">Ordre</th>
                     {(canEditRoles || canDeleteRoles) && <th className="pb-3" />}
                   </tr>
                 </thead>
                 <tbody>
-                  {roles.map((r) => (
+                  {roles.map((r, i) => (
                     <tr
                       key={r.id}
                       className="border-b border-border/50 last:border-0 hover:bg-surface-2/50 transition-colors duration-150"
@@ -245,6 +247,19 @@ export default async function MembersPage({
                         {r.isSystem
                           ? <Badge variant="warning">Système</Badge>
                           : <Badge variant="default">Custom</Badge>}
+                      </td>
+                      <td className="py-3 w-12 text-center align-middle">
+                        {canEditRoles ? (
+                          <div className="flex justify-center">
+                            <RoleOrderButtons
+                              roleId={r.id}
+                              isFirst={i === 0}
+                              isLast={i === roles.length - 1}
+                            />
+                          </div>
+                        ) : (
+                          <span className="text-muted text-xs">{r.position}</span>
+                        )}
                       </td>
                       {(canEditRoles || canDeleteRoles) && (
                         <td className="py-3 text-right">

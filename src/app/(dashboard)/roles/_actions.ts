@@ -120,12 +120,14 @@ export async function moveRole(id: string, direction: "up" | "down") {
 
   if (direction === "up" && currentIndex > 0) {
     const swapRole = allRoles[currentIndex - 1];
+    if (!swapRole) return;
     await prisma.$transaction([
       prisma.role.update({ where: { id: role.id }, data: { position: swapRole.position } }),
       prisma.role.update({ where: { id: swapRole.id }, data: { position: role.position } }),
     ]);
   } else if (direction === "down" && currentIndex < allRoles.length - 1) {
     const swapRole = allRoles[currentIndex + 1];
+    if (!swapRole) return;
     await prisma.$transaction([
       prisma.role.update({ where: { id: role.id }, data: { position: swapRole.position } }),
       prisma.role.update({ where: { id: swapRole.id }, data: { position: role.position } }),
