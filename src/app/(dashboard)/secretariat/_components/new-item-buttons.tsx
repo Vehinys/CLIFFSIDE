@@ -28,3 +28,11 @@ export function NewReportButton() {
     </Button>
   );
 }
+
+export function NewTaskButton() {
+  return (
+    <Button onClick={() => window.dispatchEvent(new CustomEvent("tasks:create"))}>
+      + Nouvelle tâche
+    </Button>
+  );
+}

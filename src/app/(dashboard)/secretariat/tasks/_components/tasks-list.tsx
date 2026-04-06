@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,14 +42,19 @@ interface Member {
 interface Props {
   tasks: Task[];
   members: Member[];
-  canWrite: boolean;
   canEdit: boolean;
   canDelete: boolean;
 }
 
-export function TasksList({ tasks, members, canWrite, canEdit, canDelete }: Props) {
+export function TasksList({ tasks, members, canEdit, canDelete }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+
+  useEffect(() => {
+    const handler = () => { setEditingTask(null); setModalOpen(true); };
+    window.addEventListener("tasks:create", handler);
+    return () => window.removeEventListener("tasks:create", handler);
+  }, []);
 
   const grouped = {
     TODO: tasks.filter((t) => t.status === "TODO"),
@@ -62,18 +67,9 @@ export function TasksList({ tasks, members, canWrite, canEdit, canDelete }: Prop
     setModalOpen(true);
   };
 
-  const handleCreate = () => {
-    setEditingTask(null);
-    setModalOpen(true);
-  };
-
   return (
     <div className="space-y-6">
-      <div className="flex justify-end -mt-12">
-        {canWrite && <Button onClick={handleCreate}>+ Nouvelle tâche</Button>}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {(["TODO", "IN_PROGRESS", "DONE"] as const).map((status) => (
           <Card key={status} className="bg-surface/30">
             <CardHeader>
