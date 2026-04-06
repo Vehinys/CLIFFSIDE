@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
 import { AnnouncementsList } from "./_components/announcements-list";
+import { NewAnnouncementButton } from "../_components/new-item-buttons";
 
 interface PageProps {
   searchParams: Promise<{ search?: string }>;
@@ -44,6 +45,7 @@ export default async function AnnouncementsPage({ searchParams }: PageProps) {
           <span className="text-border">/</span>
           <h1 className="text-xl font-bold text-text">Annonces</h1>
         </div>
+        {canWrite && <NewAnnouncementButton />}
       </div>
 
       <SearchInput placeholder="Rechercher une annonce…" />
@@ -55,7 +57,6 @@ export default async function AnnouncementsPage({ searchParams }: PageProps) {
       ) : (
         <AnnouncementsList 
           announcements={announcements} 
-          canWrite={canWrite} 
           canEdit={canEdit} 
           canDelete={canDelete} 
         />

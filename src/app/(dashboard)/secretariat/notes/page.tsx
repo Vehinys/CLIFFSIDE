@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
 import { NotesList } from "./_components/notes-list";
+import { NewNoteButton } from "../_components/new-item-buttons";
 
 interface PageProps {
   searchParams: Promise<{ search?: string }>;
@@ -44,6 +45,7 @@ export default async function NotesPage({ searchParams }: PageProps) {
           <span className="text-border">/</span>
           <h1 className="text-xl font-bold text-text">Notes partagées</h1>
         </div>
+        {canWrite && <NewNoteButton />}
       </div>
 
       <SearchInput placeholder="Rechercher une note…" />
@@ -55,7 +57,6 @@ export default async function NotesPage({ searchParams }: PageProps) {
       ) : (
         <NotesList 
           notes={notes} 
-          canWrite={canWrite} 
           canEdit={canEdit} 
           canDelete={canDelete} 
         />

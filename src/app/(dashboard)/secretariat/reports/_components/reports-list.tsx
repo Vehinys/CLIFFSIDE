@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,29 +24,19 @@ interface Props {
   canDelete: boolean;
 }
 
-export function ReportsList({ reports, canWrite, canEdit, canDelete }: Props) {
+export function ReportsList({ reports, canEdit, canDelete }: Omit<Props, "canWrite">) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingReport, setEditingReport] = useState<Report | null>(null);
 
-  const handleEdit = (report: Report) => {
-    setEditingReport(report);
-    setModalOpen(true);
-  };
-
-  const handleCreate = () => {
-    setEditingReport(null);
-    setModalOpen(true);
-  };
+  useEffect(() => {
+    const handler = () => { setEditingReport(null); setModalOpen(true); };
+    window.addEventListener("reports:create", handler);
+    return () => window.removeEventListener("reports:create", handler);
+  }, []);
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end -mt-12">
-        {canWrite && (
-          <Button onClick={handleCreate}>+ Nouveau compte-rendu</Button>
-        )}
-      </div>
-
-      <div className="space-y-4 mt-6">
+      <div className="space-y-4">
         {reports.map((r) => (
           <Card key={r.id}>
             <div className="flex items-start gap-4">
@@ -76,7 +66,7 @@ export function ReportsList({ reports, canWrite, canEdit, canDelete }: Props) {
                   <div className="flex items-center gap-3 shrink-0">
                     {canEdit && (
                       <button 
-                        onClick={() => handleEdit(r)}
+                        onClick={() => { setEditingReport(r); setModalOpen(true); }}
                         className="text-xs text-muted hover:text-text transition-colors"
                       >
                         Modifier

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,9 +24,15 @@ interface Props {
   canDelete: boolean;
 }
 
-export function NotesList({ notes, canWrite, canEdit, canDelete }: Props) {
+export function NotesList({ notes, canEdit, canDelete }: Omit<Props, "canWrite">) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+
+  useEffect(() => {
+    const handler = () => { setEditingNote(null); setModalOpen(true); };
+    window.addEventListener("notes:create", handler);
+    return () => window.removeEventListener("notes:create", handler);
+  }, []);
 
   const handleEdit = (note: Note) => {
     setEditingNote(note);
@@ -40,13 +46,7 @@ export function NotesList({ notes, canWrite, canEdit, canDelete }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end -mt-12">
-        {canWrite && (
-          <Button onClick={handleCreate}>+ Nouvelle note</Button>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {notes.map((n) => (
           <Card key={n.id} className="flex flex-col group hover:border-primary/30 transition-all">
             <div className="flex items-start gap-4 flex-1">

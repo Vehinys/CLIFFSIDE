@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,29 +24,19 @@ interface Props {
   canDelete: boolean;
 }
 
-export function AnnouncementsList({ announcements, canWrite, canEdit, canDelete }: Props) {
+export function AnnouncementsList({ announcements, canEdit, canDelete }: Omit<Props, "canWrite">) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null);
 
-  const handleEdit = (announcement: Announcement) => {
-    setEditingAnnouncement(announcement);
-    setModalOpen(true);
-  };
-
-  const handleCreate = () => {
-    setEditingAnnouncement(null);
-    setModalOpen(true);
-  };
+  useEffect(() => {
+    const handler = () => { setEditingAnnouncement(null); setModalOpen(true); };
+    window.addEventListener("announcements:create", handler);
+    return () => window.removeEventListener("announcements:create", handler);
+  }, []);
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end -mt-12">
-        {canWrite && (
-          <Button onClick={handleCreate}>+ Nouvelle annonce</Button>
-        )}
-      </div>
-
-      <div className="space-y-4 mt-6">
+      <div className="space-y-4">
         {announcements.map((a) => (
           <Card key={a.id} className="group hover:border-primary/30 transition-all">
             <div className="flex items-start gap-4">
@@ -73,7 +63,7 @@ export function AnnouncementsList({ announcements, canWrite, canEdit, canDelete 
                   <div className="flex items-center gap-3 shrink-0">
                     {canEdit && (
                       <button 
-                        onClick={() => handleEdit(a)}
+                        onClick={() => { setEditingAnnouncement(a); setModalOpen(true); }}
                         className="text-xs text-muted hover:text-text transition-colors"
                       >
                         Modifier
