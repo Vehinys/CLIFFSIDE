@@ -83,8 +83,18 @@ export function AnnouncementsList({ announcements, canEdit, canDelete, search }:
                     </p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
+                    <button
+                      onClick={() => setViewingAnnouncement(a)}
+                      className="text-muted hover:text-primary transition-colors p-1"
+                      aria-label="Tout lire"
+                      title="Tout lire"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
                     {canEdit && (
-                      <button 
+                      <button
                         onClick={() => { setEditingAnnouncement(a); setModalOpen(true); }}
                         className="text-xs text-muted hover:text-text transition-colors"
                       >
