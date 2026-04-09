@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
+import { ViewModal } from "@/components/ui/view-modal";
 import { deleteAnnouncement, createAnnouncement, updateAnnouncement } from "../../_actions";
 import { AnnouncementModal } from "./announcement-modal";
 
@@ -31,6 +32,7 @@ interface Props {
 export function AnnouncementsList({ announcements, canEdit, canDelete, search }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null);
+  const [viewingAnnouncement, setViewingAnnouncement] = useState<Announcement | null>(null);
 
   useEffect(() => {
     const handler = () => { setEditingAnnouncement(null); setModalOpen(true); };
