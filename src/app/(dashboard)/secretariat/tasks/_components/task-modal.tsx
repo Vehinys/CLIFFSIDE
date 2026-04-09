@@ -9,16 +9,23 @@ interface Member {
   email: string;
 }
 
+interface Role {
+  id: string;
+  name: string;
+  color: string;
+}
+
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   members: Member[];
+  roles: Role[];
   initialData?: Parameters<typeof TaskForm>[0]["initialData"];
   action: Parameters<typeof TaskForm>[0]["action"];
 }
 
-export function TaskModal({ open, onOpenChange, title, members, initialData, action }: Props) {
+export function TaskModal({ open, onOpenChange, title, members, roles, initialData, action }: Props) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const containerId = useId();
 
@@ -35,12 +42,12 @@ export function TaskModal({ open, onOpenChange, title, members, initialData, act
 
   return (
     <>
-      <div 
+      <div
         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
         aria-hidden="true"
         onClick={() => onOpenChange(false)}
       />
-      <div 
+      <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
@@ -49,7 +56,7 @@ export function TaskModal({ open, onOpenChange, title, members, initialData, act
       >
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
           <h2 id={containerId} className="text-xl font-bold text-text">{title}</h2>
-          <button 
+          <button
             onClick={() => onOpenChange(false)}
             className="text-muted hover:text-text p-1 transition-colors"
             aria-label="Fermer"
@@ -57,11 +64,12 @@ export function TaskModal({ open, onOpenChange, title, members, initialData, act
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 5L5 15M5 5l10 10"/></svg>
           </button>
         </div>
-        
-        <TaskForm 
-          action={action} 
+
+        <TaskForm
+          action={action}
           members={members}
-          initialData={initialData} 
+          roles={roles}
+          initialData={initialData}
           onSuccess={() => onOpenChange(false)}
           onCancel={() => onOpenChange(false)}
         />

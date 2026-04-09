@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
+import { ViewModal } from "@/components/ui/view-modal";
 import { deleteReport, createReport, updateReport } from "../../_actions";
 import { ReportModal } from "./report-modal";
 import { UserPseudo } from "@/components/ui/user-pseudo";
@@ -32,6 +33,7 @@ interface Props {
 export function ReportsList({ reports, canEdit, canDelete, search }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingReport, setEditingReport] = useState<Report | null>(null);
+  const [viewingReport, setViewingReport] = useState<Report | null>(null);
 
   useEffect(() => {
     const handler = () => { setEditingReport(null); setModalOpen(true); };
@@ -87,8 +89,18 @@ export function ReportsList({ reports, canEdit, canDelete, search }: Props) {
                     </p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
+                    <button
+                      onClick={() => setViewingReport(r)}
+                      className="text-muted hover:text-primary transition-colors p-1"
+                      aria-label="Tout lire"
+                      title="Tout lire"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
                     {canEdit && (
-                      <button 
+                      <button
                         onClick={() => { setEditingReport(r); setModalOpen(true); }}
                         className="text-xs text-muted hover:text-text transition-colors"
                       >
@@ -124,6 +136,15 @@ export function ReportsList({ reports, canEdit, canDelete, search }: Props) {
           imageUrl: editingReport.imageUrl,
         } : undefined}
         action={editingReport ? updateReport.bind(null, editingReport.id) : createReport}
+      />
+
+      <ViewModal
+        open={!!viewingReport}
+        onOpenChange={(v) => { if (!v) setViewingReport(null); }}
+        title={viewingReport?.title ?? ""}
+        content={viewingReport?.content ?? ""}
+        imageUrl={viewingReport?.imageUrl}
+        metadata={viewingReport ? `Réunion du ${new Date(viewingReport.meetingDate).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })} · Rédigé par ${viewingReport.createdByName ?? "—"}` : undefined}
       />
     </div>
   );

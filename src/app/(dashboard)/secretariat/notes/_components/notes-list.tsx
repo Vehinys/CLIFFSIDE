@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
+import { ViewModal } from "@/components/ui/view-modal";
 import { deleteNote, createNote, updateNote } from "../../_actions";
 import { NoteModal } from "./note-modal";
 import { UserPseudo } from "@/components/ui/user-pseudo";
@@ -32,6 +33,7 @@ interface Props {
 export function NotesList({ notes, canEdit, canDelete, search }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const [viewingNote, setViewingNote] = useState<Note | null>(null);
 
   useEffect(() => {
     const handler = () => { setEditingNote(null); setModalOpen(true); };
@@ -79,7 +81,19 @@ export function NotesList({ notes, canEdit, canDelete, search }: Props) {
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <h2 className="font-semibold text-text group-hover:text-primary transition-colors">{n.title}</h2>
+                <div className="flex items-start justify-between gap-2">
+                  <h2 className="font-semibold text-text group-hover:text-primary transition-colors">{n.title}</h2>
+                  <button
+                    onClick={() => setViewingNote(n)}
+                    className="text-muted hover:text-primary transition-colors p-1 shrink-0"
+                    aria-label="Tout lire"
+                    title="Tout lire"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </div>
                 <p className="text-xs text-muted mt-0.5">
                   <UserPseudo name={n.createdByName} color={n.createdBy?.role?.color} className="text-inherit" /> · modifié le {new Date(n.updatedAt).toLocaleDateString("fr-FR")}
                 </p>
@@ -91,7 +105,7 @@ export function NotesList({ notes, canEdit, canDelete, search }: Props) {
             {(canEdit || canDelete) && (
               <div className="flex gap-3 mt-4 pt-3 border-t border-border/50">
                 {canEdit && (
-                  <button 
+                  <button
                     onClick={() => handleEdit(n)}
                     className="text-xs text-muted hover:text-text transition-colors"
                   >
@@ -121,6 +135,15 @@ export function NotesList({ notes, canEdit, canDelete, search }: Props) {
           imageUrl: editingNote.imageUrl,
         } : undefined}
         action={editingNote ? updateNote.bind(null, editingNote.id) : createNote}
+      />
+
+      <ViewModal
+        open={!!viewingNote}
+        onOpenChange={(v) => { if (!v) setViewingNote(null); }}
+        title={viewingNote?.title ?? ""}
+        content={viewingNote?.content ?? ""}
+        imageUrl={viewingNote?.imageUrl}
+        metadata={viewingNote ? `Par ${viewingNote.createdByName ?? "—"} · modifié le ${new Date(viewingNote.updatedAt).toLocaleDateString("fr-FR")}` : undefined}
       />
     </div>
   );

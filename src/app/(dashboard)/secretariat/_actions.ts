@@ -181,6 +181,7 @@ const taskSchema = z.object({
   title: z.string().min(1, "Titre requis"),
   description: z.string().optional().transform((v) => v || null),
   assignedToId: z.string().optional().transform((v) => v || null),
+  assignedRoleId: z.string().optional().transform((v) => v || null),
   status: z.enum(["TODO", "IN_PROGRESS", "DONE"]).default("TODO"),
 });
 
@@ -192,11 +193,15 @@ export async function createTask(formData: FormData) {
       ? await prisma.user.findUnique({ where: { id: data.assignedToId }, select: { name: true, email: true } })
       : null;
     const assignedToName = assignedUser ? (assignedUser.name ?? assignedUser.email) : null;
+    const assignedRole = data.assignedRoleId
+      ? await prisma.role.findUnique({ where: { id: data.assignedRoleId }, select: { name: true } })
+      : null;
+    const assignedRoleName = assignedRole?.name ?? null;
     await prisma.secretariatTask.create({
-      data: { ...data, assignedToName, createdById: session.user.id, createdByName: session.user.name ?? null },
+      data: { ...data, assignedToName, assignedRoleName, createdById: session.user.id, createdByName: session.user.name ?? null },
     });
-    await audit("secretariat", "TASK_CREATE", data.title, session.user.id, session.user.name,
-      assignedToName ? `Assigné à ${assignedToName}` : undefined);
+    const assignDetails = [assignedToName && `Personne: ${assignedToName}`, assignedRoleName && `Rôle: ${assignedRoleName}`].filter(Boolean).join(", ");
+    await audit("secretariat", "TASK_CREATE", data.title, session.user.id, session.user.name, assignDetails || undefined);
     revalidatePath("/secretariat/tasks");
     return null;
   } catch (err: unknown) {
@@ -212,7 +217,11 @@ export async function updateTask(id: string, formData: FormData) {
       ? await prisma.user.findUnique({ where: { id: data.assignedToId }, select: { name: true, email: true } })
       : null;
     const assignedToName = assignedUser ? (assignedUser.name ?? assignedUser.email) : null;
-    await prisma.secretariatTask.update({ where: { id }, data: { ...data, assignedToName } });
+    const assignedRole = data.assignedRoleId
+      ? await prisma.role.findUnique({ where: { id: data.assignedRoleId }, select: { name: true } })
+      : null;
+    const assignedRoleName = assignedRole?.name ?? null;
+    await prisma.secretariatTask.update({ where: { id }, data: { ...data, assignedToName, assignedRoleName } });
     await audit("secretariat", "TASK_UPDATE", data.title, session.user.id, session.user.name, `Statut: ${data.status}`);
     revalidatePath("/secretariat/tasks");
     return null;

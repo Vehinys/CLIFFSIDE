@@ -13,20 +13,28 @@ interface Member {
   email: string;
 }
 
+interface Role {
+  id: string;
+  name: string;
+  color: string;
+}
+
 interface Props {
   action: (formData: FormData) => Promise<{ error: string } | null>;
   members: Member[];
+  roles: Role[];
   initialData?: {
     title: string;
     description?: string | null;
     assignedToId?: string | null;
+    assignedRoleId?: string | null;
     status: "TODO" | "IN_PROGRESS" | "DONE";
   } | undefined;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
 
-export function TaskForm({ action, members, initialData, onSuccess, onCancel }: Props) {
+export function TaskForm({ action, members, roles, initialData, onSuccess, onCancel }: Props) {
   const [state, formAction, isPending] = useActionState(async (_prevState: unknown, formData: FormData) => {
     const result = await action(formData);
     if (result?.error) return result;
@@ -53,11 +61,11 @@ export function TaskForm({ action, members, initialData, onSuccess, onCancel }: 
         <Label htmlFor="description">Description</Label>
         <Textarea id="description" name="description" defaultValue={initialData?.description ?? ""} placeholder="Détails optionnels…" rows={5} />
       </div>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {members.length > 0 && (
           <div>
-            <Label htmlFor="assignedToId">Assigner à</Label>
+            <Label htmlFor="assignedToId">Assigner à (personne)</Label>
             <select
               id="assignedToId"
               name="assignedToId"
@@ -67,6 +75,22 @@ export function TaskForm({ action, members, initialData, onSuccess, onCancel }: 
               <option value="">— Non assigné —</option>
               {members.map((m) => (
                 <option key={m.id} value={m.id}>{m.name ?? m.email}</option>
+              ))}
+            </select>
+          </div>
+        )}
+        {roles.length > 0 && (
+          <div>
+            <Label htmlFor="assignedRoleId">Assigner à (rôle)</Label>
+            <select
+              id="assignedRoleId"
+              name="assignedRoleId"
+              defaultValue={initialData?.assignedRoleId ?? ""}
+              className="w-full h-10 rounded-md border border-border bg-surface px-3 text-sm text-text outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-shadow"
+            >
+              <option value="">— Aucun rôle —</option>
+              {roles.map((r) => (
+                <option key={r.id} value={r.id}>{r.name}</option>
               ))}
             </select>
           </div>

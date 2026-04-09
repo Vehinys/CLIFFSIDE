@@ -130,6 +130,15 @@ export function AnnouncementsList({ announcements, canEdit, canDelete, search }:
         } : undefined}
         action={editingAnnouncement ? updateAnnouncement.bind(null, editingAnnouncement.id) : createAnnouncement}
       />
+
+      <ViewModal
+        open={!!viewingAnnouncement}
+        onOpenChange={(v) => { if (!v) setViewingAnnouncement(null); }}
+        title={viewingAnnouncement?.title ?? ""}
+        content={viewingAnnouncement?.content ?? ""}
+        imageUrl={viewingAnnouncement?.imageUrl}
+        metadata={viewingAnnouncement ? `${viewingAnnouncement.createdByName ?? "—"} · ${new Date(viewingAnnouncement.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}` : undefined}
+      />
     </div>
   );
 }
