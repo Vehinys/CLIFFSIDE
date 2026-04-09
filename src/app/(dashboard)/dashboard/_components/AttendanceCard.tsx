@@ -45,11 +45,26 @@ function IconClock() {
   );
 }
 
+function IconClockSmall() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+      <circle cx="5" cy="5" r="4" />
+      <path d="M5 2.5v2.5l1.5 1" />
+    </svg>
+  );
+}
+
+const STATUS_LABELS: Record<string, string> = {
+  PRESENT: "Présent",
+  ABSENT: "Absent",
+  LATE: "En retard",
+};
+
 export function AttendanceCard({ currentUserId, attendances }: Props) {
   const myAttendance = attendances.find((a) => a.userId === currentUserId);
   const presentCount = attendances.filter((a) => a.status === "PRESENT").length;
+  const lateCount = attendances.filter((a) => a.status === "LATE").length;
   const absentCount = attendances.filter((a) => a.status === "ABSENT").length;
-  const totalResponded = presentCount + absentCount;
 
   return (
     <Card className={myAttendance ? "border-border" : "border-warning/50 bg-warning/5"}>
@@ -64,21 +79,24 @@ export function AttendanceCard({ currentUserId, attendances }: Props) {
               className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium border ${
                 myAttendance.status === "PRESENT"
                   ? "bg-success/10 text-success border-success/30"
+                  : myAttendance.status === "LATE"
+                  ? "bg-warning/10 text-warning border-warning/30"
                   : "bg-danger/10 text-danger border-danger/30"
               }`}
             >
-              {myAttendance.status === "PRESENT" ? <IconCheck /> : <IconX />}
-              {myAttendance.status === "PRESENT" ? "Présent" : "Absent"}
+              {myAttendance.status === "PRESENT" ? <IconCheck /> : myAttendance.status === "LATE" ? <IconClockSmall /> : <IconX />}
+              {STATUS_LABELS[myAttendance.status] ?? myAttendance.status}
             </span>
           )}
           <span className="ml-auto text-xs font-normal text-muted whitespace-nowrap">
             <span className="text-success">{presentCount}</span>
-            {" "}présent{presentCount !== 1 ? "s" : ""}{" "}·{" "}
+            {" "}présent{presentCount !== 1 ? "s" : ""}
+            {lateCount > 0 && (
+              <> · <span className="text-warning">{lateCount}</span>{" "}en retard</>
+            )}
+            {" "}·{" "}
             <span className="text-danger">{absentCount}</span>
             {" "}absent{absentCount !== 1 ? "s" : ""}
-            {totalResponded > 0 && (
-              <span className="ml-1 text-muted/50">({totalResponded} réponse{totalResponded !== 1 ? "s" : ""})</span>
-            )}
           </span>
         </CardTitle>
       </CardHeader>
@@ -95,6 +113,17 @@ export function AttendanceCard({ currentUserId, attendances }: Props) {
             >
               <IconCheck />
               Présent
+            </Button>
+          </form>
+          <form action={respondAttendance.bind(null, "LATE")}>
+            <Button
+              type="submit"
+              variant="secondary"
+              size="sm"
+              className="border-warning/40 text-warning hover:bg-warning/10 hover:border-warning/60 gap-1.5"
+            >
+              <IconClockSmall />
+              En retard
             </Button>
           </form>
           <form action={respondAttendance.bind(null, "ABSENT")}>
@@ -117,14 +146,21 @@ export function AttendanceCard({ currentUserId, attendances }: Props) {
           {myAttendance.status !== "PRESENT" && (
             <form action={respondAttendance.bind(null, "PRESENT")}>
               <button type="submit" className="cursor-pointer text-success hover:text-success/70 transition-colors">
-                Marquer présent
+                Présent
+              </button>
+            </form>
+          )}
+          {myAttendance.status !== "LATE" && (
+            <form action={respondAttendance.bind(null, "LATE")}>
+              <button type="submit" className="cursor-pointer text-warning hover:text-warning/70 transition-colors">
+                En retard
               </button>
             </form>
           )}
           {myAttendance.status !== "ABSENT" && (
             <form action={respondAttendance.bind(null, "ABSENT")}>
               <button type="submit" className="cursor-pointer text-danger hover:text-danger/70 transition-colors">
-                Marquer absent
+                Absent
               </button>
             </form>
           )}
@@ -139,10 +175,12 @@ export function AttendanceCard({ currentUserId, attendances }: Props) {
               className={`flex items-center gap-1.5 text-xs rounded-full px-2.5 py-1 border transition-colors ${
                 a.status === "PRESENT"
                   ? "bg-success/5 border-success/20 text-success/80"
+                  : a.status === "LATE"
+                  ? "bg-warning/5 border-warning/20 text-warning/80"
                   : "bg-danger/5 border-danger/20 text-danger/80"
               }`}
             >
-              {a.status === "PRESENT" ? <IconCheck /> : <IconX />}
+              {a.status === "PRESENT" ? <IconCheck /> : a.status === "LATE" ? <IconClockSmall /> : <IconX />}
               <UserPseudo name={a.userName} color={a.user?.role?.color} className="text-inherit" fallback={a.userId} />
             </div>
           ))}

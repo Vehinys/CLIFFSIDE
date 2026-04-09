@@ -27,7 +27,7 @@ async function getOrCreateSession(date: Date) {
   });
 }
 
-export async function respondAttendance(status: "PRESENT" | "ABSENT") {
+export async function respondAttendance(status: "PRESENT" | "ABSENT" | "LATE") {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
