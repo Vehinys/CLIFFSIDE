@@ -49,7 +49,8 @@
       "Bash(python3 -c ':*)",
       "Bash(node -p \"JSON.stringify\\(require\\('F:/PROJET PERSONNEL/CLIFFSIDE/package-lock.json'\\).lockfileVersion\\)\")",
       "Bash(node:*)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(xargs grep:*)"
     ]
   }
 }
