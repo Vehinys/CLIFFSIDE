@@ -15,13 +15,17 @@ export default async function TasksPage() {
   const canEdit = canDo(session.user.permissions, "secretariat", "update");
   const canDelete = canDo(session.user.permissions, "secretariat", "delete");
 
-  const tasks = await prisma.secretariatTask.findMany({ 
-    include: {
-      createdBy: { include: { role: { select: { color: true } } } },
-      assignedTo: { include: { role: { select: { color: true } } } },
-    },
-    orderBy: { createdAt: "desc" } 
-  });
+  const [tasks, roles] = await Promise.all([
+    prisma.secretariatTask.findMany({
+      include: {
+        createdBy: { include: { role: { select: { color: true } } } },
+        assignedTo: { include: { role: { select: { color: true } } } },
+        assignedRole: { select: { color: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.role.findMany({ select: { id: true, name: true, color: true }, orderBy: { position: "asc" } }),
+  ]);
 
   const members = canDo(session.user.permissions, "members", "read")
     ? (await prisma.user.findMany({ select: { id: true, name: true, email: true }, orderBy: { name: "asc" } }))
@@ -41,6 +45,7 @@ export default async function TasksPage() {
       <TasksList
         tasks={tasks}
         members={members}
+        roles={roles}
         canEdit={canEdit}
         canDelete={canDelete}
       />
