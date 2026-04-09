@@ -8,8 +8,8 @@ interface Props {
   onOpenChange: (open: boolean) => void;
   title: string;
   content: string;
-  metadata?: string;
-  imageUrl?: string | null;
+  metadata?: string | undefined;
+  imageUrl?: string | null | undefined;
   extra?: React.ReactNode;
 }
 
